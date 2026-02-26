@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutin Takipçi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen p-8">
+
+    <div class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold mb-1">Rutin Takipçi</h1>
+        <p class="text-gray-400 mb-6">{{ today }}</p>
+
+        <!-- Yüzde Çubuğu -->
+        {% if total > 0 %}
+        <div class="mb-8">
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-400">Bugünkü ilerleme</span>
+                <span class="font-medium">{{ completed }}/{{ total }} — %{{ percent }}</span>
+            </div>
+            <div class="w-full bg-gray-800 rounded-full h-3">
+                <div class="bg-blue-500 h-3 rounded-full transition-all duration-500"
+                    style="width: {{ percent }}%"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Alışkanlık Ekle -->
+        <form method="POST" action="/add" class="flex gap-2 mb-8">
+            <input type="text" name="habit" placeholder="Yeni alışkanlık ekle..."
+                class="flex-1 bg-gray-800 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium transition">
+                Ekle
+            </button>
+        </form>
+
+        <!-- Alışkanlık Listesi -->
+        {% if habits %}
+            {% for habit in habits %}
+            {% set done = today in logs and habit in logs[today] %}
+            <div class="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-3 mb-3">
+                <div class="flex items-center gap-3">
+                    {% if done %}
+                        <span class="text-green-400 text-xl">✓</span>
+                        <div>
+                            <p class="line-through text-gray-400">{{ habit }}</p>
+                            {% if streaks[habit] > 0 %}
+                            <p class="text-xs text-orange-400">🔥 {{ streaks[habit] }} gün streak</p>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <span class="text-gray-600 text-xl">○</span>
+                        <div>
+                            <p>{{ habit }}</p>
+                            {% if streaks[habit] > 0 %}
+                            <p class="text-xs text-orange-400">🔥 {{ streaks[habit] }} gün streak</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="flex gap-2">
+                    {% if not done %}
+                    <a href="/complete/{{ habit }}"
+                        class="bg-green-700 hover:bg-green-600 px-3 py-1 rounded text-sm transition">
+                        Tamamla
+                    </a>
+                    {% endif %}
+                    <a href="/delete/{{ habit }}"
+                        class="bg-red-900 hover:bg-red-700 px-3 py-1 rounded text-sm transition">
+                        Sil
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500 text-center mt-16">Henüz alışkanlık eklenmedi.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
