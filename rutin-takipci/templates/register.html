@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol — Rutin Takipçi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #060612; min-height: 100vh; overflow: hidden; }
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.12; pointer-events: none; animation: float 8s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-20px) scale(1.05)} }
+        .orb1{width:500px;height:500px;background:#6366f1;top:-150px;left:-150px}
+        .orb2{width:400px;height:400px;background:#06d6a0;bottom:-100px;right:-100px;animation-delay:3s}
+        .dot-grid{position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+        .glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08)}
+        input{background:rgba(255,255,255,0.05)!important;border:1px solid rgba(255,255,255,0.08)!important;color:white!important;transition:all 0.3s;width:100%;padding:12px 16px;border-radius:12px;font-size:14px;outline:none}
+        input:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;box-shadow:0 0 0 3px rgba(99,102,241,0.1)!important}
+        input::placeholder{color:rgba(255,255,255,0.25)!important}
+        .btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:12px;border-radius:12px;font-weight:600;font-size:14px;width:100%;cursor:pointer;transition:all 0.3s;border:none}
+        .btn:hover{transform:scale(1.02);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .slide-up{animation:slideUp 0.5s ease forwards}
+    </style>
+</head>
+<body class="text-white flex items-center justify-center min-h-screen">
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="dot-grid"></div>
+
+    <div class="relative z-10 w-full max-w-sm px-4 slide-up">
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-2xl mx-auto mb-4" style="box-shadow:0 0 30px rgba(99,102,241,0.4)">🎯</div>
+            <h1 class="text-2xl font-bold">Hesap Oluştur</h1>
+            <p class="text-gray-500 text-sm mt-1">Rutinlerini takip etmeye başla</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="mb-4 p-3 rounded-xl text-sm text-red-300" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="glass rounded-2xl p-6">
+            <form method="POST" action="/register">
+                <div class="mb-4">
+                    <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kullanıcı Adı</label>
+                    <input type="text" name="username" placeholder="kullanıcı adın" required>
+                </div>
+                <div class="mb-4">
+                    <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Email</label>
+                    <input type="email" name="email" placeholder="email@adresin.com" required>
+                </div>
+                <div class="mb-6">
+                    <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Şifre</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">Kayıt Ol</button>
+            </form>
+        </div>
+
+        <p class="text-center text-sm text-gray-600 mt-4">
+            Zaten hesabın var mı?
+            <a href="/login" class="text-indigo-400 hover:text-indigo-300 font-semibold transition">Giriş Yap</a>
+        </p>
+    </div>
+</body>
+</html>
