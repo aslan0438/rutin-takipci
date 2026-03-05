@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rutin Takipçi</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -17,6 +19,7 @@
             --text:#ffffff;--text-secondary:#a1a1aa;--text-muted:#6b7280;
             --input-bg:rgba(255,255,255,0.05);--input-border:rgba(255,255,255,0.08);
             --category-text:#71717a;--stat-sub:#52525b;
+            --accent1:#6366f1;--accent2:#8b5cf6;--accent3:#06d6a0;
         }
         [data-theme="light"] {
             --bg:#eef2ff;--card:rgba(255,255,255,0.75);--card-border:rgba(99,102,241,0.15);
@@ -24,25 +27,43 @@
             --input-bg:rgba(255,255,255,0.95);--input-border:rgba(99,102,241,0.2);
             --category-text:#4338ca;--stat-sub:#6366f1;
         }
+        [data-theme="green"] {
+            --bg:#021a0e;--card:rgba(16,185,129,0.05);--card-border:rgba(16,185,129,0.12);
+            --text:#ffffff;--text-secondary:#6ee7b7;--text-muted:#34d399;
+            --input-bg:rgba(16,185,129,0.07);--input-border:rgba(16,185,129,0.15);
+            --category-text:#34d399;--stat-sub:#059669;
+            --accent1:#10b981;--accent2:#059669;--accent3:#34d399;
+        }
+        [data-theme="rose"] {
+            --bg:#1a020e;--card:rgba(244,63,94,0.05);--card-border:rgba(244,63,94,0.12);
+            --text:#ffffff;--text-secondary:#fda4af;--text-muted:#fb7185;
+            --input-bg:rgba(244,63,94,0.07);--input-border:rgba(244,63,94,0.15);
+            --category-text:#fb7185;--stat-sub:#e11d48;
+            --accent1:#f43f5e;--accent2:#e11d48;--accent3:#fb7185;
+        }
+        [data-theme="amber"] {
+            --bg:#1a0e02;--card:rgba(245,158,11,0.05);--card-border:rgba(245,158,11,0.12);
+            --text:#ffffff;--text-secondary:#fcd34d;--text-muted:#fbbf24;
+            --input-bg:rgba(245,158,11,0.07);--input-border:rgba(245,158,11,0.15);
+            --category-text:#fbbf24;--stat-sub:#d97706;
+            --accent1:#f59e0b;--accent2:#d97706;--accent3:#fcd34d;
+        }
 
         body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s}
         .bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:0.1;pointer-events:none;animation:float 8s ease-in-out infinite}
-        [data-theme="light"] .bg-orb{opacity:0.2}
         @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
-        .orb1{width:600px;height:600px;background:#6366f1;top:-200px;left:-200px}
-        .orb2{width:500px;height:500px;background:#8b5cf6;top:30%;right:-150px;animation-delay:2s}
-        .orb3{width:400px;height:400px;background:#06d6a0;bottom:-100px;left:30%;animation-delay:4s}
-        .orb4{width:300px;height:300px;background:#f59e0b;top:60%;left:-100px;animation-delay:3s}
+        .orb1{width:600px;height:600px;background:var(--accent1);top:-200px;left:-200px}
+        .orb2{width:500px;height:500px;background:var(--accent2);top:30%;right:-150px;animation-delay:2s}
+        .orb3{width:400px;height:400px;background:var(--accent3);bottom:-100px;left:30%;animation-delay:4s}
         .dot-grid{position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
-        [data-theme="light"] .dot-grid{background-image:radial-gradient(rgba(99,102,241,0.08) 1px,transparent 1px)}
 
         .glass{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--card-border)}
         .glass-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--card-border);transition:all 0.3s ease}
         .glass-card:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(99,102,241,0.15)}
         .sortable-ghost{opacity:0.3;background:rgba(99,102,241,0.2)!important}
-        .sortable-drag{opacity:0.9;transform:scale(1.02);box-shadow:0 20px 40px rgba(99,102,241,0.3)!important}
+        .sortable-drag{opacity:0.9;transform:scale(1.02)}
 
-        .progress-bar{background:linear-gradient(90deg,#6366f1,#8b5cf6,#06d6a0,#6366f1);background-size:300% 100%;animation:shimmer 3s infinite linear}
+        .progress-bar{background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3),var(--accent1));background-size:300% 100%;animation:shimmer 3s infinite linear}
         @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
         @keyframes checkPop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.4) rotate(10deg)}100%{transform:scale(1) rotate(0);opacity:1}}
@@ -58,24 +79,23 @@
         .pom-active{animation:pomPulse 1.5s ease infinite}
 
         @keyframes xpPop{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-40px);opacity:0}}
-        .xp-pop{animation:xpPop 1.5s ease forwards;position:fixed;z-index:999;font-weight:bold;font-size:18px;color:#fbbf24;pointer-events:none;text-shadow:0 0 10px rgba(251,191,36,0.5)}
+        .xp-pop{animation:xpPop 1.5s ease forwards;position:fixed;z-index:999;font-weight:bold;font-size:18px;color:#fbbf24;pointer-events:none}
+
+        @keyframes onboardIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+        .onboard-anim{animation:onboardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards}
 
         input,select,textarea{background:var(--input-bg)!important;border:1px solid var(--input-border)!important;color:var(--text)!important;transition:all 0.3s}
-        input:focus,select:focus,textarea:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;box-shadow:0 0 0 3px rgba(99,102,241,0.15)!important;outline:none!important}
+        input:focus,select:focus,textarea:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;outline:none!important}
         input::placeholder,textarea::placeholder{color:var(--text-muted)!important;opacity:0.6}
         select option{background:#1a1a2e;color:white}
 
         .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:16px;text-align:center;transition:all 0.3s}
-        .stat-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(99,102,241,0.2)}
+        .stat-card:hover{transform:translateY(-3px)}
 
-        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);transition:all 0.3s;color:white!important}
+        .btn-primary{background:linear-gradient(135deg,var(--accent1),var(--accent2));transition:all 0.3s;color:white!important}
         .btn-primary:hover{transform:scale(1.05);box-shadow:0 8px 25px rgba(99,102,241,0.5)}
 
         .quote-card{background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12));border:1px solid rgba(99,102,241,0.25);border-radius:20px;padding:20px 24px}
-
-        .theme-toggle{width:44px;height:24px;background:rgba(99,102,241,0.3);border-radius:99px;position:relative;cursor:pointer;transition:all 0.3s;border:1px solid rgba(99,102,241,0.4)}
-        .theme-toggle::after{content:'';position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:2px;left:2px;transition:all 0.3s}
-        [data-theme="light"] .theme-toggle::after{left:22px;background:#6366f1}
 
         .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600}
         .badge-gold{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
@@ -83,9 +103,12 @@
         .badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
         .badge-purple{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
 
-        .cal-day{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
+        .cal-day{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.2s}
         .cal-done{background:rgba(99,102,241,0.4);color:#a5b4fc}
+        .cal-freeze{background:rgba(59,130,246,0.4);color:#93c5fd}
         .cal-miss{background:rgba(255,255,255,0.04);color:#374151}
+        .cal-done:hover,.cal-freeze:hover{background:rgba(239,68,68,0.4)}
+        .cal-miss:hover{background:rgba(99,102,241,0.3)}
 
         .note-text{font-size:11px;margin-top:2px;font-style:italic;color:var(--text-muted)}
 
@@ -93,22 +116,25 @@
         .modal-box{border-radius:24px;padding:28px;max-width:380px;width:100%;text-align:center;background:#0d0d1f;border:1px solid rgba(255,255,255,0.1)}
 
         .pom-time-btn{padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);background:transparent}
-        .pom-time-btn:hover{background:rgba(99,102,241,0.2)}
         .pom-time-btn.active{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.5);color:white}
 
         .xp-bar-fill{background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 0.8s ease}
         .ai-suggestion{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:12px;padding:10px 14px;text-align:left;font-size:13px;cursor:pointer;transition:all 0.2s;color:var(--text)}
-        .ai-suggestion:hover{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3);transform:translateX(4px)}
+        .ai-suggestion:hover{background:rgba(99,102,241,0.15);transform:translateX(4px)}
 
         .drag-handle{cursor:grab;color:rgba(255,255,255,0.2);font-size:16px;padding:4px}
-        .drag-handle:active{cursor:grabbing}
+        .music-btn{padding:8px 14px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);background:transparent;text-align:left;width:100%}
+        .music-btn:hover,.music-btn.playing{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:white}
 
-        .music-btn{padding:8px 14px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);background:transparent;text-align:left}
-        .music-btn:hover{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3)}
-        .music-btn.playing{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:white}
+        .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--card-border);margin-bottom:6px;transition:all 0.2s}
+        .todo-done-item p{text-decoration:line-through;opacity:0.5}
+
+        .onboard-habit-btn{padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:white;background:rgba(255,255,255,0.05);text-align:left}
+        .onboard-habit-btn.selected{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.6)}
+
+        .rank-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
 
         ::-webkit-scrollbar{width:4px}
-        ::-webkit-scrollbar-track{background:transparent}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px}
     </style>
 </head>
@@ -117,21 +143,48 @@
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="bg-orb orb3"></div>
-<div class="bg-orb orb4"></div>
 <div class="dot-grid"></div>
+
+<!-- ONBOARDING MODAL -->
+{% if show_onboarding %}
+<div id="onboardingModal" class="modal">
+    <div class="modal-box onboard-anim" style="max-width:460px;text-align:left">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-600/30 flex items-center justify-center text-3xl mx-auto mb-3 pulse-glow">🎯</div>
+            <h2 class="text-xl font-black text-white">Hoş geldin!</h2>
+            <p class="text-sm text-gray-400 mt-1">Başlamak için birkaç alışkanlık seç</p>
+        </div>
+        <form method="POST" action="/onboarding" id="onboardForm">
+            <div id="onboardList" class="space-y-2 mb-6">
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Sabah koşusu','Spor')">🏃 Sabah koşusu</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Python çalış','Çalışma')">💻 Python çalış</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Kitap oku','Zihin')">📚 Kitap oku</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Su iç','Sağlık')">💧 Su iç (2L)</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Meditasyon','Zihin')">🧘 Meditasyon</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Uyku düzeni','Sağlık')">😴 Uyku düzeni</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'İngilizce çalış','Çalışma')">🌍 İngilizce çalış</button>
+                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Spor salonu','Spor')">💪 Spor salonu</button>
+            </div>
+            <div id="onboardInputs"></div>
+            <button type="submit" class="btn-primary w-full py-3 rounded-2xl font-bold text-sm mb-2">Başla →</button>
+            <button type="button" onclick="skipOnboarding()" class="w-full py-2 text-sm text-gray-500 hover:text-gray-300 transition">Atla, kendim ekleyeceğim</button>
+        </form>
+    </div>
+</div>
+{% endif %}
 
 <!-- POMODORO MODAL -->
 <div id="pomodoroModal" class="modal hidden">
     <div class="modal-box">
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
-                <span class="text-lg">🍅</span>
+                <span>🍅</span>
                 <div class="text-left">
                     <p class="text-xs text-red-400 uppercase tracking-widest font-semibold">Pomodoro</p>
                     <p id="pomodoroHabitName" class="text-sm font-bold text-white truncate max-w-48"></p>
                 </div>
             </div>
-            <button onclick="closePomodoro()" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="closePomodoro()" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <div class="flex gap-2 justify-center mb-5">
             <button class="pom-time-btn active" onclick="setMode(25,'work',this)">🎯 25dk</button>
@@ -141,11 +194,8 @@
         <div class="relative mx-auto mb-4" style="width:180px;height:180px">
             <svg id="pomSVG" width="180" height="180" style="cursor:pointer;user-select:none">
                 <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14"/>
-                <circle id="pomArc" cx="90" cy="90" r="72" fill="none" stroke="#6366f1" stroke-width="14"
-                    stroke-linecap="round" stroke-dasharray="452.39" stroke-dashoffset="0"
-                    transform="rotate(-90 90 90)" style="transition:stroke 0.3s"/>
-                <circle id="pomKnob" cx="90" cy="18" r="9" fill="#6366f1" stroke="white" stroke-width="2"
-                    style="cursor:grab;filter:drop-shadow(0 0 6px rgba(99,102,241,0.8))"/>
+                <circle id="pomArc" cx="90" cy="90" r="72" fill="none" stroke="#6366f1" stroke-width="14" stroke-linecap="round" stroke-dasharray="452.39" stroke-dashoffset="0" transform="rotate(-90 90 90)"/>
+                <circle id="pomKnob" cx="90" cy="18" r="9" fill="#6366f1" stroke="white" stroke-width="2" style="filter:drop-shadow(0 0 6px rgba(99,102,241,0.8))"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <p id="pomodoroTime" class="text-3xl font-bold tabular-nums text-white">25:00</p>
@@ -156,7 +206,7 @@
         <p class="text-center text-sm font-semibold mb-4" id="pomDurationLabel" style="color:#a5b4fc">25 dakika</p>
         <div class="flex gap-2 justify-center">
             <button onclick="togglePomodoro()" id="pomodoroBtn" class="btn-primary px-7 py-2.5 rounded-xl text-sm font-semibold">▶ Başlat</button>
-            <button onclick="resetPomodoro()" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition" style="background:rgba(255,255,255,0.05);color:#a1a1aa">↺ Sıfırla</button>
+            <button onclick="resetPomodoro()" class="px-5 py-2.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,0.05);color:#a1a1aa">↺ Sıfırla</button>
         </div>
         <p class="text-xs text-gray-600 mt-3">İbreyi sürükleyerek süreyi ayarla</p>
     </div>
@@ -167,12 +217,12 @@
     <div class="modal-box" style="max-width:420px">
         <div class="flex items-center justify-between mb-4">
             <p class="text-sm font-bold text-white">📤 Bugünü Paylaş</p>
-            <button onclick="document.getElementById('shareModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('shareModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <canvas id="shareCanvas" width="400" height="420" class="rounded-2xl w-full mb-4 border border-white/10"></canvas>
         <div class="flex gap-2">
             <button onclick="downloadShare()" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold">⬇ İndir</button>
-            <button onclick="copyShareText()" class="flex-1 py-2.5 rounded-xl text-sm font-semibold transition" style="background:rgba(255,255,255,0.05);color:#a1a1aa">📋 Metni Kopyala</button>
+            <button onclick="copyShareText()" class="flex-1 py-2.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,0.05);color:#a1a1aa">📋 Kopyala</button>
         </div>
         <p id="copyMsg" class="text-xs text-green-400 mt-2 hidden text-center">✓ Kopyalandı!</p>
     </div>
@@ -186,7 +236,7 @@
                 <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">✨ AI Önerisi</p>
                 <p class="text-sm font-bold text-white mt-0.5">Sana özel alışkanlıklar</p>
             </div>
-            <button onclick="document.getElementById('aiModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('aiModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <div id="aiLoading" class="py-8">
             <div class="flex items-center justify-center gap-3">
@@ -194,10 +244,9 @@
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.15s"></div>
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
             </div>
-            <p class="text-gray-500 text-sm mt-3">AI düşünüyor...</p>
         </div>
         <div id="aiResults" class="hidden text-left space-y-2"></div>
-        <button onclick="document.getElementById('aiModal').classList.add('hidden')" class="mt-4 w-full py-2.5 rounded-xl text-sm transition" style="background:rgba(255,255,255,0.05);color:#a1a1aa">Kapat</button>
+        <button onclick="document.getElementById('aiModal').classList.add('hidden')" class="mt-4 w-full py-2.5 rounded-xl text-sm" style="background:rgba(255,255,255,0.05);color:#a1a1aa">Kapat</button>
     </div>
 </div>
 
@@ -206,20 +255,13 @@
     <div class="modal-box" style="max-width:500px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
             <p class="text-sm font-bold text-white">📊 İstatistikler</p>
-            <button onclick="document.getElementById('statsModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('statsModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <!-- Haftalık grafik -->
         <div class="glass rounded-2xl p-4 mb-4">
             <p class="text-xs text-gray-500 uppercase tracking-widest mb-3 font-semibold">Haftalık Tamamlanma</p>
             <canvas id="weeklyChart" height="120"></canvas>
         </div>
-        <div id="statsContent">
-            <div class="flex justify-center py-8">
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1" style="animation-delay:0.15s"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
-            </div>
-        </div>
+        <div id="statsContent"></div>
     </div>
 </div>
 
@@ -231,11 +273,11 @@
                 <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">🔔 Hatırlatıcı</p>
                 <p class="text-sm font-bold text-white mt-0.5">Günlük bildirim ayarla</p>
             </div>
-            <button onclick="document.getElementById('reminderModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('reminderModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <input type="time" id="reminderTime" value="09:00" class="w-full rounded-xl px-4 py-3 text-sm mb-4 text-center text-xl font-bold">
-        <button onclick="setReminder()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mb-2">🔔 Bildirimi Aktif Et</button>
-        <button onclick="cancelReminder()" class="w-full py-2.5 rounded-xl text-sm transition" style="background:rgba(255,255,255,0.05);color:#a1a1aa">İptal Et</button>
+        <button onclick="setReminder()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mb-2">🔔 Aktif Et</button>
+        <button onclick="cancelReminder()" class="w-full py-2.5 rounded-xl text-sm" style="background:rgba(255,255,255,0.05);color:#a1a1aa">İptal</button>
         <p id="reminderMsg" class="text-xs text-green-400 mt-3 hidden text-center"></p>
     </div>
 </div>
@@ -248,21 +290,21 @@
                 <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">🎵 Odak Müziği</p>
                 <p class="text-sm font-bold text-white mt-0.5" id="nowPlaying">Hazır</p>
             </div>
-            <button onclick="closeMusicModal()" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('musicModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <div class="space-y-2 mb-5">
-            <button class="music-btn w-full" onclick="playMusic('rain')">🌧️ Yağmur Sesi — Odak</button>
-            <button class="music-btn w-full" onclick="playMusic('ocean')">🌊 Okyanus Dalgaları — Huzur</button>
-            <button class="music-btn w-full" onclick="playMusic('forest')">🌲 Orman Sesleri — Doğa</button>
-            <button class="music-btn w-full" onclick="playMusic('white')">⬜ Beyaz Gürültü — Konsantrasyon</button>
-            <button class="music-btn w-full" onclick="playMusic('binaural')">🧠 Binaural Beats — Derin Odak</button>
+        <div class="space-y-2 mb-4">
+            <button class="music-btn" onclick="playMusic('rain',event)">🌧️ Yağmur Sesi</button>
+            <button class="music-btn" onclick="playMusic('ocean',event)">🌊 Okyanus Dalgaları</button>
+            <button class="music-btn" onclick="playMusic('forest',event)">🌲 Orman Sesleri</button>
+            <button class="music-btn" onclick="playMusic('white',event)">⬜ Beyaz Gürültü</button>
+            <button class="music-btn" onclick="playMusic('binaural',event)">🧠 Binaural Beats</button>
         </div>
         <div class="flex items-center gap-3 mb-4">
             <span class="text-xs text-gray-500">Ses</span>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" class="flex-1" style="background:transparent!important;border:none!important" oninput="setVolume(this.value)">
             <span class="text-xs text-gray-500" id="volumeLabel">50%</span>
         </div>
-        <button onclick="stopMusic()" class="w-full py-2.5 rounded-xl text-sm transition" style="background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)">⏹ Durdur</button>
+        <button onclick="stopMusic()" class="w-full py-2.5 rounded-xl text-sm" style="background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)">⏹ Durdur</button>
     </div>
 </div>
 
@@ -270,8 +312,8 @@
 <div id="editModal" class="modal hidden">
     <div class="modal-box" style="max-width:380px;text-align:left">
         <div class="flex items-center justify-between mb-5">
-            <p class="text-sm font-bold text-white">✏️ Alışkanlığı Düzenle</p>
-            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <p class="text-sm font-bold text-white">✏️ Düzenle</p>
+            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <form id="editForm" method="POST">
             <div class="mb-4">
@@ -297,21 +339,99 @@
     </div>
 </div>
 
-<!-- HAFTALIK RAPOR MODAL -->
+<!-- RAPOR MODAL -->
 <div id="reportModal" class="modal hidden">
     <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
             <p class="text-sm font-bold text-white">📋 Haftalık Rapor</p>
-            <button onclick="document.getElementById('reportModal').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+            <button onclick="document.getElementById('reportModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <div id="reportContent">
+        <div id="reportContent"></div>
+        <button onclick="downloadReport()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mt-4">⬇ İndir</button>
+    </div>
+</div>
+
+<!-- AYLIK ÖZET MODAL -->
+<div id="monthlyModal" class="modal hidden">
+    <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
+        <div class="flex items-center justify-between mb-5">
+            <p class="text-sm font-bold text-white">📅 Aylık Özet</p>
+            <button onclick="document.getElementById('monthlyModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div id="monthlyContent">
             <div class="flex justify-center py-8">
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1"></div>
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1" style="animation-delay:0.15s"></div>
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
             </div>
         </div>
-        <button onclick="downloadReport()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mt-4">⬇ PDF İndir</button>
+    </div>
+</div>
+
+<!-- ARKADAŞ MODAL -->
+<div id="friendsModal" class="modal hidden">
+    <div class="modal-box" style="max-width:400px;text-align:left">
+        <div class="flex items-center justify-between mb-5">
+            <p class="text-sm font-bold text-white">👥 Arkadaşlar</p>
+            <button onclick="document.getElementById('friendsModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <form method="POST" action="/friends/add" class="flex gap-2 mb-5">
+            <input type="text" name="username" placeholder="Kullanıcı adı..." class="flex-1 rounded-xl px-3 py-2 text-sm">
+            <button type="submit" class="btn-primary px-4 py-2 rounded-xl text-sm font-semibold">Ekle</button>
+        </form>
+        <div id="friendsList"></div>
+    </div>
+</div>
+
+<!-- LİDERBOARD MODAL -->
+<div id="leaderboardModal" class="modal hidden">
+    <div class="modal-box" style="max-width:400px;text-align:left">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <p class="text-xs text-yellow-400 uppercase tracking-widest font-semibold">🏆 Liderboard</p>
+                <p class="text-sm font-bold text-white mt-0.5">Arkadaşlarla XP yarışması</p>
+            </div>
+            <button onclick="document.getElementById('leaderboardModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div id="leaderboardContent">
+            <div class="flex justify-center py-8">
+                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1"></div>
+                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1" style="animation-delay:0.15s"></div>
+                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TEMA MODAL -->
+<div id="themeModal" class="modal hidden">
+    <div class="modal-box" style="max-width:320px">
+        <div class="flex items-center justify-between mb-5">
+            <p class="text-sm font-bold text-white">🎨 Tema Seç</p>
+            <button onclick="document.getElementById('themeModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="setTheme('dark')" class="p-4 rounded-2xl text-left" style="background:rgba(6,6,18,0.8);border:1px solid rgba(99,102,241,0.3)">
+                <div class="w-8 h-8 rounded-xl mb-2" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"></div>
+                <p class="text-sm font-semibold text-white">Koyu</p>
+            </button>
+            <button onclick="setTheme('light')" class="p-4 rounded-2xl text-left" style="background:rgba(238,242,255,0.1);border:1px solid rgba(99,102,241,0.3)">
+                <div class="w-8 h-8 rounded-xl mb-2" style="background:linear-gradient(135deg,#6366f1,#a5b4fc)"></div>
+                <p class="text-sm font-semibold text-white">Açık</p>
+            </button>
+            <button onclick="setTheme('green')" class="p-4 rounded-2xl text-left" style="background:rgba(2,26,14,0.8);border:1px solid rgba(16,185,129,0.3)">
+                <div class="w-8 h-8 rounded-xl mb-2" style="background:linear-gradient(135deg,#10b981,#34d399)"></div>
+                <p class="text-sm font-semibold text-white">Orman</p>
+            </button>
+            <button onclick="setTheme('rose')" class="p-4 rounded-2xl text-left" style="background:rgba(26,2,14,0.8);border:1px solid rgba(244,63,94,0.3)">
+                <div class="w-8 h-8 rounded-xl mb-2" style="background:linear-gradient(135deg,#f43f5e,#fb7185)"></div>
+                <p class="text-sm font-semibold text-white">Gül</p>
+            </button>
+            <button onclick="setTheme('amber')" class="p-4 rounded-2xl text-left col-span-2" style="background:rgba(26,14,2,0.8);border:1px solid rgba(245,158,11,0.3)">
+                <div class="w-8 h-8 rounded-xl mb-2" style="background:linear-gradient(135deg,#f59e0b,#fcd34d)"></div>
+                <p class="text-sm font-semibold text-white">Altın</p>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -324,22 +444,23 @@
             <div class="flex items-center gap-3 mb-1">
                 <div class="w-9 h-9 rounded-2xl bg-indigo-600 flex items-center justify-center text-base pulse-glow">🎯</div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight">Rutin Takipçi</h1>
-                    <p class="text-xs" style="color:var(--text-muted)">Merhaba, <a href="/profile" class="text-indigo-400 font-semibold hover:text-indigo-300 transition">{{ user.username }}</a> 👋</p>
+                    <h1 class="text-xl font-bold">Rutin Takipçi</h1>
+                    <p class="text-xs" style="color:var(--text-muted)">Merhaba, <a href="/profile" class="text-indigo-400 font-semibold">{{ user.username }}</a> 👋</p>
                 </div>
             </div>
             <p class="text-xs pl-12 mt-1" style="color:var(--text-muted)">{{ today }}</p>
         </div>
         <div class="flex flex-col items-end gap-1.5">
-            <div class="flex items-center gap-1.5">
-                <button onclick="openStats()" class="text-xs px-2 py-1 rounded-lg transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="İstatistikler">📊</button>
-                <button onclick="openReport()" class="text-xs px-2 py-1 rounded-lg transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Haftalık Rapor">📋</button>
-                <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Müzik">🎵</button>
-                <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Hatırlatıcı">🔔</button>
-                <a href="/logout" class="text-xs px-2 py-1 rounded-lg transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">Çıkış</a>
-                <span class="text-sm">🌙</span>
-                <div class="theme-toggle" onclick="toggleTheme()"></div>
-                <span class="text-sm">☀️</span>
+            <div class="flex items-center gap-1 flex-wrap justify-end">
+                <button onclick="openStats()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📊</button>
+                <button onclick="openReport()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📋</button>
+                <button onclick="openMonthly()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📅</button>
+                <button onclick="openLeaderboard()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🏆</button>
+                <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🎵</button>
+                <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🔔</button>
+                <button onclick="openFriends()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">👥</button>
+                <button onclick="document.getElementById('themeModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🎨</button>
+                <a href="/logout" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">Çıkış</a>
             </div>
             <p id="clock" class="text-xl font-bold text-indigo-400 tabular-nums"></p>
             <p id="greeting" class="text-xs" style="color:var(--text-muted)"></p>
@@ -350,13 +471,16 @@
     <div class="glass rounded-2xl p-4 mb-5 slide-up">
         <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-                <span class="text-lg">⚡</span>
+                <span>⚡</span>
                 <div>
                     <p class="text-sm font-bold">Seviye {{ user.level }}</p>
                     <p class="text-xs" style="color:var(--text-muted)">{{ user.xp }} / {{ xp_needed }} XP</p>
                 </div>
             </div>
-            <a href="/profile" class="badge badge-gold hover:opacity-80 transition">+20 XP / tamamlama</a>
+            <div class="flex items-center gap-2">
+                <span class="badge badge-gold">+20 XP / tamamlama</span>
+                <span class="badge" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa">❄️ {{ user.freeze_count }} freeze</span>
+            </div>
         </div>
         <div class="w-full rounded-full h-2 overflow-hidden" style="background:rgba(255,255,255,0.05)">
             <div class="xp-bar-fill h-2 rounded-full" style="width:{{ xp_percent }}%"></div>
@@ -383,28 +507,19 @@
             {% if percent == 100 %}<span class="badge badge-gold">🎯 Mükemmel Gün</span>{% endif %}
             {% if user.level >= 5 %}<span class="badge badge-purple">🏆 Seviye {{ user.level }}</span>{% endif %}
             {% if habits|length >= 5 %}<span class="badge badge-silver">📋 5 Rutin</span>{% endif %}
-            {% if max_streak.val == 0 and percent < 100 %}
-                <span class="text-xs" style="color:var(--text-muted)">Henüz rozet yok — streak başlat!</span>
-            {% endif %}
+            {% if max_streak.val == 0 and percent < 100 %}<span class="text-xs" style="color:var(--text-muted)">Henüz rozet yok — streak başlat!</span>{% endif %}
         </div>
     </div>
     {% endif %}
 
     {% if total > 0 %}
     <div class="grid grid-cols-3 gap-3 mb-5 slide-up">
-        <div class="stat-card">
-            <p class="text-2xl font-bold text-indigo-400">{{ total }}</p>
-            <p class="text-xs mt-1" style="color:var(--stat-sub)">Alışkanlık</p>
-        </div>
-        <div class="stat-card">
-            <p class="text-2xl font-bold text-green-400">{{ completed }}</p>
-            <p class="text-xs mt-1" style="color:var(--stat-sub)">Bugün</p>
-        </div>
+        <div class="stat-card"><p class="text-2xl font-bold text-indigo-400">{{ total }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Alışkanlık</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold text-green-400">{{ completed }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Bugün</p></div>
         <div class="stat-card">
             {% set max_streak = namespace(val=0) %}
             {% for h in habits %}{% if streaks[h.id|string] > max_streak.val %}{% set max_streak.val = streaks[h.id|string] %}{% endif %}{% endfor %}
-            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p>
-            <p class="text-xs mt-1" style="color:var(--stat-sub)">En uzun</p>
+            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p><p class="text-xs mt-1" style="color:var(--stat-sub)">En uzun</p>
         </div>
     </div>
 
@@ -413,27 +528,43 @@
             <p class="text-xs uppercase tracking-widest font-semibold" style="color:var(--text-muted)">Bugünkü İlerleme</p>
             <div class="flex items-center gap-2">
                 <p class="text-xl font-bold {% if percent == 100 %}text-green-400{% elif percent >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">%{{ percent }}</p>
-                <button onclick="openShare()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)">📤 Paylaş</button>
+                <button onclick="openShare()" class="px-3 py-1.5 rounded-lg text-xs font-semibold" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)">📤 Paylaş</button>
             </div>
         </div>
         <div class="w-full rounded-full h-2.5 overflow-hidden" style="background:rgba(255,255,255,0.05)">
             {% if percent > 0 %}<div class="progress-bar h-2.5 rounded-full" style="width:{{ percent }}%"></div>{% endif %}
         </div>
-        {% if percent == 100 %}
-        <p class="text-green-400 text-xs mt-3 text-center font-medium">🎉 Muhteşem! Bugün her şeyi tamamladın!</p>
-        {% elif percent > 0 %}
-        <p class="text-xs mt-3 text-center" style="color:var(--text-muted)">{{ total - completed }} alışkanlık kaldı 💪</p>
-        {% endif %}
+        {% if percent == 100 %}<p class="text-green-400 text-xs mt-3 text-center font-medium">🎉 Muhteşem! Bugün her şeyi tamamladın!</p>
+        {% elif percent > 0 %}<p class="text-xs mt-3 text-center" style="color:var(--text-muted)">{{ total - completed }} alışkanlık kaldı 💪</p>{% endif %}
     </div>
     {% endif %}
 
+    <!-- GÜNLÜK GÖREVLER -->
+    <div class="glass rounded-2xl p-5 mb-5 slide-up">
+        <p class="text-xs uppercase tracking-widest mb-4 font-semibold" style="color:var(--text-muted)">✅ Günlük Görevler</p>
+        <form method="POST" action="/todo/add" class="flex gap-2 mb-3">
+            <input type="text" name="text" placeholder="Bugün ne yapacaksın?" class="flex-1 rounded-xl px-3 py-2 text-sm">
+            <button type="submit" class="btn-primary px-4 py-2 rounded-xl text-sm font-semibold">+</button>
+        </form>
+        {% if todos %}
+            {% for todo in todos %}
+            <div class="todo-item {% if todo.done %}todo-done-item{% endif %}">
+                <a href="/todo/done/{{ todo.id }}" class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center" style="background:{% if todo.done %}rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4){% else %}rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1){% endif %}">
+                    {% if todo.done %}<span class="text-green-400 text-xs">✓</span>{% endif %}
+                </a>
+                <p class="flex-1 text-sm">{{ todo.text }}</p>
+                <a href="/todo/delete/{{ todo.id }}" class="text-gray-600 hover:text-red-400 text-xs">🗑</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-xs text-center py-2" style="color:var(--text-muted)">Henüz görev yok</p>
+        {% endif %}
+    </div>
+
     <!-- AI Öneri -->
-    <button onclick="openAI()" class="w-full glass rounded-2xl p-4 mb-5 slide-up flex items-center gap-3 transition" style="border:1px solid rgba(99,102,241,0.15)">
+    <button onclick="openAI()" class="w-full glass rounded-2xl p-4 mb-5 slide-up flex items-center gap-3" style="border:1px solid rgba(99,102,241,0.15)">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:rgba(99,102,241,0.2)">✨</div>
-        <div class="text-left">
-            <p class="text-sm font-semibold">AI Alışkanlık Önerisi</p>
-            <p class="text-xs" style="color:var(--text-muted)">Mevcut rutinlerine göre önerileri gör</p>
-        </div>
+        <div class="text-left"><p class="text-sm font-semibold">AI Alışkanlık Önerisi</p><p class="text-xs" style="color:var(--text-muted)">Mevcut rutinlerine göre önerileri gör</p></div>
         <span class="ml-auto text-gray-500">→</span>
     </button>
 
@@ -462,12 +593,11 @@
         {% for category in categories %}
         <div class="mb-6">
             <p class="text-xs uppercase tracking-widest mb-3 px-1 font-semibold" style="color:var(--category-text)">{{ category }}</p>
-            <div class="sortable-list" data-category="{{ category }}">
+            <div class="sortable-list">
             {% for habit in habits if habit.category == category %}
             {% set done = habit.id in today_logs %}
             {% set streak = streaks[habit.id|string] %}
-
-            <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if done %}border-green-500/20{% elif streak >= 7 %}border-purple-500/20{% elif streak >= 3 %}border-orange-500/20{% endif %}" data-id="{{ habit.id }}">
+            <div class="glass-card rounded-2xl px-5 py-4 mb-3" data-id="{{ habit.id }}">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="drag-handle">⠿</span>
@@ -491,40 +621,39 @@
                             </div>
                         {% endif %}
                     </div>
-
                     <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
                         {% if streak > 0 %}
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
-                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
-                        <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
+                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
+                        <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
                         {% if not done %}
-                        <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP');{% if (completed+1)==total %}setTimeout(fireConfetti,300){% endif %}" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
+                        <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
+                        <a href="/freeze/{{ habit.id }}" title="Dünü freeze ile koru" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)">❄️</a>
                         {% endif %}
-                        <a href="/delete/{{ habit.id }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</a>
+                        <a href="/delete/{{ habit.id }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</a>
                     </div>
                 </div>
 
                 <div class="flex gap-1.5 mb-2">
                     {% for day in weekly[habit.id|string] %}
                     <div class="flex-1 text-center">
-                        <div class="w-full h-1.5 rounded-full mb-1" style="background:{% if day.done %}{% if done %}rgba(16,185,129,0.6){% else %}rgba(99,102,241,0.6){% endif %}{% else %}rgba(255,255,255,0.06){% endif %}"></div>
+                        <div class="w-full h-1.5 rounded-full mb-1" style="background:{% if day.done %}rgba(99,102,241,0.6){% else %}rgba(255,255,255,0.06){% endif %}"></div>
                         <p class="text-xs" style="color:var(--text-muted);opacity:0.5">{{ day.day }}</p>
                     </div>
                     {% endfor %}
                 </div>
 
                 <div id="cal-{{ habit.id }}" class="hidden mt-3">
-                    <p class="text-xs mb-2" style="color:var(--text-muted)">Son 28 gün</p>
+                    <p class="text-xs mb-2" style="color:var(--text-muted)">Son 28 gün — tıklayarak düzenle</p>
                     <div class="grid grid-cols-7 gap-1" id="calGrid-{{ habit.id }}"></div>
                 </div>
-                <button onclick="toggleCalendar({{ habit.id }},'{{ habit.name }}')" class="text-xs mt-2 transition" style="color:var(--text-muted)">📅 Takvimi göster/gizle</button>
+                <button onclick="toggleCalendar({{ habit.id }})" class="text-xs mt-2" style="color:var(--text-muted)">📅 Takvimi göster/gizle</button>
             </div>
             {% endfor %}
             </div>
         </div>
         {% endfor %}
-
     {% else %}
         <div class="text-center mt-20 slide-up">
             <div class="w-20 h-20 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-5 pulse-glow" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">🎯</div>
@@ -532,7 +661,6 @@
             <p class="text-sm mt-2" style="color:var(--text-muted)">İlk rutinini ekleyerek başla</p>
         </div>
     {% endif %}
-
 </div>
 
 {% if percent == 100 and total > 0 %}
@@ -540,11 +668,12 @@
 {% endif %}
 
 <script>
-const today = "{{ today }}";
-const percent = {{ percent }};
-const completed = {{ completed }};
-const total = {{ total }};
+const today="{{ today }}";
+const percent={{ percent }};
+const completed={{ completed }};
+const total={{ total }};
 
+// SAAT
 function updateClock(){
     const n=new Date();
     document.getElementById('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
@@ -553,17 +682,27 @@ function updateClock(){
 }
 setInterval(updateClock,1000); updateClock();
 
-const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Kendine verdiğin sözler, başkalarına verdiklerinden daha önemlidir.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır."];
+const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
 document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
 
-function toggleTheme(){
-    const h=document.documentElement;
-    h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
-    localStorage.setItem('theme',h.getAttribute('data-theme'));
-}
-const saved=localStorage.getItem('theme');
-if(saved) document.documentElement.setAttribute('data-theme',saved);
+// TEMA
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);document.getElementById('themeModal').classList.add('hidden');}
+const savedTheme=localStorage.getItem('theme');
+if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
 
+// ONBOARDING
+const selectedHabits={};
+function toggleOnboard(btn,name,cat){
+    if(selectedHabits[name]){delete selectedHabits[name];btn.classList.remove('selected');}
+    else{selectedHabits[name]=cat;btn.classList.add('selected');}
+    const inp=document.getElementById('onboardInputs');
+    inp.innerHTML=Object.entries(selectedHabits).map(([n,c])=>`<input type="hidden" name="habits" value="${n}"><input type="hidden" name="cat_${n}" value="${c}">`).join('');
+}
+function skipOnboarding(){
+    fetch('/onboarding',{method:'POST',body:new FormData()}).then(()=>location.reload());
+}
+
+// KONFETİ
 function fireConfetti(){
     confetti({particleCount:150,spread:90,origin:{y:0.6},colors:['#6366f1','#8b5cf6','#06d6a0','#f59e0b','#ffffff']});
     setTimeout(()=>confetti({particleCount:80,angle:60,spread:60,origin:{x:0}}),300);
@@ -600,9 +739,7 @@ document.querySelectorAll('.sortable-list').forEach(list=>{
         ghostClass:'sortable-ghost',dragClass:'sortable-drag',
         onEnd:()=>{
             const items=[];
-            document.querySelectorAll('.sortable-list [data-id]').forEach((el,i)=>{
-                items.push({id:parseInt(el.dataset.id),order:i});
-            });
+            document.querySelectorAll('.sortable-list [data-id]').forEach((el,i)=>items.push({id:parseInt(el.dataset.id),order:i}));
             fetch('/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(items)});
         }
     });
@@ -619,7 +756,7 @@ function openEdit(id,name,category,note){
 }
 
 // POMODORO
-let pomTimer=null,pomSeconds=25*60,pomRunning=false,pomTotal=25*60,pomMode='work';
+let pomTimer=null,pomSeconds=25*60,pomRunning=false,pomTotal=25*60;
 let pomDragging=false;
 const CIRC=2*Math.PI*72;
 
@@ -640,14 +777,11 @@ function initPomDrag(){
         const mins=Math.max(1,Math.min(60,Math.round((a/360)*60)));
         pomTotal=mins*60;pomSeconds=pomTotal;
         document.getElementById('pomDurationLabel').textContent=`${mins} dakika`;
-        moveKnob(a);
-        document.getElementById('pomArc').setAttribute('stroke-dashoffset','0');
-        document.getElementById('pomodoroTime').textContent=`${String(mins).padStart(2,'0')}:00`;
-    }
-    function moveKnob(a){
         const r=(a-90)*Math.PI/180;
         document.getElementById('pomKnob').setAttribute('cx',(90+72*Math.cos(r)).toFixed(1));
         document.getElementById('pomKnob').setAttribute('cy',(90+72*Math.sin(r)).toFixed(1));
+        document.getElementById('pomArc').setAttribute('stroke-dashoffset','0');
+        document.getElementById('pomodoroTime').textContent=`${String(mins).padStart(2,'0')}:00`;
     }
     svg.addEventListener('mousedown',e=>{pomDragging=true;applyAngle(getAngle(e));});
     svg.addEventListener('touchstart',e=>{pomDragging=true;applyAngle(getAngle(e));},{passive:true});
@@ -664,7 +798,7 @@ function moveKnobToMinutes(mins){
 }
 function setMode(mins,mode,btn){
     if(pomRunning)return;
-    pomMode=mode;pomTotal=mins*60;pomSeconds=pomTotal;
+    pomTotal=mins*60;pomSeconds=pomTotal;
     document.querySelectorAll('.pom-time-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const c={'work':'#6366f1','short':'#10b981','long':'#f59e0b'}[mode];
@@ -697,34 +831,37 @@ function resetPomodoro(){
 function tickPomodoro(){
     if(pomSeconds<=0){clearInterval(pomTimer);pomRunning=false;document.getElementById('pomodoroStatus').textContent='Tamamlandı! 🎉';document.getElementById('pomRunningDot').classList.add('hidden');document.getElementById('pomodoroBtn').innerHTML='▶ Başlat';playComplete();fireConfetti();return;}
     pomSeconds--;
-    const pct=pomSeconds/pomTotal;
-    document.getElementById('pomArc').setAttribute('stroke-dashoffset',(CIRC*(1-pct)).toFixed(2));
+    document.getElementById('pomArc').setAttribute('stroke-dashoffset',(CIRC*(1-pomSeconds/pomTotal)).toFixed(2));
     moveKnobToMinutes(pomSeconds/60);
     document.getElementById('pomodoroTime').textContent=`${String(Math.floor(pomSeconds/60)).padStart(2,'0')}:${String(pomSeconds%60).padStart(2,'0')}`;
 }
 
 // TAKVİM
-function toggleCalendar(id,name){
+function toggleCalendar(id){
     const el=document.getElementById(`cal-${id}`);
     const grid=document.getElementById(`calGrid-${id}`);
     if(el.classList.contains('hidden')){
         el.classList.remove('hidden');grid.innerHTML='';
-        for(let i=27;i>=0;i--){
-            const d=new Date();d.setDate(d.getDate()-i);
-            const ds=d.toISOString().split('T')[0];
-            const div=document.createElement('div');
-            div.className='cal-day cal-miss';div.title=ds;div.textContent=d.getDate();
-            if(ds===today)div.style.outline='2px solid #6366f1';
-            grid.appendChild(div);
-        }
         fetch(`/logs/${id}`).then(r=>r.json()).then(data=>{
-            data.dates.forEach(ds=>{
-                grid.querySelectorAll('.cal-day').forEach(el=>{
-                    if(el.title===ds)el.className='cal-day cal-done';
-                });
-            });
+            const doneDates=new Set(data.dates);
+            for(let i=27;i>=0;i--){
+                const d=new Date();d.setDate(d.getDate()-i);
+                const ds=d.toISOString().split('T')[0];
+                const div=document.createElement('div');
+                div.className=`cal-day ${doneDates.has(ds)?'cal-done':'cal-miss'}`;
+                div.title=ds;div.textContent=d.getDate();
+                if(ds===today)div.style.outline='2px solid #6366f1';
+                div.onclick=()=>{
+                    const isDone=doneDates.has(ds);
+                    const form=document.createElement('form');
+                    form.method='POST';form.action=isDone?`/log/remove/${id}`:`/log/add/${id}`;
+                    const inp=document.createElement('input');inp.type='hidden';inp.name='date';inp.value=ds;
+                    form.appendChild(inp);document.body.appendChild(form);form.submit();
+                };
+                grid.appendChild(div);
+            }
         });
-    } else { el.classList.add('hidden'); }
+    } else {el.classList.add('hidden');}
 }
 
 // PAYLAŞ
@@ -737,7 +874,6 @@ function openShare(){
     const grad=ctx.createLinearGradient(0,0,W,H);
     grad.addColorStop(0,'#0f0c29');grad.addColorStop(0.5,'#1a1040');grad.addColorStop(1,'#0d1b2a');
     ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-    ctx.beginPath();ctx.arc(-40,60,180,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,0.08)';ctx.fill();
     ctx.fillStyle='rgba(99,102,241,0.3)';roundRect(ctx,24,24,48,48,12);ctx.fill();
     ctx.font='24px sans-serif';ctx.textAlign='left';ctx.fillText('🎯',30,62);
     ctx.fillStyle='white';ctx.font='bold 20px sans-serif';ctx.fillText('Rutin Takipçi',84,46);
@@ -749,40 +885,29 @@ function openShare(){
     const bx=48,by=245,bw=W-96,bh=10;
     ctx.beginPath();roundRect(ctx,bx,by,bw,bh,5);ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fill();
     if(percent>0){const pg=ctx.createLinearGradient(bx,0,bx+bw,0);pg.addColorStop(0,'#6366f1');pg.addColorStop(1,'#06d6a0');ctx.beginPath();roundRect(ctx,bx,by,bw*(percent/100),bh,5);ctx.fillStyle=pg;ctx.fill();}
-    if(percent===100){ctx.font='28px sans-serif';ctx.fillText('🎉',W/2,300);ctx.fillStyle='#4ade80';ctx.font='bold 14px sans-serif';ctx.fillText('Muhteşem! Tüm rutinler tamamlandı!',W/2,325);}
-    else{ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='13px sans-serif';ctx.fillText(`${total-completed} alışkanlık kaldı 💪`,W/2,300);}
-    ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fillRect(24,365,W-48,1);
+    ctx.fillStyle=percent===100?'#4ade80':'rgba(255,255,255,0.25)';ctx.font='13px sans-serif';ctx.fillText(percent===100?'🎉 Mükemmel gün!':`${total-completed} alışkanlık kaldı 💪`,W/2,300);
     ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='11px sans-serif';ctx.fillText('rutin-takipci.app',W/2,390);
 }
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
-function downloadShare(){const a=document.createElement('a');a.download=`rutin-${today}.png`;a.href=document.getElementById('shareCanvas').toDataURL('image/png');a.click();}
-function copyShareText(){const text=`🎯 Rutin Takipçi — ${today}\n%${percent} tamamlandı (${completed}/${total})\n${percent===100?'🎉 Mükemmel gün!':'💪 Devam ediyorum!'}`;navigator.clipboard.writeText(text).then(()=>{const m=document.getElementById('copyMsg');m.classList.remove('hidden');setTimeout(()=>m.classList.add('hidden'),2000);});}
+function downloadShare(){const a=document.createElement('a');a.download=`rutin-${today}.png`;a.href=document.getElementById('shareCanvas').toDataURL();a.click();}
+function copyShareText(){navigator.clipboard.writeText(`🎯 Rutin Takipçi — ${today}\n%${percent} tamamlandı (${completed}/${total})`).then(()=>{const m=document.getElementById('copyMsg');m.classList.remove('hidden');setTimeout(()=>m.classList.add('hidden'),2000);});}
 
 // AI
 function openAI(){
     document.getElementById('aiModal').classList.remove('hidden');
     document.getElementById('aiLoading').classList.remove('hidden');
     document.getElementById('aiResults').classList.add('hidden');
-    fetch('/ai-suggest',{method:'POST',headers:{'Content-Type':'application/json'}})
-    .then(r=>r.json()).then(data=>{
+    fetch('/ai-suggest',{method:'POST'}).then(r=>r.json()).then(data=>{
         document.getElementById('aiLoading').classList.add('hidden');
         const results=document.getElementById('aiResults');
         results.classList.remove('hidden');results.innerHTML='';
         data.suggestions.split('\n').filter(l=>l.trim()).forEach(line=>{
             const div=document.createElement('div');
             div.className='ai-suggestion';div.textContent=line.trim();
-            div.onclick=()=>{
-                document.getElementById('aiModal').classList.add('hidden');
-                document.querySelector('input[name="habit"]').value=line.replace(/^[^\w\s]+\s*/,'').trim();
-                document.querySelector('input[name="habit"]').focus();
-            };
+            div.onclick=()=>{document.getElementById('aiModal').classList.add('hidden');document.querySelector('input[name="habit"]').value=line.replace(/^[^\w\s]+\s*/,'').trim();};
             results.appendChild(div);
         });
-    }).catch(()=>{
-        document.getElementById('aiLoading').classList.add('hidden');
-        document.getElementById('aiResults').classList.remove('hidden');
-        document.getElementById('aiResults').innerHTML='<p class="text-red-400 text-sm text-center">AI şu an kullanılamıyor.</p>';
-    });
+    }).catch(()=>{document.getElementById('aiLoading').classList.add('hidden');document.getElementById('aiResults').classList.remove('hidden');document.getElementById('aiResults').innerHTML='<p class="text-red-400 text-sm text-center">AI şu an kullanılamıyor.</p>';});
 }
 
 // İSTATİSTİK
@@ -790,35 +915,14 @@ let weeklyChartInstance=null;
 function openStats(){
     document.getElementById('statsModal').classList.remove('hidden');
     fetch('/stats').then(r=>r.json()).then(data=>{
-        // Grafik
-        const labels=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-        const today=new Date();
-        const weekDates=Array.from({length:7},(_,i)=>{const d=new Date(today);d.setDate(d.getDate()-6+i);return d.toISOString().split('T')[0];});
+        const weekDates=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d.toISOString().split('T')[0];});
         const weekCounts=weekDates.map(wd=>data.filter(h=>h.dates.includes(wd)).length);
-        if(weeklyChartInstance) weeklyChartInstance.destroy();
+        if(weeklyChartInstance)weeklyChartInstance.destroy();
         weeklyChartInstance=new Chart(document.getElementById('weeklyChart'),{
             type:'bar',
-            data:{
-                labels:weekDates.map(d=>new Date(d).toLocaleDateString('tr-TR',{weekday:'short'})),
-                datasets:[{
-                    label:'Tamamlanan',
-                    data:weekCounts,
-                    backgroundColor:'rgba(99,102,241,0.5)',
-                    borderColor:'rgba(99,102,241,0.8)',
-                    borderWidth:1,
-                    borderRadius:6
-                }]
-            },
-            options:{
-                responsive:true,
-                plugins:{legend:{display:false}},
-                scales:{
-                    y:{beginAtZero:true,ticks:{color:'#6b7280',stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}},
-                    x:{ticks:{color:'#6b7280'},grid:{display:false}}
-                }
-            }
+            data:{labels:weekDates.map(d=>new Date(d).toLocaleDateString('tr-TR',{weekday:'short'})),datasets:[{label:'Tamamlanan',data:weekCounts,backgroundColor:'rgba(99,102,241,0.5)',borderColor:'rgba(99,102,241,0.8)',borderWidth:1,borderRadius:6}]},
+            options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#6b7280',stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{color:'#6b7280'},grid:{display:false}}}}
         });
-        // Liste
         const c=document.getElementById('statsContent');
         if(!data.length){c.innerHTML='<p class="text-gray-500 text-sm text-center py-4">Henüz veri yok.</p>';return;}
         c.innerHTML=data.map(h=>`
@@ -827,32 +931,18 @@ function openStats(){
                     <div><p class="font-semibold text-sm">${h.name}</p><p class="text-xs" style="color:var(--text-muted)">${h.category}</p></div>
                     <div class="text-right"><p class="text-lg font-bold text-indigo-400">${h.total}</p><p class="text-xs" style="color:var(--text-muted)">toplam</p></div>
                 </div>
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="flex-1 rounded-full h-1.5 overflow-hidden" style="background:rgba(255,255,255,0.06)">
-                        <div style="width:${Math.min(100,(h.total/90)*100)}%;height:100%;border-radius:99px;background:rgba(99,102,241,0.6)"></div>
-                    </div>
-                    <span class="text-xs text-orange-400 font-semibold">🔥${h.streak}g</span>
-                </div>
                 <div class="flex gap-0.5 flex-wrap">
-                    ${Array.from({length:30},(_,i)=>{
-                        const d=new Date();d.setDate(d.getDate()-29+i);
-                        const ds=d.toISOString().split('T')[0];
-                        const done=h.dates.includes(ds);
-                        return `<div title="${ds}" style="width:8px;height:8px;border-radius:2px;background:${done?'rgba(99,102,241,0.7)':'rgba(255,255,255,0.05)'}"></div>`;
-                    }).join('')}
+                    ${Array.from({length:30},(_,i)=>{const d=new Date();d.setDate(d.getDate()-29+i);const ds=d.toISOString().split('T')[0];return `<div title="${ds}" style="width:8px;height:8px;border-radius:2px;background:${h.dates.includes(ds)?'rgba(99,102,241,0.7)':'rgba(255,255,255,0.05)'}"></div>`;}).join('')}
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
     });
 }
 
-// HAFTALIK RAPOR
+// RAPOR
 function openReport(){
     document.getElementById('reportModal').classList.remove('hidden');
     fetch('/weekly-report').then(r=>r.json()).then(data=>{
-        const c=document.getElementById('reportContent');
-        const days=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
-        c.innerHTML=`
+        document.getElementById('reportContent').innerHTML=`
             <div class="glass rounded-2xl p-4 mb-4 text-center">
                 <p class="text-xs text-gray-500 mb-1">${data.week_start} — ${data.week_end}</p>
                 <p class="text-2xl font-black text-indigo-400">${data.username}</p>
@@ -865,148 +955,127 @@ function openReport(){
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold" style="background:rgba(99,102,241,0.2);color:#a5b4fc">%${h.percent}</span>
                     </div>
                     <div class="flex gap-1">
-                        ${h.week.map(w=>`
-                            <div class="flex-1 text-center">
-                                <div class="w-full h-6 rounded-md flex items-center justify-center text-xs font-bold" style="background:${w.done?'rgba(99,102,241,0.4)':'rgba(255,255,255,0.04)'}">
-                                    ${w.done?'✓':''}
-                                </div>
-                                <p class="text-xs mt-1" style="color:var(--text-muted);font-size:9px">${new Date(w.date).toLocaleDateString('tr-TR',{weekday:'short'})}</p>
-                            </div>
-                        `).join('')}
+                        ${h.week.map(w=>`<div class="flex-1 text-center"><div class="w-full h-6 rounded-md flex items-center justify-center text-xs font-bold" style="background:${w.done?'rgba(99,102,241,0.4)':'rgba(255,255,255,0.04)'}">${w.done?'✓':''}</div><p style="font-size:9px;color:var(--text-muted);margin-top:2px">${new Date(w.date).toLocaleDateString('tr-TR',{weekday:'short'})}</p></div>`).join('')}
                     </div>
-                    <p class="text-xs mt-2" style="color:var(--text-muted)">🔥 ${h.streak} gün streak · ${h.completed}/7 gün</p>
-                </div>
-            `).join('')}
-        `;
+                </div>`).join('')}`;
         document.getElementById('reportModal')._data=data;
     });
 }
-
 function downloadReport(){
     const data=document.getElementById('reportModal')._data;
-    if(!data) return;
-    let text=`HAFTALIK RAPOR — ${data.week_start} / ${data.week_end}\n`;
-    text+=`Kullanıcı: ${data.username} | Seviye ${data.level} | ${data.xp} XP\n\n`;
-    data.report.forEach(h=>{
-        text+=`${h.name} (${h.category})\n`;
-        text+=`  Tamamlanma: %${h.percent} (${h.completed}/7 gün)\n`;
-        text+=`  Streak: ${h.streak} gün\n`;
-        h.week.forEach(w=>text+=`  ${w.date}: ${w.done?'✓':'✗'}\n`);
-        text+='\n';
+    if(!data)return;
+    let text=`HAFTALIK RAPOR — ${data.week_start} / ${data.week_end}\nKullanıcı: ${data.username} | Seviye ${data.level}\n\n`;
+    data.report.forEach(h=>{text+=`${h.name}: %${h.percent} (${h.completed}/7 gün) | Streak: ${h.streak}g\n`;});
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=`rapor-${data.week_end}.txt`;a.click();
+}
+
+// AYLIK ÖZET
+function openMonthly(){
+    document.getElementById('monthlyModal').classList.remove('hidden');
+    fetch('/monthly-summary').then(r=>r.json()).then(data=>{
+        const c=document.getElementById('monthlyContent');
+        if(!data.summary.length){c.innerHTML='<p class="text-gray-500 text-sm text-center py-4">Geçen ay veri yok.</p>';return;}
+        c.innerHTML=`
+            <div class="glass rounded-2xl p-4 mb-4 text-center">
+                <p class="text-lg font-black text-indigo-400">${data.month}</p>
+                <p class="text-sm text-gray-400">${data.username} · Seviye ${data.level}</p>
+            </div>
+            ${data.summary.map(h=>`
+                <div class="glass rounded-2xl p-4 mb-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-semibold text-sm">${h.name}</p>
+                        <span class="text-lg font-black ${h.percent>=80?'text-green-400':h.percent>=50?'text-indigo-400':'text-gray-500'}">%${h.percent}</span>
+                    </div>
+                    <div class="w-full rounded-full h-1.5 overflow-hidden mb-1" style="background:rgba(255,255,255,0.06)">
+                        <div style="width:${h.percent}%;height:100%;border-radius:99px;background:${h.percent>=80?'rgba(16,185,129,0.6)':h.percent>=50?'rgba(99,102,241,0.6)':'rgba(239,68,68,0.4)'}"></div>
+                    </div>
+                    <p class="text-xs" style="color:var(--text-muted)">${h.completed}/${h.total_days} gün · 🔥${h.streak} streak</p>
+                </div>`).join('')}`;
     });
-    const blob=new Blob([text],{type:'text/plain'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download=`rapor-${data.week_end}.txt`;
-    a.click();
+}
+
+// LİDERBOARD
+function openLeaderboard(){
+    document.getElementById('leaderboardModal').classList.remove('hidden');
+    fetch('/leaderboard').then(r=>r.json()).then(data=>{
+        const medals=['🥇','🥈','🥉'];
+        document.getElementById('leaderboardContent').innerHTML=data.map((u,i)=>`
+            <div class="glass rounded-2xl p-4 mb-2 flex items-center gap-3 ${u.is_me?'border-indigo-500/30':''}" style="${u.is_me?'background:rgba(99,102,241,0.08)':''}">
+                <div class="rank-badge" style="background:${i===0?'rgba(251,191,36,0.2)':i===1?'rgba(156,163,175,0.2)':i===2?'rgba(205,127,50,0.2)':'rgba(255,255,255,0.05)'}">
+                    ${i<3?medals[i]:u.rank}
+                </div>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold" style="background:rgba(99,102,241,0.2);color:#a5b4fc">${u.username[0].toUpperCase()}</div>
+                <div class="flex-1">
+                    <p class="font-semibold text-sm">${u.username}${u.is_me?' <span style="color:#a5b4fc;font-size:10px">(sen)</span>':''}</p>
+                    <p class="text-xs" style="color:var(--text-muted)">Seviye ${u.level} · ${u.habits} alışkanlık</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-sm text-yellow-400">${u.total_xp} XP</p>
+                    <p class="text-xs text-orange-400">🔥${u.streak}g</p>
+                </div>
+            </div>`).join('');
+    });
+}
+
+// ARKADAŞLAR
+function openFriends(){
+    document.getElementById('friendsModal').classList.remove('hidden');
+    fetch('/friends').then(r=>r.json()).then(data=>{
+        const c=document.getElementById('friendsList');
+        if(!data.friends.length){c.innerHTML='<p class="text-gray-500 text-sm text-center py-4">Henüz arkadaş yok</p>';return;}
+        c.innerHTML=data.friends.map(f=>`
+            <div class="glass rounded-2xl p-4 mb-2 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600/30 flex items-center justify-center font-bold text-indigo-300">${f.username[0].toUpperCase()}</div>
+                <div class="flex-1"><p class="font-semibold text-sm">${f.username}</p><p class="text-xs" style="color:var(--text-muted)">Seviye ${f.level} · ${f.habits} alışkanlık</p></div>
+                <span class="text-sm font-bold text-orange-400">🔥${f.streak}g</span>
+            </div>`).join('');
+    });
 }
 
 // HATIRLATICI
 let reminderInterval=null;
 function setReminder(){
-    if(!('Notification' in window)){alert('Tarayıcın bildirim desteklemiyor.');return;}
+    if(!('Notification' in window)){alert('Bildirim desteklenmiyor.');return;}
     Notification.requestPermission().then(perm=>{
-        if(perm!=='granted'){document.getElementById('reminderMsg').textContent='Bildirim izni reddedildi.';document.getElementById('reminderMsg').classList.remove('hidden');return;}
+        if(perm!=='granted'){document.getElementById('reminderMsg').textContent='İzin reddedildi.';document.getElementById('reminderMsg').classList.remove('hidden');return;}
         const time=document.getElementById('reminderTime').value;
         const [h,m]=time.split(':').map(Number);
         localStorage.setItem('reminderTime',time);
         if(reminderInterval)clearInterval(reminderInterval);
-        reminderInterval=setInterval(()=>{
-            const now=new Date();
-            if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0){
-                new Notification('🎯 Rutin Takipçi',{body:'Bugünkü rutinlerini tamamlamayı unutma!'});
-            }
-        },1000);
-        const msg=document.getElementById('reminderMsg');
-        msg.textContent=`✓ Her gün ${time}'da bildirim alacaksın`;
-        msg.classList.remove('hidden');
+        reminderInterval=setInterval(()=>{const now=new Date();if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)new Notification('🎯 Rutin Takipçi',{body:'Bugünkü rutinlerini tamamlamayı unutma!'});},1000);
+        const msg=document.getElementById('reminderMsg');msg.textContent=`✓ Her gün ${time}'da bildirim`;msg.classList.remove('hidden');
     });
 }
-function cancelReminder(){
-    if(reminderInterval)clearInterval(reminderInterval);
-    localStorage.removeItem('reminderTime');
-    document.getElementById('reminderModal').classList.add('hidden');
-}
+function cancelReminder(){if(reminderInterval)clearInterval(reminderInterval);localStorage.removeItem('reminderTime');document.getElementById('reminderModal').classList.add('hidden');}
 const savedReminder=localStorage.getItem('reminderTime');
-if(savedReminder){
-    document.getElementById('reminderTime').value=savedReminder;
-    if('Notification' in window&&Notification.permission==='granted'){
-        const [h,m]=savedReminder.split(':').map(Number);
-        reminderInterval=setInterval(()=>{
-            const now=new Date();
-            if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0){
-                new Notification('🎯 Rutin Takipçi',{body:'Bugünkü rutinlerini tamamlamayı unutma!'});
-            }
-        },1000);
-    }
-}
+if(savedReminder){document.getElementById('reminderTime').value=savedReminder;if('Notification' in window&&Notification.permission==='granted'){const [h,m]=savedReminder.split(':').map(Number);reminderInterval=setInterval(()=>{const now=new Date();if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)new Notification('🎯 Rutin Takipçi',{body:'Rutinlerini unutma!'});},1000);}}
 
 // MÜZİK
 let musicCtx=null,musicNodes=[];
-const musicLabels={'rain':'🌧️ Yağmur Sesi','ocean':'🌊 Okyanus Dalgaları','forest':'🌲 Orman Sesleri','white':'⬜ Beyaz Gürültü','binaural':'🧠 Binaural Beats'};
-
-function playMusic(type){
+const musicLabels={'rain':'🌧️ Yağmur Sesi','ocean':'🌊 Okyanus','forest':'🌲 Orman','white':'⬜ Beyaz Gürültü','binaural':'🧠 Binaural'};
+function playMusic(type,e){
     stopMusic();
     musicCtx=new(window.AudioContext||window.webkitAudioContext)();
     const vol=parseFloat(document.getElementById('volumeSlider').value);
-    const master=musicCtx.createGain();
-    master.gain.value=vol;
-    master.connect(musicCtx.destination);
-    musicNodes=[master];
-
-    if(type==='white'||type==='rain'||type==='ocean'||type==='forest'){
+    const master=musicCtx.createGain();master.gain.value=vol;master.connect(musicCtx.destination);musicNodes=[master];
+    if(type!=='binaural'){
         const buf=musicCtx.createBuffer(1,musicCtx.sampleRate*2,musicCtx.sampleRate);
-        const data=buf.getChannelData(0);
-        for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*(type==='white'?1:0.6);
-        const src=musicCtx.createBufferSource();
-        src.buffer=buf;src.loop=true;
-        if(type==='rain'||type==='forest'){
-            const f=musicCtx.createBiquadFilter();
-            f.type='lowpass';f.frequency.value=type==='rain'?2000:800;
-            src.connect(f);f.connect(master);
-        } else if(type==='ocean'){
-            const f=musicCtx.createBiquadFilter();
-            f.type='bandpass';f.frequency.value=400;f.Q.value=0.5;
-            const lfo=musicCtx.createOscillator();
-            const lfogain=musicCtx.createGain();
-            lfo.frequency.value=0.1;lfogain.gain.value=300;
-            lfo.connect(lfogain);lfogain.connect(f.frequency);
-            lfo.start();src.connect(f);f.connect(master);
-            musicNodes.push(lfo);
-        } else { src.connect(master); }
-        src.start();musicNodes.push(src);
-    } else if(type==='binaural'){
-        [200,210].forEach(freq=>{
-            const o=musicCtx.createOscillator();
-            const g=musicCtx.createGain();
-            o.frequency.value=freq;o.type='sine';
-            g.gain.value=vol*0.3;
-            o.connect(g);g.connect(master);
-            o.start();musicNodes.push(o,g);
-        });
+        const data=buf.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1);
+        const src=musicCtx.createBufferSource();src.buffer=buf;src.loop=true;
+        const f=musicCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=type==='rain'?2000:type==='forest'?800:type==='ocean'?600:8000;
+        src.connect(f);f.connect(master);src.start();musicNodes.push(src,f);
+    } else {
+        [200,210].forEach(freq=>{const o=musicCtx.createOscillator();const g=musicCtx.createGain();o.frequency.value=freq;o.type='sine';g.gain.value=vol*0.3;o.connect(g);g.connect(master);o.start();musicNodes.push(o,g);});
     }
-
-    document.getElementById('nowPlaying').textContent=musicLabels[type]||type;
+    document.getElementById('nowPlaying').textContent=musicLabels[type];
     document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));
-    event.target.classList.add('playing');
+    if(e&&e.target)e.target.classList.add('playing');
 }
+function stopMusic(){musicNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch(e){}});musicNodes=[];if(musicCtx){musicCtx.close();musicCtx=null;}document.getElementById('nowPlaying').textContent='Hazır';document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));}
+function setVolume(v){document.getElementById('volumeLabel').textContent=Math.round(v*100)+'%';if(musicNodes[0])musicNodes[0].gain.value=parseFloat(v);}
 
-function stopMusic(){
-    musicNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch(e){}});
-    musicNodes=[];
-    if(musicCtx){musicCtx.close();musicCtx=null;}
-    document.getElementById('nowPlaying').textContent='Hazır';
-    document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));
-}
-
-function setVolume(v){
-    document.getElementById('volumeLabel').textContent=Math.round(v*100)+'%';
-    if(musicNodes[0]) musicNodes[0].gain.value=parseFloat(v);
-}
-
-function closeMusicModal(){
-    document.getElementById('musicModal').classList.add('hidden');
-}
+// PWA
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/static/sw.js').catch(()=>{});}
 </script>
 </body>
 </html>

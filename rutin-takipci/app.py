@@ -21,7 +21,10 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(200), nullable=False)
     xp = db.Column(db.Integer, default=0)
     level = db.Column(db.Integer, default=1)
+    freeze_count = db.Column(db.Integer, default=3)
+    onboarded = db.Column(db.Boolean, default=False)
     habits = db.relationship('Habit', backref='user', lazy=True, cascade='all, delete-orphan')
+    todos = db.relationship('Todo', backref='user', lazy=True, cascade='all, delete-orphan')
 
 class Habit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +39,20 @@ class HabitLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'), nullable=False)
     date = db.Column(db.String(10), nullable=False)
+    is_freeze = db.Column(db.Boolean, default=False)
+
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(300), nullable=False)
+    done = db.Column(db.Boolean, default=False)
+    date = db.Column(db.String(10), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Friendship(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), default='accepted')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -90,11 +107,28 @@ def index():
     percent = int((completed / total) * 100) if total > 0 else 0
     xp_needed = calc_xp_for_level(current_user.level)
     xp_percent = int((current_user.xp / xp_needed) * 100) if xp_needed > 0 else 0
+    todos = Todo.query.filter_by(user_id=current_user.id, date=today).all()
+    show_onboarding = not current_user.onboarded and total == 0
     return render_template('index.html',
         habits=habits, today=today, today_logs=today_logs,
         streaks=streaks, weekly=weekly,
         total=total, completed=completed, percent=percent,
-        user=current_user, xp_needed=xp_needed, xp_percent=xp_percent)
+        user=current_user, xp_needed=xp_needed, xp_percent=xp_percent,
+        todos=todos, show_onboarding=show_onboarding)
+
+@app.route('/onboarding', methods=['POST'])
+@login_required
+def onboarding():
+    habits = request.form.getlist('habits')
+    for name in habits:
+        if name and not Habit.query.filter_by(name=name, user_id=current_user.id).first():
+            max_order = db.session.query(db.func.max(Habit.order)).filter_by(user_id=current_user.id).scalar() or 0
+            habit = Habit(name=name, category=request.form.get(f'cat_{name}', 'Genel'),
+                         note='', user_id=current_user.id, order=max_order+1)
+            db.session.add(habit)
+    current_user.onboarded = True
+    db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -170,6 +204,19 @@ def complete(habit_id):
         db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/freeze/<int:habit_id>')
+@login_required
+def freeze_habit(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    yesterday = str(date.today() - timedelta(days=1))
+    existing = HabitLog.query.filter_by(habit_id=habit_id, date=yesterday).first()
+    if not existing and current_user.freeze_count > 0:
+        log = HabitLog(habit_id=habit_id, date=yesterday, is_freeze=True)
+        db.session.add(log)
+        current_user.freeze_count -= 1
+        db.session.commit()
+    return redirect(url_for('index'))
+
 @app.route('/delete/<int:habit_id>')
 @login_required
 def delete(habit_id):
@@ -184,6 +231,31 @@ def get_logs(habit_id):
     habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
     dates = [l.date for l in habit.logs]
     return jsonify({'dates': dates})
+
+@app.route('/log/add/<int:habit_id>', methods=['POST'])
+@login_required
+def log_add(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    log_date = request.form.get('date')
+    if log_date:
+        existing = HabitLog.query.filter_by(habit_id=habit_id, date=log_date).first()
+        if not existing:
+            log = HabitLog(habit_id=habit_id, date=log_date)
+            db.session.add(log)
+            db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/log/remove/<int:habit_id>', methods=['POST'])
+@login_required
+def log_remove(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    log_date = request.form.get('date')
+    if log_date:
+        log = HabitLog.query.filter_by(habit_id=habit_id, date=log_date).first()
+        if log:
+            db.session.delete(log)
+            db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/reorder', methods=['POST'])
 @login_required
@@ -244,6 +316,115 @@ def weekly_report():
         'week_start': str(date.today() - timedelta(days=6)),
         'week_end': str(date.today())
     })
+
+@app.route('/monthly-summary')
+@login_required
+def monthly_summary():
+    today = date.today()
+    first_day = today.replace(day=1)
+    last_month_last = first_day - timedelta(days=1)
+    last_month_first = last_month_last.replace(day=1)
+    habits = current_user.habits
+    summary = []
+    for h in habits:
+        log_dates = {l.date for l in h.logs}
+        days_in_month = (last_month_last - last_month_first).days + 1
+        completed = sum(1 for i in range(days_in_month)
+                       if str(last_month_first + timedelta(days=i)) in log_dates)
+        summary.append({
+            'name': h.name,
+            'category': h.category,
+            'completed': completed,
+            'total_days': days_in_month,
+            'percent': int((completed / days_in_month) * 100),
+            'streak': get_streak(h)
+        })
+    return jsonify({
+        'month': last_month_last.strftime('%B %Y'),
+        'username': current_user.username,
+        'summary': summary,
+        'total_xp': current_user.xp,
+        'level': current_user.level
+    })
+
+@app.route('/leaderboard')
+@login_required
+def leaderboard():
+    friendships = Friendship.query.filter_by(user_id=current_user.id, status='accepted').all()
+    friend_ids = [f.friend_id for f in friendships] + [current_user.id]
+    users = User.query.filter(User.id.in_(friend_ids)).all()
+    board = []
+    for u in users:
+        total_xp = u.level * 100 + u.xp
+        max_streak = max((get_streak(h) for h in u.habits), default=0)
+        board.append({
+            'username': u.username,
+            'level': u.level,
+            'xp': u.xp,
+            'total_xp': total_xp,
+            'streak': max_streak,
+            'habits': len(u.habits),
+            'is_me': u.id == current_user.id
+        })
+    board.sort(key=lambda x: x['total_xp'], reverse=True)
+    for i, b in enumerate(board):
+        b['rank'] = i + 1
+    return jsonify(board)
+
+@app.route('/todo/add', methods=['POST'])
+@login_required
+def todo_add():
+    text = request.form.get('text')
+    if text:
+        todo = Todo(text=text, date=str(date.today()), user_id=current_user.id)
+        db.session.add(todo)
+        db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/todo/done/<int:todo_id>')
+@login_required
+def todo_done(todo_id):
+    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.id).first_or_404()
+    todo.done = not todo.done
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/todo/delete/<int:todo_id>')
+@login_required
+def todo_delete(todo_id):
+    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.id).first_or_404()
+    db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/friends')
+@login_required
+def friends():
+    sent = Friendship.query.filter_by(user_id=current_user.id, status='accepted').all()
+    friends_list = []
+    for f in sent:
+        friend = User.query.get(f.friend_id)
+        if friend:
+            max_streak = max((get_streak(h) for h in friend.habits), default=0)
+            friends_list.append({'user': friend, 'streak': max_streak})
+    return jsonify({
+        'friends': [{'username': f['user'].username, 'level': f['user'].level,
+                    'streak': f['streak'], 'habits': len(f['user'].habits)} for f in friends_list]
+    })
+
+@app.route('/friends/add', methods=['POST'])
+@login_required
+def friend_add():
+    username = request.form.get('username')
+    user = User.query.filter_by(username=username).first()
+    if not user or user.id == current_user.id:
+        return redirect(url_for('index'))
+    existing = Friendship.query.filter_by(user_id=current_user.id, friend_id=user.id).first()
+    if not existing:
+        db.session.add(Friendship(user_id=current_user.id, friend_id=user.id))
+        db.session.add(Friendship(user_id=user.id, friend_id=current_user.id))
+        db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
