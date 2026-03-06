@@ -126,13 +126,22 @@
         .music-btn{padding:8px 14px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);background:transparent;text-align:left;width:100%}
         .music-btn:hover,.music-btn.playing{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:white}
 
-        .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--card-border);margin-bottom:6px;transition:all 0.2s}
+        .todo-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--card-border);margin-bottom:6px}
         .todo-done-item p{text-decoration:line-through;opacity:0.5}
 
-        .onboard-habit-btn{padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:white;background:rgba(255,255,255,0.05);text-align:left}
+        .onboard-habit-btn{padding:10px 16px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:white;background:rgba(255,255,255,0.05);text-align:left;width:100%}
         .onboard-habit-btn.selected{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.6)}
 
         .rank-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+
+        .emoji-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05)}
+        .emoji-btn:hover,.emoji-btn.selected{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.5);transform:scale(1.1)}
+
+        .goal-btn{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);background:transparent}
+        .goal-btn:hover{background:rgba(99,102,241,0.2);color:white}
+
+        .weekly-goal-bar{height:4px;border-radius:99px;background:rgba(255,255,255,0.06);margin-top:6px;overflow:hidden}
+        .weekly-goal-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width 0.5s ease}
 
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px}
@@ -145,7 +154,7 @@
 <div class="bg-orb orb3"></div>
 <div class="dot-grid"></div>
 
-<!-- ONBOARDING MODAL -->
+<!-- ONBOARDING -->
 {% if show_onboarding %}
 <div id="onboardingModal" class="modal">
     <div class="modal-box onboard-anim" style="max-width:460px;text-align:left">
@@ -155,25 +164,25 @@
             <p class="text-sm text-gray-400 mt-1">Başlamak için birkaç alışkanlık seç</p>
         </div>
         <form method="POST" action="/onboarding" id="onboardForm">
-            <div id="onboardList" class="space-y-2 mb-6">
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Sabah koşusu','Spor')">🏃 Sabah koşusu</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Python çalış','Çalışma')">💻 Python çalış</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Kitap oku','Zihin')">📚 Kitap oku</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Su iç','Sağlık')">💧 Su iç (2L)</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Meditasyon','Zihin')">🧘 Meditasyon</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Uyku düzeni','Sağlık')">😴 Uyku düzeni</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'İngilizce çalış','Çalışma')">🌍 İngilizce çalış</button>
-                <button type="button" class="onboard-habit-btn w-full" onclick="toggleOnboard(this,'Spor salonu','Spor')">💪 Spor salonu</button>
+            <div class="space-y-2 mb-6">
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Sabah koşusu','Spor')">🏃 Sabah koşusu</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Python çalış','Çalışma')">💻 Python çalış</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Kitap oku','Zihin')">📚 Kitap oku</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Su iç','Sağlık')">💧 Su iç (2L)</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Meditasyon','Zihin')">🧘 Meditasyon</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Uyku düzeni','Sağlık')">😴 Uyku düzeni</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'İngilizce çalış','Çalışma')">🌍 İngilizce çalış</button>
+                <button type="button" class="onboard-habit-btn" onclick="toggleOnboard(this,'Spor salonu','Spor')">💪 Spor salonu</button>
             </div>
             <div id="onboardInputs"></div>
             <button type="submit" class="btn-primary w-full py-3 rounded-2xl font-bold text-sm mb-2">Başla →</button>
-            <button type="button" onclick="skipOnboarding()" class="w-full py-2 text-sm text-gray-500 hover:text-gray-300 transition">Atla, kendim ekleyeceğim</button>
+            <button type="button" onclick="skipOnboarding()" class="w-full py-2 text-sm text-gray-500">Atla</button>
         </form>
     </div>
 </div>
 {% endif %}
 
-<!-- POMODORO MODAL -->
+<!-- POMODORO -->
 <div id="pomodoroModal" class="modal hidden">
     <div class="modal-box">
         <div class="flex items-center justify-between mb-4">
@@ -212,11 +221,11 @@
     </div>
 </div>
 
-<!-- PAYLAŞ MODAL -->
+<!-- PAYLAŞ -->
 <div id="shareModal" class="modal hidden">
     <div class="modal-box" style="max-width:420px">
         <div class="flex items-center justify-between mb-4">
-            <p class="text-sm font-bold text-white">📤 Bugünü Paylaş</p>
+            <p class="text-sm font-bold text-white">📤 Paylaş</p>
             <button onclick="document.getElementById('shareModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <canvas id="shareCanvas" width="400" height="420" class="rounded-2xl w-full mb-4 border border-white/10"></canvas>
@@ -228,7 +237,7 @@
     </div>
 </div>
 
-<!-- AI MODAL -->
+<!-- AI -->
 <div id="aiModal" class="modal hidden">
     <div class="modal-box" style="max-width:400px">
         <div class="flex items-center justify-between mb-5">
@@ -250,7 +259,7 @@
     </div>
 </div>
 
-<!-- İSTATİSTİK MODAL -->
+<!-- İSTATİSTİK -->
 <div id="statsModal" class="modal hidden">
     <div class="modal-box" style="max-width:500px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
@@ -265,24 +274,28 @@
     </div>
 </div>
 
-<!-- HATIRLATICI MODAL -->
+<!-- HATIRLATICI -->
 <div id="reminderModal" class="modal hidden">
     <div class="modal-box">
         <div class="flex items-center justify-between mb-5">
             <div class="text-left">
                 <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">🔔 Hatırlatıcı</p>
-                <p class="text-sm font-bold text-white mt-0.5">Günlük bildirim ayarla</p>
+                <p class="text-sm font-bold text-white mt-0.5">Günlük bildirim</p>
             </div>
             <button onclick="document.getElementById('reminderModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <input type="time" id="reminderTime" value="09:00" class="w-full rounded-xl px-4 py-3 text-sm mb-4 text-center text-xl font-bold">
+        <input type="time" id="reminderTime" value="09:00" class="w-full rounded-xl px-4 py-3 text-sm mb-3 text-center text-xl font-bold">
+        <div class="mb-4">
+            <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Özel Mesaj</label>
+            <input type="text" id="reminderMessage" placeholder="Rutinlerini tamamla! 💪" class="w-full rounded-xl px-3 py-2 text-sm">
+        </div>
         <button onclick="setReminder()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mb-2">🔔 Aktif Et</button>
         <button onclick="cancelReminder()" class="w-full py-2.5 rounded-xl text-sm" style="background:rgba(255,255,255,0.05);color:#a1a1aa">İptal</button>
         <p id="reminderMsg" class="text-xs text-green-400 mt-3 hidden text-center"></p>
     </div>
 </div>
 
-<!-- MÜZİK MODAL -->
+<!-- MÜZİK -->
 <div id="musicModal" class="modal hidden">
     <div class="modal-box" style="max-width:360px">
         <div class="flex items-center justify-between mb-5">
@@ -308,9 +321,9 @@
     </div>
 </div>
 
-<!-- DÜZENLE MODAL -->
+<!-- DÜZENLE -->
 <div id="editModal" class="modal hidden">
-    <div class="modal-box" style="max-width:380px;text-align:left">
+    <div class="modal-box" style="max-width:400px;text-align:left">
         <div class="flex items-center justify-between mb-5">
             <p class="text-sm font-bold text-white">✏️ Düzenle</p>
             <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
@@ -322,15 +335,21 @@
             </div>
             <div class="mb-4">
                 <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kategori</label>
-                <select name="category" id="editCategory" class="w-full rounded-xl px-4 py-3 text-sm">
-                    <option value="Genel">📌 Genel</option>
-                    <option value="Sağlık">💪 Sağlık</option>
-                    <option value="Çalışma">📚 Çalışma</option>
-                    <option value="Spor">🏃 Spor</option>
-                    <option value="Zihin">🧠 Zihin</option>
-                </select>
+                <div class="flex gap-2 mb-2 flex-wrap">
+                    <span class="text-xs text-gray-500 self-center">Emoji:</span>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'📌')">📌</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'💪')">💪</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'📚')">📚</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'🏃')">🏃</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'🧠')">🧠</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'💧')">💧</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'🎯')">🎯</button>
+                    <button type="button" class="emoji-btn" onclick="selectEmoji(this,'⭐')">⭐</button>
+                </div>
+                <input type="hidden" name="category_emoji" id="editCategoryEmoji" value="📌">
+                <input type="text" name="category" id="editCategory" placeholder="Kategori adı..." class="w-full rounded-xl px-4 py-2 text-sm">
             </div>
-            <div class="mb-6">
+            <div class="mb-4">
                 <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Not</label>
                 <textarea name="note" id="editNote" rows="2" class="w-full rounded-xl px-4 py-2 text-sm resize-none"></textarea>
             </div>
@@ -339,7 +358,7 @@
     </div>
 </div>
 
-<!-- RAPOR MODAL -->
+<!-- RAPOR -->
 <div id="reportModal" class="modal hidden">
     <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
@@ -351,24 +370,18 @@
     </div>
 </div>
 
-<!-- AYLIK ÖZET MODAL -->
+<!-- AYLIK ÖZET -->
 <div id="monthlyModal" class="modal hidden">
     <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
             <p class="text-sm font-bold text-white">📅 Aylık Özet</p>
             <button onclick="document.getElementById('monthlyModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <div id="monthlyContent">
-            <div class="flex justify-center py-8">
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1" style="animation-delay:0.15s"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
-            </div>
-        </div>
+        <div id="monthlyContent"></div>
     </div>
 </div>
 
-<!-- ARKADAŞ MODAL -->
+<!-- ARKADAŞ -->
 <div id="friendsModal" class="modal hidden">
     <div class="modal-box" style="max-width:400px;text-align:left">
         <div class="flex items-center justify-between mb-5">
@@ -383,27 +396,21 @@
     </div>
 </div>
 
-<!-- LİDERBOARD MODAL -->
+<!-- LİDERBOARD -->
 <div id="leaderboardModal" class="modal hidden">
     <div class="modal-box" style="max-width:400px;text-align:left">
         <div class="flex items-center justify-between mb-5">
             <div>
                 <p class="text-xs text-yellow-400 uppercase tracking-widest font-semibold">🏆 Liderboard</p>
-                <p class="text-sm font-bold text-white mt-0.5">Arkadaşlarla XP yarışması</p>
+                <p class="text-sm font-bold text-white mt-0.5">XP Sıralaması</p>
             </div>
             <button onclick="document.getElementById('leaderboardModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
-        <div id="leaderboardContent">
-            <div class="flex justify-center py-8">
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce mr-1" style="animation-delay:0.15s"></div>
-                <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay:0.3s"></div>
-            </div>
-        </div>
+        <div id="leaderboardContent"></div>
     </div>
 </div>
 
-<!-- TEMA MODAL -->
+<!-- TEMA -->
 <div id="themeModal" class="modal hidden">
     <div class="modal-box" style="max-width:320px">
         <div class="flex items-center justify-between mb-5">
@@ -432,6 +439,33 @@
                 <p class="text-sm font-semibold text-white">Altın</p>
             </button>
         </div>
+    </div>
+</div>
+
+<!-- HEDEF MODAL -->
+<div id="goalModal" class="modal hidden">
+    <div class="modal-box" style="max-width:320px">
+        <div class="flex items-center justify-between mb-5">
+            <div class="text-left">
+                <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">🎯 Haftalık Hedef</p>
+                <p class="text-sm font-bold text-white mt-0.5" id="goalHabitName"></p>
+            </div>
+            <button onclick="document.getElementById('goalModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <form id="goalForm" method="POST">
+            <p class="text-xs text-gray-400 mb-3">Haftada kaç gün tamamlamak istiyorsun?</p>
+            <div class="grid grid-cols-7 gap-1 mb-5">
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(1,this)">1</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(2,this)">2</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(3,this)">3</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(4,this)">4</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(5,this)">5</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(6,this)">6</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(99,102,241,0.3);border:1px solid rgba(99,102,241,0.6);color:white" onclick="selectGoal(7,this)">7</button>
+            </div>
+            <input type="hidden" name="goal" id="goalInput" value="7">
+            <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold">Kaydet</button>
+        </form>
     </div>
 </div>
 
@@ -467,7 +501,7 @@
         </div>
     </div>
 
-    <!-- XP / Seviye -->
+    <!-- XP -->
     <div class="glass rounded-2xl p-4 mb-5 slide-up">
         <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
@@ -479,7 +513,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span class="badge badge-gold">+20 XP / tamamlama</span>
-                <span class="badge" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa">❄️ {{ user.freeze_count }} freeze</span>
+                <span class="badge" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa">❄️ {{ user.freeze_count }}</span>
             </div>
         </div>
         <div class="w-full rounded-full h-2 overflow-hidden" style="background:rgba(255,255,255,0.05)">
@@ -561,7 +595,7 @@
         {% endif %}
     </div>
 
-    <!-- AI Öneri -->
+    <!-- AI -->
     <button onclick="openAI()" class="w-full glass rounded-2xl p-4 mb-5 slide-up flex items-center gap-3" style="border:1px solid rgba(99,102,241,0.15)">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:rgba(99,102,241,0.2)">✨</div>
         <div class="text-left"><p class="text-sm font-semibold">AI Alışkanlık Önerisi</p><p class="text-xs" style="color:var(--text-muted)">Mevcut rutinlerine göre önerileri gör</p></div>
@@ -571,17 +605,25 @@
     <!-- Alışkanlık Ekle -->
     <div class="glass rounded-2xl p-5 mb-8 slide-up">
         <p class="text-xs uppercase tracking-widest mb-4 font-semibold" style="color:var(--text-muted)">+ Yeni Alışkanlık</p>
-        <form method="POST" action="/add">
+        <form method="POST" action="/add" id="addForm">
             <input type="text" name="habit" placeholder="Ne alışkanlık kazanmak istiyorsun?" class="w-full rounded-xl px-4 py-3 text-sm mb-3">
             <textarea name="note" placeholder="Not ekle (opsiyonel)..." class="w-full rounded-xl px-4 py-2 text-sm mb-3 resize-none" rows="2"></textarea>
+            <div class="mb-3">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">Kategori Emoji</p>
+                <div class="flex gap-2 flex-wrap">
+                    <button type="button" class="emoji-btn selected" onclick="selectAddEmoji(this,'📌')">📌</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'💪')">💪</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'📚')">📚</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'🏃')">🏃</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'🧠')">🧠</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'💧')">💧</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'🎯')">🎯</button>
+                    <button type="button" class="emoji-btn" onclick="selectAddEmoji(this,'⭐')">⭐</button>
+                </div>
+                <input type="hidden" name="category_emoji" id="addCategoryEmoji" value="📌">
+            </div>
             <div class="flex gap-2">
-                <select name="category" class="flex-1 rounded-xl px-4 py-3 text-sm">
-                    <option value="Genel">📌 Genel</option>
-                    <option value="Sağlık">💪 Sağlık</option>
-                    <option value="Çalışma">📚 Çalışma</option>
-                    <option value="Spor">🏃 Spor</option>
-                    <option value="Zihin">🧠 Zihin</option>
-                </select>
+                <input type="text" name="category" placeholder="Kategori adı..." class="flex-1 rounded-xl px-4 py-3 text-sm">
                 <button type="submit" class="btn-primary px-6 py-3 rounded-xl text-sm font-semibold">Ekle</button>
             </div>
         </form>
@@ -592,11 +634,17 @@
         {% set categories = habits | map(attribute='category') | unique | list %}
         {% for category in categories %}
         <div class="mb-6">
-            <p class="text-xs uppercase tracking-widest mb-3 px-1 font-semibold" style="color:var(--category-text)">{{ category }}</p>
+            <p class="text-xs uppercase tracking-widest mb-3 px-1 font-semibold" style="color:var(--category-text)">
+                {% for h in habits if h.category == category %}{% if loop.first %}{{ h.category_emoji }}{% endif %}{% endfor %}
+                {{ category }}
+            </p>
             <div class="sortable-list">
             {% for habit in habits if habit.category == category %}
             {% set done = habit.id in today_logs %}
             {% set streak = streaks[habit.id|string] %}
+            {% set wcount = weekly_counts[habit.id|string] %}
+            {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
+
             <div class="glass-card rounded-2xl px-5 py-4 mb-3" data-id="{{ habit.id }}">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2 min-w-0">
@@ -625,7 +673,8 @@
                         {% if streak > 0 %}
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
-                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
+                        <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)" title="Haftalık hedef">🎯</button>
+                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
                         <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
                         {% if not done %}
                         <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
@@ -635,13 +684,22 @@
                     </div>
                 </div>
 
-                <div class="flex gap-1.5 mb-2">
+                <!-- Haftalık bar + hedef -->
+                <div class="flex gap-1.5 mb-1">
                     {% for day in weekly[habit.id|string] %}
                     <div class="flex-1 text-center">
                         <div class="w-full h-1.5 rounded-full mb-1" style="background:{% if day.done %}rgba(99,102,241,0.6){% else %}rgba(255,255,255,0.06){% endif %}"></div>
-                        <p class="text-xs" style="color:var(--text-muted);opacity:0.5">{{ day.day }}</p>
+                        <p class="text-xs" style="color:var(--text-muted);opacity:0.5;font-size:9px">{{ day.day }}</p>
                     </div>
                     {% endfor %}
+                </div>
+
+                <!-- Haftalık hedef progress -->
+                <div class="flex items-center gap-2 mt-2">
+                    <div class="weekly-goal-bar flex-1">
+                        <div class="weekly-goal-fill" style="width:{{ wpct }}%"></div>
+                    </div>
+                    <span class="text-xs font-semibold {% if wpct >= 100 %}text-green-400{% elif wpct >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">{{ wcount }}/{{ habit.weekly_goal }}</span>
                 </div>
 
                 <div id="cal-{{ habit.id }}" class="hidden mt-3">
@@ -682,13 +740,28 @@ function updateClock(){
 }
 setInterval(updateClock,1000); updateClock();
 
+// KOYU MOD OTOMATİK
+function applyAutoTheme(){
+    const saved=localStorage.getItem('theme');
+    if(!saved){
+        const prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme',prefersDark?'dark':'light');
+    } else {
+        document.documentElement.setAttribute('data-theme',saved);
+    }
+}
+applyAutoTheme();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+    if(!localStorage.getItem('theme')){
+        document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
+    }
+});
+
 const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
 document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
 
 // TEMA
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);document.getElementById('themeModal').classList.add('hidden');}
-const savedTheme=localStorage.getItem('theme');
-if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
 
 // ONBOARDING
 const selectedHabits={};
@@ -732,6 +805,45 @@ function showXP(e,text){
     setTimeout(()=>el.remove(),1500);
 }
 
+// EMOJİ SEÇİCİ
+function selectEmoji(btn,emoji){
+    document.querySelectorAll('#editModal .emoji-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('editCategoryEmoji').value=emoji;
+}
+function selectAddEmoji(btn,emoji){
+    document.querySelectorAll('#addForm .emoji-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('addCategoryEmoji').value=emoji;
+}
+
+// HAFTALIK HEDEF
+function openGoal(id,name,currentGoal){
+    document.getElementById('goalHabitName').textContent=name;
+    document.getElementById('goalForm').action=`/habit/goal/${id}`;
+    document.getElementById('goalInput').value=currentGoal;
+    document.querySelectorAll('.goal-day-btn').forEach((btn,i)=>{
+        const val=i+1;
+        if(val===currentGoal){
+            btn.style.background='rgba(99,102,241,0.3)';
+            btn.style.borderColor='rgba(99,102,241,0.6)';
+        } else {
+            btn.style.background='rgba(255,255,255,0.05)';
+            btn.style.borderColor='rgba(255,255,255,0.1)';
+        }
+    });
+    document.getElementById('goalModal').classList.remove('hidden');
+}
+function selectGoal(val,btn){
+    document.getElementById('goalInput').value=val;
+    document.querySelectorAll('.goal-day-btn').forEach(b=>{
+        b.style.background='rgba(255,255,255,0.05)';
+        b.style.borderColor='rgba(255,255,255,0.1)';
+    });
+    btn.style.background='rgba(99,102,241,0.3)';
+    btn.style.borderColor='rgba(99,102,241,0.6)';
+}
+
 // SÜRÜKLE BIRAK
 document.querySelectorAll('.sortable-list').forEach(list=>{
     Sortable.create(list,{
@@ -746,12 +858,15 @@ document.querySelectorAll('.sortable-list').forEach(list=>{
 });
 
 // DÜZENLE
-function openEdit(id,name,category,note){
+function openEdit(id,name,category,note,emoji){
     document.getElementById('editForm').action=`/edit/${id}`;
     document.getElementById('editName').value=name;
+    document.getElementById('editCategory').value=category;
     document.getElementById('editNote').value=note;
-    const sel=document.getElementById('editCategory');
-    for(let o of sel.options) o.selected=o.value===category;
+    document.getElementById('editCategoryEmoji').value=emoji||'📌';
+    document.querySelectorAll('#editModal .emoji-btn').forEach(b=>{
+        b.classList.toggle('selected',b.textContent===(emoji||'📌'));
+    });
     document.getElementById('editModal').classList.remove('hidden');
 }
 
@@ -886,7 +1001,7 @@ function openShare(){
     ctx.beginPath();roundRect(ctx,bx,by,bw,bh,5);ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fill();
     if(percent>0){const pg=ctx.createLinearGradient(bx,0,bx+bw,0);pg.addColorStop(0,'#6366f1');pg.addColorStop(1,'#06d6a0');ctx.beginPath();roundRect(ctx,bx,by,bw*(percent/100),bh,5);ctx.fillStyle=pg;ctx.fill();}
     ctx.fillStyle=percent===100?'#4ade80':'rgba(255,255,255,0.25)';ctx.font='13px sans-serif';ctx.fillText(percent===100?'🎉 Mükemmel gün!':`${total-completed} alışkanlık kaldı 💪`,W/2,300);
-    ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='11px sans-serif';ctx.fillText('rutin-takipci.app',W/2,390);
+    ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='11px sans-serif';ctx.fillText('rutin-takipci.onrender.com',W/2,390);
 }
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
 function downloadShare(){const a=document.createElement('a');a.download=`rutin-${today}.png`;a.href=document.getElementById('shareCanvas').toDataURL();a.click();}
@@ -969,7 +1084,7 @@ function downloadReport(){
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=`rapor-${data.week_end}.txt`;a.click();
 }
 
-// AYLIK ÖZET
+// AYLIK
 function openMonthly(){
     document.getElementById('monthlyModal').classList.remove('hidden');
     fetch('/monthly-summary').then(r=>r.json()).then(data=>{
@@ -999,8 +1114,8 @@ function openLeaderboard(){
     document.getElementById('leaderboardModal').classList.remove('hidden');
     fetch('/leaderboard').then(r=>r.json()).then(data=>{
         const medals=['🥇','🥈','🥉'];
-        document.getElementById('leaderboardContent').innerHTML=data.map((u,i)=>`
-            <div class="glass rounded-2xl p-4 mb-2 flex items-center gap-3 ${u.is_me?'border-indigo-500/30':''}" style="${u.is_me?'background:rgba(99,102,241,0.08)':''}">
+        document.getElementById('leaderboardContent').innerHTML=data.length?data.map((u,i)=>`
+            <div class="glass rounded-2xl p-4 mb-2 flex items-center gap-3" style="${u.is_me?'background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)':''}">
                 <div class="rank-badge" style="background:${i===0?'rgba(251,191,36,0.2)':i===1?'rgba(156,163,175,0.2)':i===2?'rgba(205,127,50,0.2)':'rgba(255,255,255,0.05)'}">
                     ${i<3?medals[i]:u.rank}
                 </div>
@@ -1013,7 +1128,7 @@ function openLeaderboard(){
                     <p class="font-bold text-sm text-yellow-400">${u.total_xp} XP</p>
                     <p class="text-xs text-orange-400">🔥${u.streak}g</p>
                 </div>
-            </div>`).join('');
+            </div>`).join(''):'<p class="text-gray-500 text-sm text-center py-4">Arkadaş ekle ve yarış!</p>';
     });
 }
 
@@ -1039,20 +1154,47 @@ function setReminder(){
     Notification.requestPermission().then(perm=>{
         if(perm!=='granted'){document.getElementById('reminderMsg').textContent='İzin reddedildi.';document.getElementById('reminderMsg').classList.remove('hidden');return;}
         const time=document.getElementById('reminderTime').value;
+        const customMsg=document.getElementById('reminderMessage').value||'Bugünkü rutinlerini tamamlamayı unutma! 💪';
         const [h,m]=time.split(':').map(Number);
         localStorage.setItem('reminderTime',time);
+        localStorage.setItem('reminderMessage',customMsg);
         if(reminderInterval)clearInterval(reminderInterval);
-        reminderInterval=setInterval(()=>{const now=new Date();if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)new Notification('🎯 Rutin Takipçi',{body:'Bugünkü rutinlerini tamamlamayı unutma!'});},1000);
-        const msg=document.getElementById('reminderMsg');msg.textContent=`✓ Her gün ${time}'da bildirim`;msg.classList.remove('hidden');
+        reminderInterval=setInterval(()=>{
+            const now=new Date();
+            if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)
+                new Notification('🎯 Rutin Takipçi',{body:customMsg});
+        },1000);
+        const msg=document.getElementById('reminderMsg');
+        msg.textContent=`✓ Her gün ${time}'da bildirim`;msg.classList.remove('hidden');
     });
 }
-function cancelReminder(){if(reminderInterval)clearInterval(reminderInterval);localStorage.removeItem('reminderTime');document.getElementById('reminderModal').classList.add('hidden');}
+function cancelReminder(){
+    if(reminderInterval)clearInterval(reminderInterval);
+    localStorage.removeItem('reminderTime');
+    localStorage.removeItem('reminderMessage');
+    document.getElementById('reminderModal').classList.add('hidden');
+}
 const savedReminder=localStorage.getItem('reminderTime');
-if(savedReminder){document.getElementById('reminderTime').value=savedReminder;if('Notification' in window&&Notification.permission==='granted'){const [h,m]=savedReminder.split(':').map(Number);reminderInterval=setInterval(()=>{const now=new Date();if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)new Notification('🎯 Rutin Takipçi',{body:'Rutinlerini unutma!'});},1000);}}
+const savedMsg=localStorage.getItem('reminderMessage');
+if(savedReminder){
+    document.getElementById('reminderTime').value=savedReminder;
+    if(savedMsg)document.getElementById('reminderMessage').value=savedMsg;
+    if('Notification' in window&&Notification.permission==='granted'){
+        const [h,m]=savedReminder.split(':').map(Number);
+        const msg=savedMsg||'Rutinlerini unutma! 💪';
+        reminderInterval=setInterval(()=>{
+            const now=new Date();
+            if(now.getHours()===h&&now.getMinutes()===m&&now.getSeconds()===0)
+                new Notification('🎯 Rutin Takipçi',{body:msg});
+        },1000);
+    }
+}
 
 // MÜZİK
 let musicCtx=null,musicNodes=[];
-const musicLabels={'rain':'🌧️ Yağmur Sesi','ocean':'🌊 Okyanus','forest':'🌲 Orman','white':'⬜ Beyaz Gürültü','binaural':'🧠 Binaural'};
+const musicLabels={'rain':'🌧️ Yağmur Sesi','ocean':'🌊 Okyanus','forest':'🌲 Orman','white':'⬜ Beyaz Gür
+
+ültü','binaural':'🧠 Binaural'};
 function playMusic(type,e){
     stopMusic();
     musicCtx=new(window.AudioContext||window.webkitAudioContext)();

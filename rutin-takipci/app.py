@@ -30,8 +30,10 @@ class Habit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     category = db.Column(db.String(50), default='Genel')
+    category_emoji = db.Column(db.String(10), default='📌')
     note = db.Column(db.String(300), default='')
     order = db.Column(db.Integer, default=0)
+    weekly_goal = db.Column(db.Integer, default=7)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     logs = db.relationship('HabitLog', backref='habit', lazy=True, cascade='all, delete-orphan')
 
@@ -75,6 +77,15 @@ def get_weekly(habit):
         result.append({'day': d.strftime('%a'), 'done': str(d) in log_dates})
     return result
 
+def get_weekly_count(habit):
+    log_dates = {l.date for l in habit.logs}
+    count = 0
+    for i in range(7):
+        d = date.today() - timedelta(days=i)
+        if str(d) in log_dates:
+            count += 1
+    return count
+
 def calc_xp_for_level(level):
     return level * 100
 
@@ -102,6 +113,7 @@ def index():
                 today_logs.append(h.id)
     streaks = {str(h.id): get_streak(h) for h in habits}
     weekly = {str(h.id): get_weekly(h) for h in habits}
+    weekly_counts = {str(h.id): get_weekly_count(h) for h in habits}
     total = len(habits)
     completed = len([h for h in habits if h.id in today_logs])
     percent = int((completed / total) * 100) if total > 0 else 0
@@ -111,7 +123,7 @@ def index():
     show_onboarding = not current_user.onboarded and total == 0
     return render_template('index.html',
         habits=habits, today=today, today_logs=today_logs,
-        streaks=streaks, weekly=weekly,
+        streaks=streaks, weekly=weekly, weekly_counts=weekly_counts,
         total=total, completed=completed, percent=percent,
         user=current_user, xp_needed=xp_needed, xp_percent=xp_percent,
         todos=todos, show_onboarding=show_onboarding)
@@ -173,10 +185,12 @@ def logout():
 def add_habit():
     name = request.form.get('habit')
     category = request.form.get('category', 'Genel')
+    category_emoji = request.form.get('category_emoji', '📌')
     note = request.form.get('note', '')
     if name and not Habit.query.filter_by(name=name, user_id=current_user.id).first():
         max_order = db.session.query(db.func.max(Habit.order)).filter_by(user_id=current_user.id).scalar() or 0
-        habit = Habit(name=name, category=category, note=note, user_id=current_user.id, order=max_order+1)
+        habit = Habit(name=name, category=category, category_emoji=category_emoji,
+                     note=note, user_id=current_user.id, order=max_order+1)
         db.session.add(habit)
         db.session.commit()
     return redirect(url_for('index'))
@@ -187,7 +201,16 @@ def edit_habit(habit_id):
     habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
     habit.name = request.form.get('name', habit.name)
     habit.category = request.form.get('category', habit.category)
+    habit.category_emoji = request.form.get('category_emoji', habit.category_emoji)
     habit.note = request.form.get('note', habit.note)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/habit/goal/<int:habit_id>', methods=['POST'])
+@login_required
+def set_goal(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    habit.weekly_goal = int(request.form.get('goal', 7))
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -460,7 +483,7 @@ def ai_suggest():
         habits = [h.name for h in current_user.habits]
         client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
         message = client.messages.create(
-            model="claude-opus-4-5",
+            model="claude-sonnet-4-6",
             max_tokens=300,
             messages=[{
                 "role": "user",
