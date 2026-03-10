@@ -27,6 +27,8 @@ class User(UserMixin, db.Model):
     level = db.Column(db.Integer, default=1)
     freeze_count = db.Column(db.Integer, default=3)
     onboarded = db.Column(db.Boolean, default=False)
+    avatar = db.Column(db.String(10), default='🎯')
+    avatar_color = db.Column(db.String(20), default='#6366f1')
     habits = db.relationship('Habit', backref='user', lazy=True, cascade='all, delete-orphan')
     todos = db.relationship('Todo', backref='user', lazy=True, cascade='all, delete-orphan')
 
@@ -38,6 +40,7 @@ class Habit(db.Model):
     note = db.Column(db.String(300), default='')
     order = db.Column(db.Integer, default=0)
     weekly_goal = db.Column(db.Integer, default=7)
+    priority = db.Column(db.String(10), default='normal')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     logs = db.relationship('HabitLog', backref='habit', lazy=True, cascade='all, delete-orphan')
 

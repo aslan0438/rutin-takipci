@@ -49,7 +49,7 @@
             --accent1:#f59e0b;--accent2:#d97706;--accent3:#fcd34d;
         }
 
-        body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s}
+        body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.5s,color 0.5s}
         .bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:0.1;pointer-events:none;animation:float 8s ease-in-out infinite}
         @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
         .orb1{width:600px;height:600px;background:var(--accent1);top:-200px;left:-200px}
@@ -60,6 +60,8 @@
         .glass{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--card-border)}
         .glass-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--card-border);transition:all 0.3s ease}
         .glass-card:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(99,102,241,0.15)}
+        .priority-high{border-left:3px solid #ef4444!important}
+        .priority-low{border-left:3px solid #6b7280!important;opacity:0.8}
         .sortable-ghost{opacity:0.3;background:rgba(99,102,241,0.2)!important}
         .sortable-drag{opacity:0.9;transform:scale(1.02)}
 
@@ -81,8 +83,13 @@
         @keyframes xpPop{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-40px);opacity:0}}
         .xp-pop{animation:xpPop 1.5s ease forwards;position:fixed;z-index:999;font-weight:bold;font-size:18px;color:#fbbf24;pointer-events:none}
 
-        @keyframes onboardIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-        .onboard-anim{animation:onboardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards}
+        @keyframes themeSwitch{0%{opacity:0;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
+        .theme-switching{animation:themeSwitch 0.4s ease forwards}
+
+        @keyframes deleteShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+        .delete-shake{animation:deleteShake 0.3s ease}
+
+        @keyframes celebrationBurst{0%{transform:scale(0) rotate(0deg);opacity:1}100%{transform:scale(3) rotate(180deg);opacity:0}}
 
         input,select,textarea{background:var(--input-bg)!important;border:1px solid var(--input-border)!important;color:var(--text)!important;transition:all 0.3s}
         input:focus,select:focus,textarea:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;outline:none!important}
@@ -111,7 +118,6 @@
         .cal-miss:hover{background:rgba(99,102,241,0.3)}
 
         .note-text{font-size:11px;margin-top:2px;font-style:italic;color:var(--text-muted)}
-
         .modal{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
         .modal-box{border-radius:24px;padding:28px;max-width:380px;width:100%;text-align:center;background:#0d0d1f;border:1px solid rgba(255,255,255,0.1)}
 
@@ -133,15 +139,22 @@
         .onboard-habit-btn.selected{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.6)}
 
         .rank-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
-
         .emoji-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05)}
         .emoji-btn:hover,.emoji-btn.selected{background:rgba(99,102,241,0.3);border-color:rgba(99,102,241,0.5);transform:scale(1.1)}
 
-        .goal-btn{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);background:transparent}
-        .goal-btn:hover{background:rgba(99,102,241,0.2);color:white}
+        .avatar-display{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;transition:all 0.3s}
 
+        .priority-btn{padding:5px 12px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);background:transparent}
+        .priority-btn.active-high{background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4);color:#f87171}
+        .priority-btn.active-normal{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:#a5b4fc}
+        .priority-btn.active-low{background:rgba(107,114,128,0.2);border-color:rgba(107,114,128,0.3);color:#9ca3af}
+
+        .goal-btn{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);background:transparent}
         .weekly-goal-bar{height:4px;border-radius:99px;background:rgba(255,255,255,0.06);margin-top:6px;overflow:hidden}
         .weekly-goal-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width 0.5s ease}
+
+        /* Silme onayı */
+        .delete-confirm{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:inherit;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(4px);z-index:10}
 
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px}
@@ -157,7 +170,7 @@
 <!-- ONBOARDING -->
 {% if show_onboarding %}
 <div id="onboardingModal" class="modal">
-    <div class="modal-box onboard-anim" style="max-width:460px;text-align:left">
+    <div class="modal-box" style="max-width:460px;text-align:left">
         <div class="text-center mb-6">
             <div class="w-16 h-16 rounded-2xl bg-indigo-600/30 flex items-center justify-center text-3xl mx-auto mb-3 pulse-glow">🎯</div>
             <h2 class="text-xl font-black text-white">Hoş geldin!</h2>
@@ -181,6 +194,57 @@
     </div>
 </div>
 {% endif %}
+
+<!-- AVATAR MODAL -->
+<div id="avatarModal" class="modal hidden">
+    <div class="modal-box" style="max-width:380px;text-align:left">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">👤 Avatar</p>
+                <p class="text-sm font-bold text-white mt-0.5">Profilini özelleştir</p>
+            </div>
+            <button onclick="document.getElementById('avatarModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <p class="text-xs text-gray-400 mb-3 font-semibold uppercase tracking-widest">Emoji seç</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🎯')">🎯</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🚀')">🚀</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'⚡')">⚡</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🔥')">🔥</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'💎')">💎</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🦁')">🦁</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🐉')">🐉</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🌟')">🌟</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🎮')">🎮</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🏆')">🏆</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'🧠')">🧠</button>
+            <button class="emoji-btn text-2xl" onclick="selectAvatar(this,'💪')">💪</button>
+        </div>
+        <p class="text-xs text-gray-400 mb-3 font-semibold uppercase tracking-widest">Renk seç</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#6366f1" onclick="selectAvatarColor(this,'#6366f1')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#8b5cf6" onclick="selectAvatarColor(this,'#8b5cf6')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#06d6a0" onclick="selectAvatarColor(this,'#06d6a0')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#f59e0b" onclick="selectAvatarColor(this,'#f59e0b')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#ef4444" onclick="selectAvatarColor(this,'#ef4444')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#ec4899" onclick="selectAvatarColor(this,'#ec4899')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#14b8a6" onclick="selectAvatarColor(this,'#14b8a6')"></button>
+            <button class="w-8 h-8 rounded-xl border-2 border-transparent hover:scale-110 transition" style="background:#f97316" onclick="selectAvatarColor(this,'#f97316')"></button>
+        </div>
+        <div class="flex items-center gap-3 mb-5 p-3 rounded-2xl" style="background:rgba(255,255,255,0.05)">
+            <div id="avatarPreview" class="avatar-display" style="background:{{ user.avatar_color }}">{{ user.avatar }}</div>
+            <div>
+                <p class="text-sm font-bold">{{ user.username }}</p>
+                <p class="text-xs" style="color:var(--text-muted)">Seviye {{ user.level }}</p>
+            </div>
+        </div>
+        <form method="POST" action="/profile" id="avatarForm">
+            <input type="hidden" name="avatar" id="avatarInput" value="{{ user.avatar }}">
+            <input type="hidden" name="avatar_color" id="avatarColorInput" value="{{ user.avatar_color }}">
+            <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold">Kaydet</button>
+        </form>
+    </div>
+</div>
 
 <!-- POMODORO -->
 <div id="pomodoroModal" class="modal hidden">
@@ -217,7 +281,6 @@
             <button onclick="togglePomodoro()" id="pomodoroBtn" class="btn-primary px-7 py-2.5 rounded-xl text-sm font-semibold">▶ Başlat</button>
             <button onclick="resetPomodoro()" class="px-5 py-2.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,0.05);color:#a1a1aa">↺ Sıfırla</button>
         </div>
-        <p class="text-xs text-gray-600 mt-3">İbreyi sürükleyerek süreyi ayarla</p>
     </div>
 </div>
 
@@ -336,7 +399,6 @@
             <div class="mb-4">
                 <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kategori</label>
                 <div class="flex gap-2 mb-2 flex-wrap">
-                    <span class="text-xs text-gray-500 self-center">Emoji:</span>
                     <button type="button" class="emoji-btn" onclick="selectEmoji(this,'📌')">📌</button>
                     <button type="button" class="emoji-btn" onclick="selectEmoji(this,'💪')">💪</button>
                     <button type="button" class="emoji-btn" onclick="selectEmoji(this,'📚')">📚</button>
@@ -352,6 +414,15 @@
             <div class="mb-4">
                 <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Not</label>
                 <textarea name="note" id="editNote" rows="2" class="w-full rounded-xl px-4 py-2 text-sm resize-none"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Öncelik</label>
+                <div class="flex gap-2">
+                    <button type="button" class="priority-btn" id="editPriHigh" onclick="selectPriority('high')">🔴 Yüksek</button>
+                    <button type="button" class="priority-btn" id="editPriNormal" onclick="selectPriority('normal')">🔵 Normal</button>
+                    <button type="button" class="priority-btn" id="editPriLow" onclick="selectPriority('low')">⚪ Düşük</button>
+                </div>
+                <input type="hidden" name="priority" id="editPriority" value="normal">
             </div>
             <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold">Kaydet</button>
         </form>
@@ -370,7 +441,7 @@
     </div>
 </div>
 
-<!-- AYLIK ÖZET -->
+<!-- AYLIK -->
 <div id="monthlyModal" class="modal hidden">
     <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
         <div class="flex items-center justify-between mb-5">
@@ -455,17 +526,30 @@
         <form id="goalForm" method="POST">
             <p class="text-xs text-gray-400 mb-3">Haftada kaç gün tamamlamak istiyorsun?</p>
             <div class="grid grid-cols-7 gap-1 mb-5">
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(1,this)">1</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(2,this)">2</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(3,this)">3</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(4,this)">4</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(5,this)">5</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(6,this)">6</button>
-                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold transition" style="background:rgba(99,102,241,0.3);border:1px solid rgba(99,102,241,0.6);color:white" onclick="selectGoal(7,this)">7</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(1,this)">1</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(2,this)">2</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(3,this)">3</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(4,this)">4</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(5,this)">5</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white" onclick="selectGoal(6,this)">6</button>
+                <button type="button" class="goal-day-btn py-2 rounded-lg text-sm font-bold" style="background:rgba(99,102,241,0.3);border:1px solid rgba(99,102,241,0.6);color:white" onclick="selectGoal(7,this)">7</button>
             </div>
             <input type="hidden" name="goal" id="goalInput" value="7">
             <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold">Kaydet</button>
         </form>
+    </div>
+</div>
+
+<!-- SİLME ONAY MODAL -->
+<div id="deleteModal" class="modal hidden">
+    <div class="modal-box" style="max-width:320px">
+        <div class="text-4xl mb-4">🗑️</div>
+        <p class="text-lg font-bold text-white mb-2">Silmek istediğine emin misin?</p>
+        <p class="text-sm text-gray-400 mb-6" id="deleteHabitName"></p>
+        <div class="flex gap-3">
+            <button onclick="document.getElementById('deleteModal').classList.add('hidden')" class="flex-1 py-3 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,0.05);color:#a1a1aa">İptal</button>
+            <a id="deleteConfirmBtn" href="#" class="flex-1 py-3 rounded-xl text-sm font-semibold text-center" style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.3)">Sil</a>
+        </div>
     </div>
 </div>
 
@@ -476,13 +560,13 @@
     <div class="flex items-start justify-between mb-8 slide-up">
         <div>
             <div class="flex items-center gap-3 mb-1">
-                <div class="w-9 h-9 rounded-2xl bg-indigo-600 flex items-center justify-center text-base pulse-glow">🎯</div>
+                <button onclick="document.getElementById('avatarModal').classList.remove('hidden')" class="avatar-display pulse-glow" style="background:{{ user.avatar_color }}">{{ user.avatar }}</button>
                 <div>
                     <h1 class="text-xl font-bold">Rutin Takipçi</h1>
                     <p class="text-xs" style="color:var(--text-muted)">Merhaba, <a href="/profile" class="text-indigo-400 font-semibold">{{ user.username }}</a> 👋</p>
                 </div>
             </div>
-            <p class="text-xs pl-12 mt-1" style="color:var(--text-muted)">{{ today }}</p>
+            <p class="text-xs pl-16 mt-1" style="color:var(--text-muted)">{{ today }}</p>
         </div>
         <div class="flex flex-col items-end gap-1.5">
             <div class="flex items-center gap-1 flex-wrap justify-end">
@@ -622,6 +706,15 @@
                 </div>
                 <input type="hidden" name="category_emoji" id="addCategoryEmoji" value="📌">
             </div>
+            <div class="mb-3">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">Öncelik</p>
+                <div class="flex gap-2">
+                    <button type="button" class="priority-btn" id="addPriHigh" onclick="selectAddPriority('high')">🔴 Yüksek</button>
+                    <button type="button" class="priority-btn active-normal" id="addPriNormal" onclick="selectAddPriority('normal')">🔵 Normal</button>
+                    <button type="button" class="priority-btn" id="addPriLow" onclick="selectAddPriority('low')">⚪ Düşük</button>
+                </div>
+                <input type="hidden" name="priority" id="addPriority" value="normal">
+            </div>
             <div class="flex gap-2">
                 <input type="text" name="category" placeholder="Kategori adı..." class="flex-1 rounded-xl px-4 py-3 text-sm">
                 <button type="submit" class="btn-primary px-6 py-3 rounded-xl text-sm font-semibold">Ekle</button>
@@ -645,7 +738,7 @@
             {% set wcount = weekly_counts[habit.id|string] %}
             {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
 
-            <div class="glass-card rounded-2xl px-5 py-4 mb-3" data-id="{{ habit.id }}">
+            <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="drag-handle">⠿</span>
@@ -663,7 +756,10 @@
                                 <span style="color:rgba(255,255,255,0.2);font-size:12px">○</span>
                             </div>
                             <div class="min-w-0">
-                                <p class="font-medium text-sm truncate">{{ habit.name }}</p>
+                                <div class="flex items-center gap-1.5">
+                                    <p class="font-medium text-sm truncate">{{ habit.name }}</p>
+                                    {% if habit.priority == 'high' %}<span class="text-xs">🔴</span>{% elif habit.priority == 'low' %}<span class="text-xs opacity-50">⚪</span>{% endif %}
+                                </div>
                                 {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
                                 <p class="text-xs mt-0.5" style="color:var(--text-muted)">Bekliyor...</p>
                             </div>
@@ -674,17 +770,16 @@
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
                         <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)" title="Haftalık hedef">🎯</button>
-                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
+                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
                         <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
                         {% if not done %}
                         <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
                         <a href="/freeze/{{ habit.id }}" title="Dünü freeze ile koru" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)">❄️</a>
                         {% endif %}
-                        <a href="/delete/{{ habit.id }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</a>
+                        <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</button>
                     </div>
                 </div>
 
-                <!-- Haftalık bar + hedef -->
                 <div class="flex gap-1.5 mb-1">
                     {% for day in weekly[habit.id|string] %}
                     <div class="flex-1 text-center">
@@ -694,7 +789,6 @@
                     {% endfor %}
                 </div>
 
-                <!-- Haftalık hedef progress -->
                 <div class="flex items-center gap-2 mt-2">
                     <div class="weekly-goal-bar flex-1">
                         <div class="weekly-goal-fill" style="width:{{ wpct }}%"></div>
@@ -703,10 +797,10 @@
                 </div>
 
                 <div id="cal-{{ habit.id }}" class="hidden mt-3">
-                    <p class="text-xs mb-2" style="color:var(--text-muted)">Son 28 gün — tıklayarak düzenle</p>
+                    <p class="text-xs mb-2" style="color:var(--text-muted)">Son 28 gün</p>
                     <div class="grid grid-cols-7 gap-1" id="calGrid-{{ habit.id }}"></div>
                 </div>
-                <button onclick="toggleCalendar({{ habit.id }})" class="text-xs mt-2" style="color:var(--text-muted)">📅 Takvimi göster/gizle</button>
+                <button onclick="toggleCalendar({{ habit.id }})" class="text-xs mt-2" style="color:var(--text-muted)">📅 Takvim</button>
             </div>
             {% endfor %}
             </div>
@@ -740,28 +834,31 @@ function updateClock(){
 }
 setInterval(updateClock,1000); updateClock();
 
-// KOYU MOD OTOMATİK
+// OTOMATİK TEMA
 function applyAutoTheme(){
     const saved=localStorage.getItem('theme');
     if(!saved){
-        const prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.setAttribute('data-theme',prefersDark?'dark':'light');
+        document.documentElement.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
     } else {
         document.documentElement.setAttribute('data-theme',saved);
     }
 }
 applyAutoTheme();
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
-    if(!localStorage.getItem('theme')){
-        document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
-    }
+    if(!localStorage.getItem('theme')) document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
 });
+
+// TEMA
+function setTheme(t){
+    document.documentElement.classList.add('theme-switching');
+    setTimeout(()=>document.documentElement.classList.remove('theme-switching'),400);
+    document.documentElement.setAttribute('data-theme',t);
+    localStorage.setItem('theme',t);
+    document.getElementById('themeModal').classList.add('hidden');
+}
 
 const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
 document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
-
-// TEMA
-function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);document.getElementById('themeModal').classList.add('hidden');}
 
 // ONBOARDING
 const selectedHabits={};
@@ -771,27 +868,55 @@ function toggleOnboard(btn,name,cat){
     const inp=document.getElementById('onboardInputs');
     inp.innerHTML=Object.entries(selectedHabits).map(([n,c])=>`<input type="hidden" name="habits" value="${n}"><input type="hidden" name="cat_${n}" value="${c}">`).join('');
 }
-function skipOnboarding(){
-    fetch('/onboarding',{method:'POST',body:new FormData()}).then(()=>location.reload());
+function skipOnboarding(){fetch('/onboarding',{method:'POST',body:new FormData()}).then(()=>location.reload());}
+
+// AVATAR
+let selectedAvatarEmoji='{{ user.avatar }}';
+let selectedAvatarColor='{{ user.avatar_color }}';
+function selectAvatar(btn,emoji){
+    selectedAvatarEmoji=emoji;
+    document.querySelectorAll('#avatarModal .emoji-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('avatarInput').value=emoji;
+    document.getElementById('avatarPreview').textContent=emoji;
+}
+function selectAvatarColor(btn,color){
+    selectedAvatarColor=color;
+    document.querySelectorAll('#avatarModal .w-8.h-8').forEach(b=>b.style.borderColor='transparent');
+    btn.style.borderColor='white';
+    document.getElementById('avatarColorInput').value=color;
+    document.getElementById('avatarPreview').style.background=color;
+}
+
+// SİLME ONAY
+function confirmDelete(id,name){
+    document.getElementById('deleteHabitName').textContent=`"${name}" alışkanlığı silinecek.`;
+    document.getElementById('deleteConfirmBtn').href=`/delete/${id}`;
+    document.getElementById('deleteModal').classList.remove('hidden');
 }
 
 // KONFETİ
 function fireConfetti(){
-    confetti({particleCount:150,spread:90,origin:{y:0.6},colors:['#6366f1','#8b5cf6','#06d6a0','#f59e0b','#ffffff']});
-    setTimeout(()=>confetti({particleCount:80,angle:60,spread:60,origin:{x:0}}),300);
-    setTimeout(()=>confetti({particleCount:80,angle:120,spread:60,origin:{x:1}}),500);
+    const effects=[
+        ()=>confetti({particleCount:150,spread:90,origin:{y:0.6},colors:['#6366f1','#8b5cf6','#06d6a0','#f59e0b','#ffffff']}),
+        ()=>{confetti({particleCount:80,angle:60,spread:60,origin:{x:0}});confetti({particleCount:80,angle:120,spread:60,origin:{x:1}});},
+        ()=>confetti({particleCount:200,spread:160,origin:{y:0.3},gravity:0.5,scalar:0.8})
+    ];
+    const r=Math.floor(Math.random()*effects.length);
+    effects[r]();
+    setTimeout(effects[(r+1)%effects.length],500);
 }
 
 function playComplete(){
     try{
         const ctx=new(window.AudioContext||window.webkitAudioContext)();
-        [523,659,784].forEach((f,i)=>{
+        [523,659,784,1047].forEach((f,i)=>{
             const o=ctx.createOscillator(),g=ctx.createGain();
             o.connect(g);g.connect(ctx.destination);
             o.frequency.value=f;o.type='sine';
-            g.gain.setValueAtTime(0.3,ctx.currentTime+i*0.12);
-            g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.12+0.3);
-            o.start(ctx.currentTime+i*0.12);o.stop(ctx.currentTime+i*0.12+0.35);
+            g.gain.setValueAtTime(0.3,ctx.currentTime+i*0.1);
+            g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.3);
+            o.start(ctx.currentTime+i*0.1);o.stop(ctx.currentTime+i*0.1+0.35);
         });
     }catch(e){}
 }
@@ -805,7 +930,7 @@ function showXP(e,text){
     setTimeout(()=>el.remove(),1500);
 }
 
-// EMOJİ SEÇİCİ
+// EMOJİ
 function selectEmoji(btn,emoji){
     document.querySelectorAll('#editModal .emoji-btn').forEach(b=>b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -817,38 +942,42 @@ function selectAddEmoji(btn,emoji){
     document.getElementById('addCategoryEmoji').value=emoji;
 }
 
-// HAFTALIK HEDEF
+// ÖNCELİK
+function selectPriority(val){
+    document.getElementById('editPriority').value=val;
+    document.getElementById('editPriHigh').className='priority-btn'+(val==='high'?' active-high':'');
+    document.getElementById('editPriNormal').className='priority-btn'+(val==='normal'?' active-normal':'');
+    document.getElementById('editPriLow').className='priority-btn'+(val==='low'?' active-low':'');
+}
+function selectAddPriority(val){
+    document.getElementById('addPriority').value=val;
+    document.getElementById('addPriHigh').className='priority-btn'+(val==='high'?' active-high':'');
+    document.getElementById('addPriNormal').className='priority-btn'+(val==='normal'?' active-normal':'');
+    document.getElementById('addPriLow').className='priority-btn'+(val==='low'?' active-low':'');
+}
+
+// HEDEF
 function openGoal(id,name,currentGoal){
     document.getElementById('goalHabitName').textContent=name;
     document.getElementById('goalForm').action=`/habit/goal/${id}`;
     document.getElementById('goalInput').value=currentGoal;
     document.querySelectorAll('.goal-day-btn').forEach((btn,i)=>{
         const val=i+1;
-        if(val===currentGoal){
-            btn.style.background='rgba(99,102,241,0.3)';
-            btn.style.borderColor='rgba(99,102,241,0.6)';
-        } else {
-            btn.style.background='rgba(255,255,255,0.05)';
-            btn.style.borderColor='rgba(255,255,255,0.1)';
-        }
+        btn.style.background=val===currentGoal?'rgba(99,102,241,0.3)':'rgba(255,255,255,0.05)';
+        btn.style.borderColor=val===currentGoal?'rgba(99,102,241,0.6)':'rgba(255,255,255,0.1)';
     });
     document.getElementById('goalModal').classList.remove('hidden');
 }
 function selectGoal(val,btn){
     document.getElementById('goalInput').value=val;
-    document.querySelectorAll('.goal-day-btn').forEach(b=>{
-        b.style.background='rgba(255,255,255,0.05)';
-        b.style.borderColor='rgba(255,255,255,0.1)';
-    });
-    btn.style.background='rgba(99,102,241,0.3)';
-    btn.style.borderColor='rgba(99,102,241,0.6)';
+    document.querySelectorAll('.goal-day-btn').forEach(b=>{b.style.background='rgba(255,255,255,0.05)';b.style.borderColor='rgba(255,255,255,0.1)';});
+    btn.style.background='rgba(99,102,241,0.3)';btn.style.borderColor='rgba(99,102,241,0.6)';
 }
 
-// SÜRÜKLE BIRAK
+// SÜRÜKLE
 document.querySelectorAll('.sortable-list').forEach(list=>{
     Sortable.create(list,{
-        animation:200,handle:'.drag-handle',
-        ghostClass:'sortable-ghost',dragClass:'sortable-drag',
+        animation:200,handle:'.drag-handle',ghostClass:'sortable-ghost',dragClass:'sortable-drag',
         onEnd:()=>{
             const items=[];
             document.querySelectorAll('.sortable-list [data-id]').forEach((el,i)=>items.push({id:parseInt(el.dataset.id),order:i}));
@@ -858,27 +987,23 @@ document.querySelectorAll('.sortable-list').forEach(list=>{
 });
 
 // DÜZENLE
-function openEdit(id,name,category,note,emoji){
+function openEdit(id,name,category,note,emoji,priority){
     document.getElementById('editForm').action=`/edit/${id}`;
     document.getElementById('editName').value=name;
     document.getElementById('editCategory').value=category;
     document.getElementById('editNote').value=note;
     document.getElementById('editCategoryEmoji').value=emoji||'📌';
-    document.querySelectorAll('#editModal .emoji-btn').forEach(b=>{
-        b.classList.toggle('selected',b.textContent===(emoji||'📌'));
-    });
+    document.querySelectorAll('#editModal .emoji-btn').forEach(b=>b.classList.toggle('selected',b.textContent===(emoji||'📌')));
+    selectPriority(priority||'normal');
     document.getElementById('editModal').classList.remove('hidden');
 }
 
 // POMODORO
-let pomTimer=null,pomSeconds=25*60,pomRunning=false,pomTotal=25*60;
-let pomDragging=false;
+let pomTimer=null,pomSeconds=25*60,pomRunning=false,pomTotal=25*60,pomDragging=false;
 const CIRC=2*Math.PI*72;
-
 function initPomDrag(){
     const svg=document.getElementById('pomSVG');
-    if(!svg||svg._dragInit) return;
-    svg._dragInit=true;
+    if(!svg||svg._dragInit)return;svg._dragInit=true;
     function getAngle(e){
         const rect=svg.getBoundingClientRect();
         const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
@@ -905,7 +1030,6 @@ function initPomDrag(){
     window.addEventListener('mouseup',()=>pomDragging=false);
     window.addEventListener('touchend',()=>pomDragging=false);
 }
-
 function moveKnobToMinutes(mins){
     const a=(mins/60)*360,r=(a-90)*Math.PI/180;
     document.getElementById('pomKnob').setAttribute('cx',(90+72*Math.cos(r)).toFixed(1));
@@ -1156,8 +1280,7 @@ function setReminder(){
         const time=document.getElementById('reminderTime').value;
         const customMsg=document.getElementById('reminderMessage').value||'Bugünkü rutinlerini tamamlamayı unutma! 💪';
         const [h,m]=time.split(':').map(Number);
-        localStorage.setItem('reminderTime',time);
-        localStorage.setItem('reminderMessage',customMsg);
+        localStorage.setItem('reminderTime',time);localStorage.setItem('reminderMessage',customMsg);
         if(reminderInterval)clearInterval(reminderInterval);
         reminderInterval=setInterval(()=>{
             const now=new Date();
@@ -1170,8 +1293,7 @@ function setReminder(){
 }
 function cancelReminder(){
     if(reminderInterval)clearInterval(reminderInterval);
-    localStorage.removeItem('reminderTime');
-    localStorage.removeItem('reminderMessage');
+    localStorage.removeItem('reminderTime');localStorage.removeItem('reminderMessage');
     document.getElementById('reminderModal').classList.add('hidden');
 }
 const savedReminder=localStorage.getItem('reminderTime');
@@ -1193,7 +1315,6 @@ if(savedReminder){
 // MÜZİK
 let musicCtx=null,musicNodes=[];
 const musicLabels={'rain':'🌧️ Yağmur Sesi','ocean':'🌊 Okyanus','forest':'🌲 Orman','white':'⬜ Beyaz Gürültü','binaural':'🧠 Binaural'};
-
 function playMusic(type,e){
     stopMusic();
     musicCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -1215,7 +1336,6 @@ function playMusic(type,e){
 function stopMusic(){musicNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch(e){}});musicNodes=[];if(musicCtx){musicCtx.close();musicCtx=null;}document.getElementById('nowPlaying').textContent='Hazır';document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));}
 function setVolume(v){document.getElementById('volumeLabel').textContent=Math.round(v*100)+'%';if(musicNodes[0])musicNodes[0].gain.value=parseFloat(v);}
 
-// PWA
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/static/sw.js').catch(()=>{});}
 </script>
 </body>
