@@ -194,10 +194,11 @@ def add_habit():
     category = request.form.get('category', 'Genel')
     category_emoji = request.form.get('category_emoji', '📌')
     note = request.form.get('note', '')
+    priority = request.form.get('priority', 'normal')
     if name and not Habit.query.filter_by(name=name, user_id=current_user.id).first():
         max_order = db.session.query(db.func.max(Habit.order)).filter_by(user_id=current_user.id).scalar() or 0
         habit = Habit(name=name, category=category, category_emoji=category_emoji,
-                     note=note, user_id=current_user.id, order=max_order+1)
+                     note=note, priority=priority, user_id=current_user.id, order=max_order+1)
         db.session.add(habit)
         db.session.commit()
     return redirect(url_for('index'))
@@ -210,6 +211,7 @@ def edit_habit(habit_id):
     habit.category = request.form.get('category', habit.category)
     habit.category_emoji = request.form.get('category_emoji', habit.category_emoji)
     habit.note = request.form.get('note', habit.note)
+    habit.priority = request.form.get('priority', habit.priority)
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -475,6 +477,12 @@ def profile():
             current_user.email = new_email
         if new_password and len(new_password) >= 6:
             current_user.password = generate_password_hash(new_password)
+        new_avatar = request.form.get('avatar')
+        new_avatar_color = request.form.get('avatar_color')
+        if new_avatar:
+            current_user.avatar = new_avatar
+        if new_avatar_color:
+            current_user.avatar_color = new_avatar_color
         db.session.commit()
         flash('Profil güncellendi!')
         return redirect(url_for('profile'))
@@ -484,6 +492,17 @@ def profile():
 
 @app.route('/ai-suggest', methods=['POST'])
 @login_required
+@app.route('/avatar', methods=['POST'])
+@login_required
+def update_avatar():
+    new_avatar = request.form.get('avatar')
+    new_avatar_color = request.form.get('avatar_color')
+    if new_avatar:
+        current_user.avatar = new_avatar
+    if new_avatar_color:
+        current_user.avatar_color = new_avatar_color
+    db.session.commit()
+    return redirect(url_for('index'))
 def ai_suggest():
     try:
         import anthropic
