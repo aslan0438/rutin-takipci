@@ -490,9 +490,7 @@ def profile():
     max_streak = max((get_streak(h) for h in current_user.habits), default=0)
     return render_template('profile.html', user=current_user, total_logs=total_logs, max_streak=max_streak)
 
-@app.route('/ai-suggest', methods=['POST'])
-@login_required
-@app.route('/avatar', methods=['POST'])
+@@app.route('/avatar', methods=['POST'])
 @login_required
 def update_avatar():
     new_avatar = request.form.get('avatar')
@@ -503,6 +501,9 @@ def update_avatar():
         current_user.avatar_color = new_avatar_color
     db.session.commit()
     return redirect(url_for('index'))
+
+@app.route('/ai-suggest', methods=['POST'])
+@login_required
 def ai_suggest():
     try:
         import anthropic
