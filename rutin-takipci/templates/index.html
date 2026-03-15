@@ -161,6 +161,16 @@
     </style>
 </head>
 <body>
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" style="position:fixed;inset:0;background:#060612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
+    <div style="width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:20px;box-shadow:0 0 40px rgba(99,102,241,0.5)">🎯</div>
+    <p style="color:white;font-weight:800;font-size:20px;margin-bottom:6px;letter-spacing:-0.5px">Rutin Takipçi</p>
+    <p style="color:#6b7280;font-size:13px;margin-bottom:28px" id="loadingText">Yükleniyor...</p>
+    <div style="width:160px;height:3px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden">
+        <div id="loadBar" style="height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#06d6a0);border-radius:99px;transition:width 0.4s ease"></div>
+    </div>
+    <p style="color:#374151;font-size:11px;margin-top:40px">rutin-takipci.onrender.com</p>
+</div>
 
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
@@ -820,6 +830,28 @@
 {% endif %}
 
 <script>
+// LOADING SCREEN
+const loadingMessages = ['Alışkanlıklar yükleniyor...','Streak hesaplanıyor...','XP toparlanıyor...','Hazırlanıyor...'];
+let loadProgress = 0;
+let loadMsgIndex = 0;
+const loadBar = document.getElementById('loadBar');
+const loadingText = document.getElementById('loadingText');
+const loadInterval = setInterval(() => {
+    loadProgress += Math.random() * 25;
+    if(loadProgress > 85) loadProgress = 85;
+    loadBar.style.width = loadProgress + '%';
+    loadMsgIndex = (loadMsgIndex + 1) % loadingMessages.length;
+    loadingText.textContent = loadingMessages[loadMsgIndex];
+}, 400);
+window.addEventListener('load', () => {
+    clearInterval(loadInterval);
+    loadBar.style.width = '100%';
+    setTimeout(() => {
+        const screen = document.getElementById('loadingScreen');
+        screen.style.opacity = '0';
+        setTimeout(() => screen.style.display = 'none', 600);
+    }, 400);
+});
 const today="{{ today }}";
 const percent={{ percent }};
 const completed={{ completed }};

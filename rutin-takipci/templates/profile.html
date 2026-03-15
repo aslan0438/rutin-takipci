@@ -8,30 +8,64 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Inter', sans-serif; }
-        body { background: #060612; min-height: 100vh; color: white; }
-        .bg-orb { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.1; pointer-events: none; animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-20px) scale(1.05)} }
-        .orb1{width:500px;height:500px;background:#6366f1;top:-150px;left:-150px}
-        .orb2{width:400px;height:400px;background:#8b5cf6;bottom:-100px;right:-100px;animation-delay:3s}
+
+        :root {
+            --bg:#060612;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+            --text:#ffffff;--text-muted:#6b7280;--accent1:#6366f1;--accent2:#8b5cf6;
+        }
+        [data-theme="light"]{--bg:#eef2ff;--card:rgba(255,255,255,0.75);--card-border:rgba(99,102,241,0.15);--text:#1e1b4b;--text-muted:#6366f1}
+        [data-theme="green"]{--bg:#021a0e;--card:rgba(16,185,129,0.05);--card-border:rgba(16,185,129,0.12);--text:#ffffff;--text-muted:#34d399;--accent1:#10b981;--accent2:#059669}
+        [data-theme="rose"]{--bg:#1a020e;--card:rgba(244,63,94,0.05);--card-border:rgba(244,63,94,0.12);--text:#ffffff;--text-muted:#fb7185;--accent1:#f43f5e;--accent2:#e11d48}
+        [data-theme="amber"]{--bg:#1a0e02;--card:rgba(245,158,11,0.05);--card-border:rgba(245,158,11,0.12);--text:#ffffff;--text-muted:#fbbf24;--accent1:#f59e0b;--accent2:#d97706}
+
+        body{background:var(--bg);min-height:100vh;color:var(--text);transition:background 0.3s,color 0.3s}
+        .bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:0.1;pointer-events:none;animation:float 8s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+        .orb1{width:500px;height:500px;background:var(--accent1);top:-150px;left:-150px}
+        .orb2{width:400px;height:400px;background:var(--accent2);bottom:-100px;right:-100px;animation-delay:3s}
         .dot-grid{position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
-        .glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08)}
-        input{background:rgba(255,255,255,0.05)!important;border:1px solid rgba(255,255,255,0.08)!important;color:white!important;transition:all 0.3s;width:100%;padding:12px 16px;border-radius:12px;font-size:14px;outline:none}
-        input:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;box-shadow:0 0 0 3px rgba(99,102,241,0.1)!important}
+
+        .glass{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--card-border)}
+        input{background:rgba(255,255,255,0.05)!important;border:1px solid rgba(255,255,255,0.08)!important;color:var(--text)!important;transition:all 0.3s;width:100%;padding:12px 16px;border-radius:12px;font-size:14px;outline:none}
+        input:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important}
         input::placeholder{color:rgba(255,255,255,0.25)!important}
-        .btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:12px;border-radius:12px;font-weight:600;font-size:14px;width:100%;cursor:pointer;transition:all 0.3s;border:none}
+        .btn{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:white;padding:12px;border-radius:12px;font-weight:600;font-size:14px;width:100%;cursor:pointer;transition:all 0.3s;border:none}
         .btn:hover{transform:scale(1.02);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
-        .stat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;text-align:center}
+        .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:20px;text-align:center;transition:all 0.3s}
+        .stat-card:hover{transform:translateY(-3px)}
         @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .slide-up{animation:slideUp 0.5s ease forwards}
         .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600}
         .badge-gold{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
         .badge-purple{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
+        .badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
+
+        @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(99,102,241,0.4)}50%{box-shadow:0 0 40px rgba(99,102,241,0.8)}}
+        .avatar-pulse{animation:avatarPulse 3s ease infinite}
+
+        .xp-bar-fill{background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 1s ease}
+
+        /* Mobil */
+        @media(max-width:640px){
+            .stat-grid{grid-template-columns:repeat(3,1fr)!important}
+            .btn-group{flex-direction:column}
+        }
     </style>
 </head>
 <body>
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="dot-grid"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" style="position:fixed;inset:0;background:#060612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s">
+    <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px;animation:avatarPulse 1.5s ease infinite">🎯</div>
+    <p style="color:white;font-weight:700;font-size:18px;margin-bottom:8px">Rutin Takipçi</p>
+    <p style="color:#6b7280;font-size:13px;margin-bottom:24px">Profil yükleniyor...</p>
+    <div style="width:120px;height:3px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden">
+        <div id="loadBar" style="height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:99px;transition:width 0.3s"></div>
+    </div>
+</div>
 
 <div class="relative z-10 max-w-lg mx-auto px-4 py-10">
 
@@ -42,30 +76,58 @@
 
     <!-- Avatar + İsim -->
     <div class="text-center mb-8 slide-up">
-        <div class="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center text-3xl mx-auto mb-4" style="box-shadow:0 0 30px rgba(99,102,241,0.4)">
-            {{ user.username[0].upper() }}
+        <div class="w-24 h-24 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 avatar-pulse" style="background:{{ user.avatar_color }}">
+            {{ user.avatar }}
         </div>
         <h1 class="text-2xl font-bold">{{ user.username }}</h1>
-        <p class="text-gray-500 text-sm mt-1">{{ user.email }}</p>
-        <div class="flex items-center justify-center gap-2 mt-3">
+        <p class="text-sm mt-1" style="color:var(--text-muted)">{{ user.email }}</p>
+        <div class="flex items-center justify-center gap-2 mt-3 flex-wrap">
             <span class="badge badge-gold">⚡ Seviye {{ user.level }}</span>
             <span class="badge badge-purple">{{ user.xp }} XP</span>
+            <span class="badge badge-green">❄️ {{ user.freeze_count }} freeze</span>
+        </div>
+
+        <!-- XP Bar -->
+        <div class="mt-4 max-w-xs mx-auto">
+            <div class="flex justify-between text-xs mb-1" style="color:var(--text-muted)">
+                <span>{{ user.xp }} XP</span>
+                <span>{{ user.level * 100 }} XP</span>
+            </div>
+            <div class="w-full rounded-full h-2 overflow-hidden" style="background:rgba(255,255,255,0.05)">
+                <div class="xp-bar-fill h-2 rounded-full" style="width:{{ [(user.xp / (user.level * 100) * 100), 100]|min|int }}%"></div>
+            </div>
+            <p class="text-xs mt-1 text-center" style="color:var(--text-muted)">Seviye {{ user.level + 1 }} için {{ user.level * 100 - user.xp }} XP kaldı</p>
         </div>
     </div>
 
     <!-- İstatistikler -->
-    <div class="grid grid-cols-3 gap-3 mb-6 slide-up">
+    <div class="grid grid-cols-3 gap-3 mb-6 slide-up stat-grid">
         <div class="stat-card">
             <p class="text-2xl font-bold text-indigo-400">{{ user.habits|length }}</p>
-            <p class="text-xs text-gray-600 mt-1">Alışkanlık</p>
+            <p class="text-xs mt-1" style="color:var(--text-muted)">Alışkanlık</p>
         </div>
         <div class="stat-card">
             <p class="text-2xl font-bold text-green-400">{{ total_logs }}</p>
-            <p class="text-xs text-gray-600 mt-1">Toplam</p>
+            <p class="text-xs mt-1" style="color:var(--text-muted)">Toplam Log</p>
         </div>
         <div class="stat-card">
             <p class="text-2xl font-bold text-orange-400">{{ max_streak }}🔥</p>
-            <p class="text-xs text-gray-600 mt-1">En uzun</p>
+            <p class="text-xs mt-1" style="color:var(--text-muted)">En Uzun</p>
+        </div>
+    </div>
+
+    <!-- Rozetler -->
+    <div class="glass rounded-2xl p-5 mb-5 slide-up">
+        <p class="text-xs uppercase tracking-widest mb-3 font-semibold" style="color:var(--text-muted)">🏅 Rozetler</p>
+        <div class="flex flex-wrap gap-2">
+            {% if max_streak >= 30 %}<span class="badge badge-gold">🥇 30 Gün Efsane</span>{% endif %}
+            {% if max_streak >= 14 %}<span class="badge badge-gold">🔥 2 Hafta Ateş</span>{% endif %}
+            {% if max_streak >= 7 %}<span class="badge badge-purple">⚡ 7 Gün Streak</span>{% endif %}
+            {% if max_streak >= 3 %}<span class="badge" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981">🌱 3 Gün</span>{% endif %}
+            {% if user.level >= 5 %}<span class="badge badge-purple">🏆 Seviye {{ user.level }}</span>{% endif %}
+            {% if user.habits|length >= 5 %}<span class="badge" style="background:rgba(156,163,175,0.15);border:1px solid rgba(156,163,175,0.3);color:#9ca3af">📋 5 Rutin</span>{% endif %}
+            {% if total_logs >= 100 %}<span class="badge badge-gold">💯 100 Log</span>{% endif %}
+            {% if max_streak == 0 and total_logs == 0 %}<span class="text-xs" style="color:var(--text-muted)">Henüz rozet yok — streak başlat!</span>{% endif %}
         </div>
     </div>
 
@@ -80,29 +142,57 @@
 
     <!-- Profil Düzenle -->
     <div class="glass rounded-2xl p-6 mb-4 slide-up">
-        <p class="text-xs text-gray-500 uppercase tracking-widest mb-5 font-semibold">Profili Düzenle</p>
+        <p class="text-xs uppercase tracking-widest mb-5 font-semibold" style="color:var(--text-muted)">✏️ Profili Düzenle</p>
         <form method="POST" action="/profile">
             <div class="mb-4">
-                <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kullanıcı Adı</label>
+                <label class="text-xs uppercase tracking-widest mb-2 block font-semibold" style="color:var(--text-muted)">Kullanıcı Adı</label>
                 <input type="text" name="username" value="{{ user.username }}" placeholder="Kullanıcı adı">
             </div>
             <div class="mb-4">
-                <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Email</label>
+                <label class="text-xs uppercase tracking-widest mb-2 block font-semibold" style="color:var(--text-muted)">Email</label>
                 <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
             </div>
             <div class="mb-6">
-                <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Yeni Şifre <span class="text-gray-600 normal-case">(boş bırakırsan değişmez)</span></label>
+                <label class="text-xs uppercase tracking-widest mb-2 block font-semibold" style="color:var(--text-muted)">Yeni Şifre <span class="normal-case font-normal" style="color:#4b5563">(boş bırakırsan değişmez)</span></label>
                 <input type="password" name="password" placeholder="••••••••">
             </div>
             <button type="submit" class="btn">Kaydet</button>
         </form>
     </div>
 
-    <!-- Çıkış -->
-    <a href="/logout" class="block text-center text-sm text-gray-600 hover:text-red-400 transition mt-4">
-        Hesaptan çıkış yap →
-    </a>
+    <!-- Tehlikeli Alan -->
+    <div class="glass rounded-2xl p-5 mb-4 slide-up" style="border-color:rgba(239,68,68,0.15)">
+        <p class="text-xs uppercase tracking-widest mb-4 font-semibold" style="color:#f87171">⚠️ Hesap</p>
+        <a href="/logout" class="block text-center text-sm py-2.5 rounded-xl transition" style="background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.2)">
+            Hesaptan çıkış yap →
+        </a>
+    </div>
 
 </div>
+
+<script>
+// Tema
+const saved = localStorage.getItem('theme');
+if(saved) document.documentElement.setAttribute('data-theme', saved);
+
+// Loading screen
+let progress = 0;
+const bar = document.getElementById('loadBar');
+const interval = setInterval(() => {
+    progress += Math.random() * 30;
+    if(progress > 90) progress = 90;
+    bar.style.width = progress + '%';
+}, 200);
+
+window.addEventListener('load', () => {
+    clearInterval(interval);
+    bar.style.width = '100%';
+    setTimeout(() => {
+        const screen = document.getElementById('loadingScreen');
+        screen.style.opacity = '0';
+        setTimeout(() => screen.style.display = 'none', 500);
+    }, 300);
+});
+</script>
 </body>
 </html>
