@@ -504,6 +504,71 @@ def update_avatar():
 
 @app.route('/ai-suggest', methods=['POST'])
 @login_required
+@app.route('/send-weekly-email', methods=['POST'])
+@login_required
+def send_weekly_email():
+    try:
+        import resend
+        resend.api_key = os.environ.get('RESEND_API_KEY')
+        habits = current_user.habits
+        report = []
+        for h in habits:
+            log_dates = {l.date for l in h.logs}
+            week_data = []
+            for i in range(6, -1, -1):
+                d = date.today() - timedelta(days=i)
+                week_data.append({'date': str(d), 'done': str(d) in log_dates})
+            completed_count = sum(1 for w in week_data if w['done'])
+            report.append({
+                'name': h.name,
+                'completed': completed_count,
+                'percent': int((completed_count / 7) * 100),
+                'streak': get_streak(h)
+            })
+        total_percent = int(sum(r['percent'] for r in report) / len(report)) if report else 0
+        rows = ''.join([f"""
+            <tr style="border-bottom:1px solid #1f2937">
+                <td style="padding:12px;color:white">{r['name']}</td>
+                <td style="padding:12px;text-align:center;color:#a5b4fc">{r['completed']}/7</td>
+                <td style="padding:12px;text-align:center;color:{'#4ade80' if r['percent']>=70 else '#fbbf24' if r['percent']>=40 else '#f87171'}">%{r['percent']}</td>
+                <td style="padding:12px;text-align:center;color:#fb923c">🔥{r['streak']}</td>
+            </tr>""" for r in report])
+        html = f"""
+        <div style="background:#060612;padding:40px;font-family:Inter,sans-serif;max-width:600px;margin:0 auto;border-radius:24px">
+            <div style="text-align:center;margin-bottom:32px">
+                <div style="width:64px;height:64px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">🎯</div>
+                <h1 style="color:white;font-size:24px;font-weight:800;margin:0">Haftalık Rapor</h1>
+                <p style="color:#6b7280;margin:8px 0 0">{current_user.username} · Seviye {current_user.level}</p>
+            </div>
+            <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:16px;padding:24px;text-align:center;margin-bottom:24px">
+                <p style="color:#a5b4fc;font-size:13px;margin:0 0 8px">Bu haftaki genel tamamlanma</p>
+                <p style="color:white;font-size:48px;font-weight:900;margin:0">%{total_percent}</p>
+            </div>
+            <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.03);border-radius:16px;overflow:hidden">
+                <thead>
+                    <tr style="background:rgba(99,102,241,0.2)">
+                        <th style="padding:12px;text-align:left;color:#a5b4fc;font-size:12px">Alışkanlık</th>
+                        <th style="padding:12px;text-align:center;color:#a5b4fc;font-size:12px">Gün</th>
+                        <th style="padding:12px;text-align:center;color:#a5b4fc;font-size:12px">Oran</th>
+                        <th style="padding:12px;text-align:center;color:#a5b4fc;font-size:12px">Streak</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+            <div style="text-align:center;margin-top:32px">
+                <a href="https://rutin-takipci.onrender.com" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:12px 32px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px">Uygulamayı Aç →</a>
+            </div>
+            <p style="color:#374151;font-size:11px;text-align:center;margin-top:24px">rutin-takipci.onrender.com</p>
+        </div>"""
+        resend.Emails.send({
+            "from": "Rutin Takipçi <onboarding@resend.dev>",
+            "to": current_user.email,
+            "subject": f"📊 Haftalık Rapor — %{total_percent} tamamlandı",
+            "html": html
+        })
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 def ai_suggest():
     try:
         import anthropic

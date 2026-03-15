@@ -447,7 +447,11 @@
             <button onclick="document.getElementById('reportModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
         </div>
         <div id="reportContent"></div>
-        <button onclick="downloadReport()" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold mt-4">⬇ İndir</button>
+        <div class="flex gap-2 mt-4">
+    <button onclick="downloadReport()" class="btn-primary flex-1 py-3 rounded-xl text-sm font-semibold">⬇ İndir</button>
+    <button onclick="sendEmailReport()" id="emailBtn" class="flex-1 py-3 rounded-xl text-sm font-semibold" style="background:rgba(16,185,129,0.15);color:#4ade80;border:1px solid rgba(16,185,129,0.3)">📧 Email Gönder</button>
+</div>
+<p id="emailMsg" class="hidden text-xs text-center mt-2 text-green-400"></p>
     </div>
 </div>
 
@@ -1233,6 +1237,21 @@ function openReport(){
     });
 }
 function downloadReport(){
+    function sendEmailReport(){
+    const btn=document.getElementById('emailBtn');
+    btn.textContent='Gönderiliyor...';btn.disabled=true;
+    fetch('/send-weekly-email',{method:'POST'}).then(r=>r.json()).then(data=>{
+        if(data.status==='ok'){
+            btn.textContent='✓ Gönderildi';
+            document.getElementById('emailMsg').textContent='Email adresine gönderildi!';
+            document.getElementById('emailMsg').classList.remove('hidden');
+        } else {
+            btn.textContent='❌ Hata';
+            document.getElementById('emailMsg').textContent=data.message||'Bir hata oluştu.';
+            document.getElementById('emailMsg').classList.remove('hidden');
+        }
+    });
+}
     const data=document.getElementById('reportModal')._data;
     if(!data)return;
     let text=`HAFTALIK RAPOR — ${data.week_start} / ${data.week_end}\nKullanıcı: ${data.username} | Seviye ${data.level}\n\n`;
