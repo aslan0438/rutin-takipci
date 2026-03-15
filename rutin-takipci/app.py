@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_dance.contrib.google import make_google_blueprint, google
 from datetime import date, timedelta
 import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'rutin-takipci-secret-2024')
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///rutin.db')
 if database_url.startswith('postgres://'):
@@ -17,6 +19,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'landing'
+
+google_bp = make_google_blueprint(
+    client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+    client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
+    scope=['profile', 'email'],
+    redirect_url='/auth/google/callback'
+)
+app.register_blueprint(google_bp, url_prefix='/login')
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -188,6 +198,34 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('landing'))
+
+@app.route('/auth/google/callback')
+def google_callback():
+    if not google.authorized:
+        return redirect(url_for('login'))
+    resp = google.get('/oauth2/v2/userinfo')
+    if not resp.ok:
+        return redirect(url_for('login'))
+    info = resp.json()
+    email = info['email']
+    name = info.get('name', email.split('@')[0]).replace(' ', '_')
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        username = name
+        counter = 1
+        while User.query.filter_by(username=username).first():
+            username = f'{name}{counter}'
+            counter += 1
+        user = User(username=username, email=email,
+                   password=generate_password_hash(os.urandom(16).hex()))
+        db.session.add(user)
+        db.session.commit()
+    login_user(user)
+    return redirect(url_for('index'))
+
+@app.route('/login/google')
+def google_login():
+    return redirect(url_for('google.login'))
 
 @app.route('/add', methods=['POST'])
 @login_required
