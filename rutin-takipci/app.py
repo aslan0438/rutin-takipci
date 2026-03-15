@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_dance.contrib.google import make_google_blueprint, google
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import os
 
 app = Flask(__name__)
@@ -74,6 +74,14 @@ class Friendship(db.Model):
     friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     status = db.Column(db.String(20), default='accepted')
 
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    message = db.Column(db.String(300), nullable=False)
+    type = db.Column(db.String(20), default='info')
+    read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.String(20), nullable=False)
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -113,6 +121,15 @@ def add_xp(user, amount):
         user.xp -= calc_xp_for_level(user.level)
         user.level += 1
 
+def create_notification(user_id, message, type='info'):
+    notif = Notification(
+        user_id=user_id,
+        message=message,
+        type=type,
+        created_at=datetime.now().strftime('%Y-%m-%d %H:%M')
+    )
+    db.session.add(notif)
+
 @app.route('/landing')
 def landing():
     if current_user.is_authenticated:
@@ -140,12 +157,13 @@ def index():
     xp_percent = int((current_user.xp / xp_needed) * 100) if xp_needed > 0 else 0
     todos = Todo.query.filter_by(user_id=current_user.id, date=today).all()
     show_onboarding = not current_user.onboarded and total == 0
+    unread_notifs = Notification.query.filter_by(user_id=current_user.id, read=False).count()
     return render_template('index.html',
         habits=habits, archived_habits=archived_habits, today=today, today_logs=today_logs,
         streaks=streaks, weekly=weekly, weekly_counts=weekly_counts,
         total=total, completed=completed, percent=percent,
         user=current_user, xp_needed=xp_needed, xp_percent=xp_percent,
-        todos=todos, show_onboarding=show_onboarding)
+        todos=todos, show_onboarding=show_onboarding, unread_notifs=unread_notifs)
 
 @app.route('/onboarding', methods=['POST'])
 @login_required
@@ -220,6 +238,8 @@ def google_callback():
                    password=generate_password_hash(os.urandom(16).hex()))
         db.session.add(user)
         db.session.commit()
+        create_notification(user.id, f'🎉 Hoş geldin {user.username}! Rutin Takipçi\'ye katıldın.', 'success')
+        db.session.commit()
     login_user(user)
     return redirect(url_for('index'))
 
@@ -240,6 +260,7 @@ def add_habit():
         habit = Habit(name=name, category=category, category_emoji=category_emoji,
                      note=note, priority=priority, user_id=current_user.id, order=max_order+1)
         db.session.add(habit)
+        create_notification(current_user.id, f'📌 "{name}" alışkanlığı eklendi!', 'info')
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -273,6 +294,10 @@ def complete(habit_id):
         log = HabitLog(habit_id=habit_id, date=today)
         db.session.add(log)
         add_xp(current_user, 20)
+        streak = get_streak(habit) + 1
+        create_notification(current_user.id, f'✅ "{habit.name}" tamamlandı! +20 XP', 'success')
+        if streak in [3, 7, 14, 30]:
+            create_notification(current_user.id, f'🔥 {streak} gün streak! "{habit.name}" için tebrikler!', 'achievement')
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -286,6 +311,7 @@ def freeze_habit(habit_id):
         log = HabitLog(habit_id=habit_id, date=yesterday, is_freeze=True)
         db.session.add(log)
         current_user.freeze_count -= 1
+        create_notification(current_user.id, f'❄️ "{habit.name}" için freeze kullanıldı. {current_user.freeze_count} hakkın kaldı.', 'info')
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -294,6 +320,10 @@ def freeze_habit(habit_id):
 def archive_habit(habit_id):
     habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
     habit.archived = not habit.archived
+    if habit.archived:
+        create_notification(current_user.id, f'📦 "{habit.name}" arşivlendi.', 'info')
+    else:
+        create_notification(current_user.id, f'📌 "{habit.name}" arşivden çıkarıldı.', 'info')
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -301,6 +331,7 @@ def archive_habit(habit_id):
 @login_required
 def delete(habit_id):
     habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    create_notification(current_user.id, f'🗑 "{habit.name}" silindi.', 'warning')
     db.session.delete(habit)
     db.session.commit()
     return redirect(url_for('index'))
@@ -503,6 +534,7 @@ def friend_add():
     if not existing:
         db.session.add(Friendship(user_id=current_user.id, friend_id=user.id))
         db.session.add(Friendship(user_id=user.id, friend_id=current_user.id))
+        create_notification(current_user.id, f'👥 {user.username} arkadaş olarak eklendi!', 'info')
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -543,6 +575,31 @@ def profile():
     total_logs = sum(len(h.logs) for h in current_user.habits)
     max_streak = max((get_streak(h) for h in current_user.habits), default=0)
     return render_template('profile.html', user=current_user, total_logs=total_logs, max_streak=max_streak)
+
+@app.route('/notifications')
+@login_required
+def get_notifications():
+    notifs = Notification.query.filter_by(user_id=current_user.id).order_by(Notification.id.desc()).limit(20).all()
+    return jsonify([{
+        'id': n.id,
+        'message': n.message,
+        'type': n.type,
+        'read': n.read,
+        'created_at': n.created_at
+    } for n in notifs])
+
+@app.route('/notifications/read', methods=['POST'])
+@login_required
+def mark_notifications_read():
+    Notification.query.filter_by(user_id=current_user.id, read=False).update({'read': True})
+    db.session.commit()
+    return jsonify({'status': 'ok'})
+
+@app.route('/notifications/unread-count')
+@login_required
+def unread_count():
+    count = Notification.query.filter_by(user_id=current_user.id, read=False).count()
+    return jsonify({'count': count})
 
 @app.route('/send-weekly-email', methods=['POST'])
 @login_required

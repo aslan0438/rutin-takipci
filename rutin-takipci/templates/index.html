@@ -107,9 +107,8 @@
 
         .cal-day{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.2s}
         .cal-done{background:rgba(99,102,241,0.4);color:#a5b4fc}
-        .cal-freeze{background:rgba(59,130,246,0.4);color:#93c5fd}
         .cal-miss{background:rgba(255,255,255,0.04);color:#374151}
-        .cal-done:hover,.cal-freeze:hover{background:rgba(239,68,68,0.4)}
+        .cal-done:hover{background:rgba(239,68,68,0.4)}
         .cal-miss:hover{background:rgba(99,102,241,0.3)}
 
         .note-text{font-size:11px;margin-top:2px;font-style:italic;color:var(--text-muted)}
@@ -565,6 +564,20 @@
     </div>
 </div>
 
+<!-- BİLDİRİM MODAL -->
+<div id="notifModal" class="modal hidden">
+    <div class="modal-box" style="max-width:400px;text-align:left;max-height:85vh;overflow-y:auto">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">📨 Bildirimler</p>
+                <p class="text-sm font-bold text-white mt-0.5">Son aktiviteler</p>
+            </div>
+            <button onclick="closeNotifications()" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div id="notifList"></div>
+    </div>
+</div>
+
 <!-- TAKVİM MODAL -->
 <div id="calendarModal" class="modal hidden">
     <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
@@ -592,7 +605,6 @@
         <div id="calModalGrid" class="grid grid-cols-7 gap-1"></div>
         <div class="flex gap-3 mt-4 text-xs" style="color:var(--text-muted)">
             <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(99,102,241,0.5);display:inline-block"></span>Tamamlandı</span>
-            <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(59,130,246,0.4);display:inline-block"></span>Freeze</span>
             <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(255,255,255,0.05);display:inline-block"></span>Boş</span>
         </div>
     </div>
@@ -621,10 +633,12 @@
                 <button onclick="openLeaderboard()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Liderboard">🏆</button>
                 <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Müzik">🎵</button>
                 <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Hatırlatıcı">🔔</button>
+                <button onclick="openNotifications()" class="text-xs px-2 py-1 rounded-lg relative" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Bildirimler">
+                    📨{% if unread_notifs > 0 %}<span id="notifBadge" style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#ef4444;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:bold">{{ unread_notifs }}</span>{% endif %}
+                </button>
                 <button onclick="openFriends()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Arkadaşlar">👥</button>
                 <button onclick="document.getElementById('themeModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Tema">🎨</button>
                 <button onclick="toggleDarkMode()" id="darkModeBtn" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Mod">🌙</button>
-                
                 <a href="/logout" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">Çıkış</a>
             </div>
             <p id="clock" class="text-xl font-bold text-indigo-400 tabular-nums"></p>
@@ -638,7 +652,7 @@
             <div class="flex items-center gap-2">
                 <span>⚡</span>
                 <div>
-                    <p class="text-sm font-bold" id="levelText">Seviye {{ user.level }}</p>
+                    <p class="text-sm font-bold">Seviye {{ user.level }}</p>
                     <p class="text-xs" style="color:var(--text-muted)">{{ user.xp }} / {{ xp_needed }} XP</p>
                 </div>
             </div>
@@ -654,7 +668,7 @@
 
     <!-- Quote -->
     <div class="quote-card mb-5 slide-up">
-        <p class="text-xs text-indigo-400 uppercase tracking-widest mb-2 font-semibold">💡 <span id="quoteLabel">Günün Sözü</span></p>
+        <p class="text-xs text-indigo-400 uppercase tracking-widest mb-2 font-semibold">💡 Günün Sözü</p>
         <p id="quote" class="text-sm leading-relaxed italic" style="color:var(--text-secondary)"></p>
     </div>
 
@@ -679,18 +693,18 @@
 
     {% if total > 0 %}
     <div class="grid grid-cols-3 gap-3 mb-5 slide-up">
-        <div class="stat-card"><p class="text-2xl font-bold text-indigo-400">{{ total }}</p><p class="text-xs mt-1 stat-habits" style="color:var(--stat-sub)">Alışkanlık</p></div>
-        <div class="stat-card"><p class="text-2xl font-bold text-green-400">{{ completed }}</p><p class="text-xs mt-1 stat-today" style="color:var(--stat-sub)">Bugün</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold text-indigo-400">{{ total }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Alışkanlık</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold text-green-400">{{ completed }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Bugün</p></div>
         <div class="stat-card">
             {% set max_streak = namespace(val=0) %}
             {% for h in habits %}{% if streaks[h.id|string] > max_streak.val %}{% set max_streak.val = streaks[h.id|string] %}{% endif %}{% endfor %}
-            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p><p class="text-xs mt-1 stat-longest" style="color:var(--stat-sub)">En uzun</p>
+            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p><p class="text-xs mt-1" style="color:var(--stat-sub)">En uzun</p>
         </div>
     </div>
 
     <div class="glass rounded-2xl p-5 mb-5 slide-up">
         <div class="flex justify-between items-center mb-4">
-            <p class="text-xs uppercase tracking-widest font-semibold stat-progress" style="color:var(--text-muted)">Bugünkü İlerleme</p>
+            <p class="text-xs uppercase tracking-widest font-semibold" style="color:var(--text-muted)">Bugünkü İlerleme</p>
             <div class="flex items-center gap-2">
                 <p class="text-xl font-bold {% if percent == 100 %}text-green-400{% elif percent >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">%{{ percent }}</p>
                 <button onclick="openShare()" class="px-3 py-1.5 rounded-lg text-xs font-semibold" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)">📤 Paylaş</button>
@@ -948,27 +962,8 @@ function toggleDarkMode(){
 const _ct=localStorage.getItem('theme')||'dark';
 document.getElementById('darkModeBtn').textContent=_ct==='light'?'☀️':'🌙';
 
-// DİL
-const translations={
-    TR:{quoteLabel:'Günün Sözü',habits:'Alışkanlık',today:'Bugün',longest:'En uzun',progress:'Bugünkü İlerleme',complete:'Tamamla',loading:'Yükleniyor...'},
-    EN:{quoteLabel:'Quote of the Day',habits:'Habits',today:'Today',longest:'Longest',progress:"Today's Progress",complete:'Complete',loading:'Loading...'}
-};
-const quotesEN=["Success is the sum of small efforts repeated daily.","Discipline is what you have when motivation is gone.","Great results come from consistent small steps.","What is hard today becomes habit tomorrow.","You will wish you had started a year ago.","Progress is more important than perfection.","Getting a little better every day is enough.","Your routines build you; you build your routines.","Small habits create big identities.","The step you take today is tomorrow's foundation."];
-const quotesTR=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
-let currentLang=localStorage.getItem('lang')||'TR';
-function applyLang(){
-    const t=translations[currentLang];
-    const quotes=currentLang==='TR'?quotesTR:quotesEN;
-    document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
-    if(document.getElementById('quoteLabel'))document.getElementById('quoteLabel').textContent=t.quoteLabel;
-    document.getElementById('langBtn').textContent=currentLang;
-}
-function toggleLang(){
-    currentLang=currentLang==='TR'?'EN':'TR';
-    localStorage.setItem('lang',currentLang);
-    applyLang();
-}
-applyLang();
+const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
+document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
 
 // ONBOARDING
 const selectedHabits={};
@@ -1007,6 +1002,26 @@ function toggleArchive(){
     const chevron=document.getElementById('archiveChevron');
     if(list){list.classList.toggle('hidden');chevron.textContent=list.classList.contains('hidden')?'▼':'▲';}
 }
+
+// BİLDİRİMLER
+function openNotifications(){
+    document.getElementById('notifModal').classList.remove('hidden');
+    fetch('/notifications').then(r=>r.json()).then(data=>{
+        const list=document.getElementById('notifList');
+        if(!data.length){list.innerHTML='<p class="text-gray-500 text-sm text-center py-4">Henüz bildirim yok</p>';return;}
+        const colors={'success':'rgba(16,185,129,0.1)','achievement':'rgba(251,191,36,0.1)','warning':'rgba(239,68,68,0.1)','info':'rgba(99,102,241,0.1)'};
+        const borders={'success':'rgba(16,185,129,0.2)','achievement':'rgba(251,191,36,0.2)','warning':'rgba(239,68,68,0.2)','info':'rgba(99,102,241,0.2)'};
+        list.innerHTML=data.map(n=>`
+            <div class="p-3 rounded-xl mb-2 ${n.read?'opacity-60':''}" style="background:${colors[n.type]||colors.info};border:1px solid ${borders[n.type]||borders.info}">
+                <p class="text-sm">${n.message}</p>
+                <p class="text-xs mt-1" style="color:var(--text-muted)">${n.created_at}</p>
+            </div>`).join('');
+        fetch('/notifications/read',{method:'POST'});
+        const badge=document.getElementById('notifBadge');
+        if(badge)badge.remove();
+    });
+}
+function closeNotifications(){document.getElementById('notifModal').classList.add('hidden');}
 
 // KONFETİ
 function fireConfetti(){
@@ -1144,8 +1159,7 @@ function renderCalModal(){
         div.style.background=isDone?'rgba(99,102,241,0.5)':'rgba(255,255,255,0.04)';
         div.style.color=isDone?'#a5b4fc':'#6b7280';
         if(ds===todayStr)div.style.outline='2px solid #6366f1';
-        div.textContent=d;
-        div.title=ds;
+        div.textContent=d;div.title=ds;
         div.onclick=()=>{
             const form=document.createElement('form');
             form.method='POST';
