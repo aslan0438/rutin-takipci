@@ -41,6 +41,7 @@ class Habit(db.Model):
     order = db.Column(db.Integer, default=0)
     weekly_goal = db.Column(db.Integer, default=7)
     priority = db.Column(db.String(10), default='normal')
+    archived = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     logs = db.relationship('HabitLog', backref='habit', lazy=True, cascade='all, delete-orphan')
 
@@ -112,7 +113,8 @@ def landing():
 @login_required
 def index():
     today = str(date.today())
-    habits = Habit.query.filter_by(user_id=current_user.id).order_by(Habit.order).all()
+    habits = Habit.query.filter_by(user_id=current_user.id, archived=False).order_by(Habit.order).all()
+    archived_habits = Habit.query.filter_by(user_id=current_user.id, archived=True).all()
     today_logs = []
     for h in habits:
         for l in h.logs:
@@ -129,7 +131,7 @@ def index():
     todos = Todo.query.filter_by(user_id=current_user.id, date=today).all()
     show_onboarding = not current_user.onboarded and total == 0
     return render_template('index.html',
-        habits=habits, today=today, today_logs=today_logs,
+        habits=habits, archived_habits=archived_habits, today=today, today_logs=today_logs,
         streaks=streaks, weekly=weekly, weekly_counts=weekly_counts,
         total=total, completed=completed, percent=percent,
         user=current_user, xp_needed=xp_needed, xp_percent=xp_percent,
@@ -247,6 +249,14 @@ def freeze_habit(habit_id):
         db.session.add(log)
         current_user.freeze_count -= 1
         db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/archive/<int:habit_id>')
+@login_required
+def archive_habit(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    habit.archived = not habit.archived
+    db.session.commit()
     return redirect(url_for('index'))
 
 @app.route('/delete/<int:habit_id>')
@@ -458,6 +468,18 @@ def friend_add():
         db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/avatar', methods=['POST'])
+@login_required
+def update_avatar():
+    new_avatar = request.form.get('avatar')
+    new_avatar_color = request.form.get('avatar_color')
+    if new_avatar:
+        current_user.avatar = new_avatar
+    if new_avatar_color:
+        current_user.avatar_color = new_avatar_color
+    db.session.commit()
+    return redirect(url_for('index'))
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -477,12 +499,6 @@ def profile():
             current_user.email = new_email
         if new_password and len(new_password) >= 6:
             current_user.password = generate_password_hash(new_password)
-        new_avatar = request.form.get('avatar')
-        new_avatar_color = request.form.get('avatar_color')
-        if new_avatar:
-            current_user.avatar = new_avatar
-        if new_avatar_color:
-            current_user.avatar_color = new_avatar_color
         db.session.commit()
         flash('Profil güncellendi!')
         return redirect(url_for('profile'))
@@ -490,20 +506,6 @@ def profile():
     max_streak = max((get_streak(h) for h in current_user.habits), default=0)
     return render_template('profile.html', user=current_user, total_logs=total_logs, max_streak=max_streak)
 
-@app.route('/avatar', methods=['POST'])
-@login_required
-def update_avatar():
-    new_avatar = request.form.get('avatar')
-    new_avatar_color = request.form.get('avatar_color')
-    if new_avatar:
-        current_user.avatar = new_avatar
-    if new_avatar_color:
-        current_user.avatar_color = new_avatar_color
-    db.session.commit()
-    return redirect(url_for('index'))
-
-@app.route('/ai-suggest', methods=['POST'])
-@login_required
 @app.route('/send-weekly-email', methods=['POST'])
 @login_required
 def send_weekly_email():
@@ -569,6 +571,9 @@ def send_weekly_email():
         return jsonify({'status': 'ok'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/ai-suggest', methods=['POST'])
+@login_required
 def ai_suggest():
     try:
         import anthropic

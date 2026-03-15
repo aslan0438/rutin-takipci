@@ -86,11 +86,6 @@
         @keyframes themeSwitch{0%{opacity:0;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
         .theme-switching{animation:themeSwitch 0.4s ease forwards}
 
-        @keyframes deleteShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-        .delete-shake{animation:deleteShake 0.3s ease}
-
-        @keyframes celebrationBurst{0%{transform:scale(0) rotate(0deg);opacity:1}100%{transform:scale(3) rotate(180deg);opacity:0}}
-
         input,select,textarea{background:var(--input-bg)!important;border:1px solid var(--input-border)!important;color:var(--text)!important;transition:all 0.3s}
         input:focus,select:focus,textarea:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important;outline:none!important}
         input::placeholder,textarea::placeholder{color:var(--text-muted)!important;opacity:0.6}
@@ -149,18 +144,21 @@
         .priority-btn.active-normal{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:#a5b4fc}
         .priority-btn.active-low{background:rgba(107,114,128,0.2);border-color:rgba(107,114,128,0.3);color:#9ca3af}
 
-        .goal-btn{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);background:transparent}
         .weekly-goal-bar{height:4px;border-radius:99px;background:rgba(255,255,255,0.06);margin-top:6px;overflow:hidden}
         .weekly-goal-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width 0.5s ease}
 
-        /* Silme onayı */
-        .delete-confirm{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:inherit;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(4px);z-index:10}
+        @media(max-width:640px){
+            .btn-row{flex-wrap:wrap;gap:4px}
+            .habit-btns{gap:1px}
+            .habit-btns .w-8{width:28px;height:28px}
+        }
 
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:99px}
     </style>
 </head>
 <body>
+
 <!-- LOADING SCREEN -->
 <div id="loadingScreen" style="position:fixed;inset:0;background:#060612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
     <div style="width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:20px;box-shadow:0 0 40px rgba(99,102,241,0.5)">🎯</div>
@@ -448,10 +446,10 @@
         </div>
         <div id="reportContent"></div>
         <div class="flex gap-2 mt-4">
-    <button onclick="downloadReport()" class="btn-primary flex-1 py-3 rounded-xl text-sm font-semibold">⬇ İndir</button>
-    <button onclick="sendEmailReport()" id="emailBtn" class="flex-1 py-3 rounded-xl text-sm font-semibold" style="background:rgba(16,185,129,0.15);color:#4ade80;border:1px solid rgba(16,185,129,0.3)">📧 Email Gönder</button>
-</div>
-<p id="emailMsg" class="hidden text-xs text-center mt-2 text-green-400"></p>
+            <button onclick="downloadReport()" class="btn-primary flex-1 py-3 rounded-xl text-sm font-semibold">⬇ İndir</button>
+            <button onclick="sendEmailReport()" id="emailBtn" class="flex-1 py-3 rounded-xl text-sm font-semibold" style="background:rgba(16,185,129,0.15);color:#4ade80;border:1px solid rgba(16,185,129,0.3)">📧 Email Gönder</button>
+        </div>
+        <p id="emailMsg" class="hidden text-xs text-center mt-2 text-green-400"></p>
     </div>
 </div>
 
@@ -554,7 +552,7 @@
     </div>
 </div>
 
-<!-- SİLME ONAY MODAL -->
+<!-- SİLME ONAY -->
 <div id="deleteModal" class="modal hidden">
     <div class="modal-box" style="max-width:320px">
         <div class="text-4xl mb-4">🗑️</div>
@@ -563,6 +561,39 @@
         <div class="flex gap-3">
             <button onclick="document.getElementById('deleteModal').classList.add('hidden')" class="flex-1 py-3 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,0.05);color:#a1a1aa">İptal</button>
             <a id="deleteConfirmBtn" href="#" class="flex-1 py-3 rounded-xl text-sm font-semibold text-center" style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.3)">Sil</a>
+        </div>
+    </div>
+</div>
+
+<!-- TAKVİM MODAL -->
+<div id="calendarModal" class="modal hidden">
+    <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto;text-align:left">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <p class="text-xs text-indigo-400 uppercase tracking-widest font-semibold">📅 Takvim</p>
+                <p class="text-sm font-bold text-white mt-0.5" id="calModalHabitName"></p>
+            </div>
+            <button onclick="document.getElementById('calendarModal').classList.add('hidden')" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div class="flex items-center justify-between mb-4">
+            <button onclick="changeCalMonth(-1)" class="px-3 py-1.5 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);color:#a1a1aa">← Önceki</button>
+            <p id="calModalMonth" class="text-sm font-bold"></p>
+            <button onclick="changeCalMonth(1)" class="px-3 py-1.5 rounded-lg text-sm" style="background:rgba(255,255,255,0.05);color:#a1a1aa">Sonraki →</button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 mb-2">
+            <p class="text-center text-xs text-gray-500 py-1">Pzt</p>
+            <p class="text-center text-xs text-gray-500 py-1">Sal</p>
+            <p class="text-center text-xs text-gray-500 py-1">Çar</p>
+            <p class="text-center text-xs text-gray-500 py-1">Per</p>
+            <p class="text-center text-xs text-gray-500 py-1">Cum</p>
+            <p class="text-center text-xs text-gray-500 py-1">Cmt</p>
+            <p class="text-center text-xs text-gray-500 py-1">Paz</p>
+        </div>
+        <div id="calModalGrid" class="grid grid-cols-7 gap-1"></div>
+        <div class="flex gap-3 mt-4 text-xs" style="color:var(--text-muted)">
+            <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(99,102,241,0.5);display:inline-block"></span>Tamamlandı</span>
+            <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(59,130,246,0.4);display:inline-block"></span>Freeze</span>
+            <span class="flex items-center gap-1"><span style="width:10px;height:10px;border-radius:3px;background:rgba(255,255,255,0.05);display:inline-block"></span>Boş</span>
         </div>
     </div>
 </div>
@@ -583,15 +614,17 @@
             <p class="text-xs pl-16 mt-1" style="color:var(--text-muted)">{{ today }}</p>
         </div>
         <div class="flex flex-col items-end gap-1.5">
-            <div class="flex items-center gap-1 flex-wrap justify-end">
-                <button onclick="openStats()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📊</button>
-                <button onclick="openReport()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📋</button>
-                <button onclick="openMonthly()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">📅</button>
-                <button onclick="openLeaderboard()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🏆</button>
-                <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🎵</button>
-                <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🔔</button>
-                <button onclick="openFriends()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">👥</button>
-                <button onclick="document.getElementById('themeModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🎨</button>
+            <div class="flex items-center gap-1 flex-wrap justify-end btn-row">
+                <button onclick="openStats()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="İstatistik">📊</button>
+                <button onclick="openReport()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Rapor">📋</button>
+                <button onclick="openMonthly()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Aylık">📅</button>
+                <button onclick="openLeaderboard()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Liderboard">🏆</button>
+                <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Müzik">🎵</button>
+                <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Hatırlatıcı">🔔</button>
+                <button onclick="openFriends()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Arkadaşlar">👥</button>
+                <button onclick="document.getElementById('themeModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Tema">🎨</button>
+                <button onclick="toggleDarkMode()" id="darkModeBtn" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Mod">🌙</button>
+                <button onclick="toggleLang()" id="langBtn" class="text-xs px-2 py-1 rounded-lg font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Dil">TR</button>
                 <a href="/logout" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">Çıkış</a>
             </div>
             <p id="clock" class="text-xl font-bold text-indigo-400 tabular-nums"></p>
@@ -605,7 +638,7 @@
             <div class="flex items-center gap-2">
                 <span>⚡</span>
                 <div>
-                    <p class="text-sm font-bold">Seviye {{ user.level }}</p>
+                    <p class="text-sm font-bold" id="levelText">Seviye {{ user.level }}</p>
                     <p class="text-xs" style="color:var(--text-muted)">{{ user.xp }} / {{ xp_needed }} XP</p>
                 </div>
             </div>
@@ -621,7 +654,7 @@
 
     <!-- Quote -->
     <div class="quote-card mb-5 slide-up">
-        <p class="text-xs text-indigo-400 uppercase tracking-widest mb-2 font-semibold">💡 Günün Sözü</p>
+        <p class="text-xs text-indigo-400 uppercase tracking-widest mb-2 font-semibold">💡 <span id="quoteLabel">Günün Sözü</span></p>
         <p id="quote" class="text-sm leading-relaxed italic" style="color:var(--text-secondary)"></p>
     </div>
 
@@ -646,18 +679,18 @@
 
     {% if total > 0 %}
     <div class="grid grid-cols-3 gap-3 mb-5 slide-up">
-        <div class="stat-card"><p class="text-2xl font-bold text-indigo-400">{{ total }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Alışkanlık</p></div>
-        <div class="stat-card"><p class="text-2xl font-bold text-green-400">{{ completed }}</p><p class="text-xs mt-1" style="color:var(--stat-sub)">Bugün</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold text-indigo-400">{{ total }}</p><p class="text-xs mt-1 stat-habits" style="color:var(--stat-sub)">Alışkanlık</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold text-green-400">{{ completed }}</p><p class="text-xs mt-1 stat-today" style="color:var(--stat-sub)">Bugün</p></div>
         <div class="stat-card">
             {% set max_streak = namespace(val=0) %}
             {% for h in habits %}{% if streaks[h.id|string] > max_streak.val %}{% set max_streak.val = streaks[h.id|string] %}{% endif %}{% endfor %}
-            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p><p class="text-xs mt-1" style="color:var(--stat-sub)">En uzun</p>
+            <p class="text-2xl font-bold text-orange-400">{{ max_streak.val }}🔥</p><p class="text-xs mt-1 stat-longest" style="color:var(--stat-sub)">En uzun</p>
         </div>
     </div>
 
     <div class="glass rounded-2xl p-5 mb-5 slide-up">
         <div class="flex justify-between items-center mb-4">
-            <p class="text-xs uppercase tracking-widest font-semibold" style="color:var(--text-muted)">Bugünkü İlerleme</p>
+            <p class="text-xs uppercase tracking-widest font-semibold stat-progress" style="color:var(--text-muted)">Bugünkü İlerleme</p>
             <div class="flex items-center gap-2">
                 <p class="text-xl font-bold {% if percent == 100 %}text-green-400{% elif percent >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">%{{ percent }}</p>
                 <button onclick="openShare()" class="px-3 py-1.5 rounded-lg text-xs font-semibold" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)">📤 Paylaş</button>
@@ -779,17 +812,19 @@
                             </div>
                         {% endif %}
                     </div>
-                    <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                    <div class="flex items-center gap-1 flex-shrink-0 ml-2 habit-btns">
                         {% if streak > 0 %}
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
                         <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)" title="Haftalık hedef">🎯</button>
                         <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
                         <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
+                        <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)" title="Takvim">📅</button>
                         {% if not done %}
                         <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
                         <a href="/freeze/{{ habit.id }}" title="Dünü freeze ile koru" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)">❄️</a>
                         {% endif %}
+                        <a href="/archive/{{ habit.id }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Arşivle" onmouseover="this.style.background='rgba(245,158,11,0.15)';this.style.color='#fbbf24'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">📦</a>
                         <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</button>
                     </div>
                 </div>
@@ -804,22 +839,35 @@
                 </div>
 
                 <div class="flex items-center gap-2 mt-2">
-                    <div class="weekly-goal-bar flex-1">
-                        <div class="weekly-goal-fill" style="width:{{ wpct }}%"></div>
+                    <div style="height:4px;border-radius:99px;background:rgba(255,255,255,0.06);flex:1;overflow:hidden">
+                        <div style="width:{{ wpct }}%;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width 0.5s ease"></div>
                     </div>
                     <span class="text-xs font-semibold {% if wpct >= 100 %}text-green-400{% elif wpct >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">{{ wcount }}/{{ habit.weekly_goal }}</span>
                 </div>
-
-                <div id="cal-{{ habit.id }}" class="hidden mt-3">
-                    <p class="text-xs mb-2" style="color:var(--text-muted)">Son 28 gün</p>
-                    <div class="grid grid-cols-7 gap-1" id="calGrid-{{ habit.id }}"></div>
-                </div>
-                <button onclick="toggleCalendar({{ habit.id }})" class="text-xs mt-2" style="color:var(--text-muted)">📅 Takvim</button>
             </div>
             {% endfor %}
             </div>
         </div>
         {% endfor %}
+
+        <!-- ARŞİV -->
+        {% if archived_habits %}
+        <div class="glass rounded-2xl p-5 mb-5 slide-up">
+            <button onclick="toggleArchive()" class="w-full flex items-center justify-between">
+                <p class="text-xs uppercase tracking-widest font-semibold" style="color:var(--text-muted)">📦 Arşiv ({{ archived_habits|length }})</p>
+                <span id="archiveChevron" class="text-gray-500 text-xs">▼</span>
+            </button>
+            <div id="archiveList" class="hidden mt-4 space-y-2">
+                {% for habit in archived_habits %}
+                <div class="flex items-center justify-between p-3 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);opacity:0.7">
+                    <p class="text-sm" style="color:var(--text-muted)">{{ habit.category_emoji }} {{ habit.name }}</p>
+                    <a href="/archive/{{ habit.id }}" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(99,102,241,0.15);color:#a5b4fc">Geri Al</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
     {% else %}
         <div class="text-center mt-20 slide-up">
             <div class="w-20 h-20 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-5 pulse-glow" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">🎯</div>
@@ -834,32 +882,32 @@
 {% endif %}
 
 <script>
-// LOADING SCREEN
-const loadingMessages = ['Alışkanlıklar yükleniyor...','Streak hesaplanıyor...','XP toparlanıyor...','Hazırlanıyor...'];
-let loadProgress = 0;
-let loadMsgIndex = 0;
-const loadBar = document.getElementById('loadBar');
-const loadingText = document.getElementById('loadingText');
-const loadInterval = setInterval(() => {
-    loadProgress += Math.random() * 25;
-    if(loadProgress > 85) loadProgress = 85;
-    loadBar.style.width = loadProgress + '%';
-    loadMsgIndex = (loadMsgIndex + 1) % loadingMessages.length;
-    loadingText.textContent = loadingMessages[loadMsgIndex];
-}, 400);
-window.addEventListener('load', () => {
-    clearInterval(loadInterval);
-    loadBar.style.width = '100%';
-    setTimeout(() => {
-        const screen = document.getElementById('loadingScreen');
-        screen.style.opacity = '0';
-        setTimeout(() => screen.style.display = 'none', 600);
-    }, 400);
-});
 const today="{{ today }}";
 const percent={{ percent }};
 const completed={{ completed }};
 const total={{ total }};
+
+// LOADING SCREEN
+const loadingMessages=['Alışkanlıklar yükleniyor...','Streak hesaplanıyor...','XP toparlanıyor...','Hazırlanıyor...'];
+let loadProgress=0,loadMsgIndex=0;
+const loadBar=document.getElementById('loadBar');
+const loadingText=document.getElementById('loadingText');
+const loadInterval=setInterval(()=>{
+    loadProgress+=Math.random()*25;
+    if(loadProgress>85)loadProgress=85;
+    loadBar.style.width=loadProgress+'%';
+    loadMsgIndex=(loadMsgIndex+1)%loadingMessages.length;
+    loadingText.textContent=loadingMessages[loadMsgIndex];
+},400);
+window.addEventListener('load',()=>{
+    clearInterval(loadInterval);
+    loadBar.style.width='100%';
+    setTimeout(()=>{
+        const screen=document.getElementById('loadingScreen');
+        screen.style.opacity='0';
+        setTimeout(()=>screen.style.display='none',600);
+    },400);
+});
 
 // SAAT
 function updateClock(){
@@ -868,20 +916,17 @@ function updateClock(){
     const g=['🌙 Gece','🌙 Gece','🌙 Gece','🌙 Gece','🌙 Gece','🌙 Gece','☀️ Günaydın!','☀️ Günaydın!','☀️ Günaydın!','☀️ Günaydın!','☀️ Günaydın!','☀️ Günaydın!','🌤️ İyi günler!','🌤️ İyi günler!','🌤️ İyi günler!','🌤️ İyi günler!','🌤️ İyi günler!','🌤️ İyi günler!','🌙 İyi akşamlar!','🌙 İyi akşamlar!','🌙 İyi akşamlar!','🌙 İyi akşamlar!','🌙 İyi akşamlar!','🌙 İyi akşamlar!'];
     document.getElementById('greeting').textContent=g[n.getHours()];
 }
-setInterval(updateClock,1000); updateClock();
+setInterval(updateClock,1000);updateClock();
 
 // OTOMATİK TEMA
 function applyAutoTheme(){
     const saved=localStorage.getItem('theme');
-    if(!saved){
-        document.documentElement.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-    } else {
-        document.documentElement.setAttribute('data-theme',saved);
-    }
+    if(!saved){document.documentElement.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+    else{document.documentElement.setAttribute('data-theme',saved);}
 }
 applyAutoTheme();
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
-    if(!localStorage.getItem('theme')) document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
+    if(!localStorage.getItem('theme'))document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
 });
 
 // TEMA
@@ -891,10 +936,39 @@ function setTheme(t){
     document.documentElement.setAttribute('data-theme',t);
     localStorage.setItem('theme',t);
     document.getElementById('themeModal').classList.add('hidden');
+    document.getElementById('darkModeBtn').textContent=t==='light'?'☀️':'🌙';
 }
 
-const quotes=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
-document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
+// KARANLIK/AYDINLIK TOGGLE
+function toggleDarkMode(){
+    const current=document.documentElement.getAttribute('data-theme');
+    const next=current==='light'?'dark':'light';
+    setTheme(next);
+}
+const _ct=localStorage.getItem('theme')||'dark';
+document.getElementById('darkModeBtn').textContent=_ct==='light'?'☀️':'🌙';
+
+// DİL
+const translations={
+    TR:{quoteLabel:'Günün Sözü',habits:'Alışkanlık',today:'Bugün',longest:'En uzun',progress:'Bugünkü İlerleme',complete:'Tamamla',loading:'Yükleniyor...'},
+    EN:{quoteLabel:'Quote of the Day',habits:'Habits',today:'Today',longest:'Longest',progress:"Today's Progress",complete:'Complete',loading:'Loading...'}
+};
+const quotesEN=["Success is the sum of small efforts repeated daily.","Discipline is what you have when motivation is gone.","Great results come from consistent small steps.","What is hard today becomes habit tomorrow.","You will wish you had started a year ago.","Progress is more important than perfection.","Getting a little better every day is enough.","Your routines build you; you build your routines.","Small habits create big identities.","The step you take today is tomorrow's foundation."];
+const quotesTR=["Başarı, her gün tekrarlanan küçük çabaların toplamıdır.","Disiplin, motivasyon bittiğinde devreye girer.","Büyük sonuçlar, tutarlı küçük adımlardan doğar.","Bugün zor olan, yarın alışkanlık olur.","Bir yıl sonra başlamış olmayı isteyeceksin.","İlerleme mükemmellikten daha önemlidir.","Her gün biraz daha iyi olmak yeterli.","Rutinlerin seni inşa eder, sen de rutinlerini.","Küçük alışkanlıklar, büyük kimlikler yaratır.","Bugün attığın adım, yarının temeli."];
+let currentLang=localStorage.getItem('lang')||'TR';
+function applyLang(){
+    const t=translations[currentLang];
+    const quotes=currentLang==='TR'?quotesTR:quotesEN;
+    document.getElementById('quote').textContent=quotes[new Date().getDate()%quotes.length];
+    if(document.getElementById('quoteLabel'))document.getElementById('quoteLabel').textContent=t.quoteLabel;
+    document.getElementById('langBtn').textContent=currentLang;
+}
+function toggleLang(){
+    currentLang=currentLang==='TR'?'EN':'TR';
+    localStorage.setItem('lang',currentLang);
+    applyLang();
+}
+applyLang();
 
 // ONBOARDING
 const selectedHabits={};
@@ -907,17 +981,13 @@ function toggleOnboard(btn,name,cat){
 function skipOnboarding(){fetch('/onboarding',{method:'POST',body:new FormData()}).then(()=>location.reload());}
 
 // AVATAR
-let selectedAvatarEmoji='{{ user.avatar }}';
-let selectedAvatarColor='{{ user.avatar_color }}';
 function selectAvatar(btn,emoji){
-    selectedAvatarEmoji=emoji;
     document.querySelectorAll('#avatarModal .emoji-btn').forEach(b=>b.classList.remove('selected'));
     btn.classList.add('selected');
     document.getElementById('avatarInput').value=emoji;
     document.getElementById('avatarPreview').textContent=emoji;
 }
 function selectAvatarColor(btn,color){
-    selectedAvatarColor=color;
     document.querySelectorAll('#avatarModal .w-8.h-8').forEach(b=>b.style.borderColor='transparent');
     btn.style.borderColor='white';
     document.getElementById('avatarColorInput').value=color;
@@ -931,6 +1001,13 @@ function confirmDelete(id,name){
     document.getElementById('deleteModal').classList.remove('hidden');
 }
 
+// ARŞİV
+function toggleArchive(){
+    const list=document.getElementById('archiveList');
+    const chevron=document.getElementById('archiveChevron');
+    if(list){list.classList.toggle('hidden');chevron.textContent=list.classList.contains('hidden')?'▼':'▲';}
+}
+
 // KONFETİ
 function fireConfetti(){
     const effects=[
@@ -939,8 +1016,7 @@ function fireConfetti(){
         ()=>confetti({particleCount:200,spread:160,origin:{y:0.3},gravity:0.5,scalar:0.8})
     ];
     const r=Math.floor(Math.random()*effects.length);
-    effects[r]();
-    setTimeout(effects[(r+1)%effects.length],500);
+    effects[r]();setTimeout(effects[(r+1)%effects.length],500);
 }
 
 function playComplete(){
@@ -962,20 +1038,17 @@ function showXP(e,text){
     const el=document.createElement('div');
     el.className='xp-pop';el.textContent=text;
     el.style.left=(e.clientX-20)+'px';el.style.top=(e.clientY-20)+'px';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),1500);
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1500);
 }
 
 // EMOJİ
 function selectEmoji(btn,emoji){
     document.querySelectorAll('#editModal .emoji-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('editCategoryEmoji').value=emoji;
+    btn.classList.add('selected');document.getElementById('editCategoryEmoji').value=emoji;
 }
 function selectAddEmoji(btn,emoji){
     document.querySelectorAll('#addForm .emoji-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('addCategoryEmoji').value=emoji;
+    btn.classList.add('selected');document.getElementById('addCategoryEmoji').value=emoji;
 }
 
 // ÖNCELİK
@@ -1034,6 +1107,56 @@ function openEdit(id,name,category,note,emoji,priority){
     document.getElementById('editModal').classList.remove('hidden');
 }
 
+// TAKVİM MODAL
+let calHabitId=null,calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+let calLogDates=new Set();
+
+function openCalendarModal(id,name){
+    calHabitId=id;
+    calYear=new Date().getFullYear();calMonth=new Date().getMonth();
+    document.getElementById('calModalHabitName').textContent=name;
+    document.getElementById('calendarModal').classList.remove('hidden');
+    fetch(`/logs/${id}`).then(r=>r.json()).then(data=>{
+        calLogDates=new Set(data.dates);renderCalModal();
+    });
+}
+function changeCalMonth(dir){
+    calMonth+=dir;
+    if(calMonth>11){calMonth=0;calYear++;}
+    if(calMonth<0){calMonth=11;calYear--;}
+    renderCalModal();
+}
+function renderCalModal(){
+    const monthNames=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    document.getElementById('calModalMonth').textContent=`${monthNames[calMonth]} ${calYear}`;
+    const grid=document.getElementById('calModalGrid');
+    grid.innerHTML='';
+    const firstDay=new Date(calYear,calMonth,1);
+    let startDow=firstDay.getDay()-1;if(startDow<0)startDow=6;
+    const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+    const todayStr=new Date().toISOString().split('T')[0];
+    for(let i=0;i<startDow;i++){const empty=document.createElement('div');grid.appendChild(empty);}
+    for(let d=1;d<=daysInMonth;d++){
+        const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const div=document.createElement('div');
+        div.style.cssText='width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;margin:1px auto';
+        const isDone=calLogDates.has(ds);
+        div.style.background=isDone?'rgba(99,102,241,0.5)':'rgba(255,255,255,0.04)';
+        div.style.color=isDone?'#a5b4fc':'#6b7280';
+        if(ds===todayStr)div.style.outline='2px solid #6366f1';
+        div.textContent=d;
+        div.title=ds;
+        div.onclick=()=>{
+            const form=document.createElement('form');
+            form.method='POST';
+            form.action=isDone?`/log/remove/${calHabitId}`:`/log/add/${calHabitId}`;
+            const inp=document.createElement('input');inp.type='hidden';inp.name='date';inp.value=ds;
+            form.appendChild(inp);document.body.appendChild(form);form.submit();
+        };
+        grid.appendChild(div);
+    }
+}
+
 // POMODORO
 let pomTimer=null,pomSeconds=25*60,pomRunning=false,pomTotal=25*60,pomDragging=false;
 const CIRC=2*Math.PI*72;
@@ -1077,8 +1200,7 @@ function setMode(mins,mode,btn){
     document.querySelectorAll('.pom-time-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const c={'work':'#6366f1','short':'#10b981','long':'#f59e0b'}[mode];
-    document.getElementById('pomArc').style.stroke=c;
-    document.getElementById('pomKnob').style.fill=c;
+    document.getElementById('pomArc').style.stroke=c;document.getElementById('pomKnob').style.fill=c;
     document.getElementById('pomArc').setAttribute('stroke-dashoffset','0');
     document.getElementById('pomDurationLabel').textContent=`${mins} dakika`;
     moveKnobToMinutes(mins);
@@ -1109,34 +1231,6 @@ function tickPomodoro(){
     document.getElementById('pomArc').setAttribute('stroke-dashoffset',(CIRC*(1-pomSeconds/pomTotal)).toFixed(2));
     moveKnobToMinutes(pomSeconds/60);
     document.getElementById('pomodoroTime').textContent=`${String(Math.floor(pomSeconds/60)).padStart(2,'0')}:${String(pomSeconds%60).padStart(2,'0')}`;
-}
-
-// TAKVİM
-function toggleCalendar(id){
-    const el=document.getElementById(`cal-${id}`);
-    const grid=document.getElementById(`calGrid-${id}`);
-    if(el.classList.contains('hidden')){
-        el.classList.remove('hidden');grid.innerHTML='';
-        fetch(`/logs/${id}`).then(r=>r.json()).then(data=>{
-            const doneDates=new Set(data.dates);
-            for(let i=27;i>=0;i--){
-                const d=new Date();d.setDate(d.getDate()-i);
-                const ds=d.toISOString().split('T')[0];
-                const div=document.createElement('div');
-                div.className=`cal-day ${doneDates.has(ds)?'cal-done':'cal-miss'}`;
-                div.title=ds;div.textContent=d.getDate();
-                if(ds===today)div.style.outline='2px solid #6366f1';
-                div.onclick=()=>{
-                    const isDone=doneDates.has(ds);
-                    const form=document.createElement('form');
-                    form.method='POST';form.action=isDone?`/log/remove/${id}`:`/log/add/${id}`;
-                    const inp=document.createElement('input');inp.type='hidden';inp.name='date';inp.value=ds;
-                    form.appendChild(inp);document.body.appendChild(form);form.submit();
-                };
-                grid.appendChild(div);
-            }
-        });
-    } else {el.classList.add('hidden');}
 }
 
 // PAYLAŞ
@@ -1237,26 +1331,19 @@ function openReport(){
     });
 }
 function downloadReport(){
-    function sendEmailReport(){
-    const btn=document.getElementById('emailBtn');
-    btn.textContent='Gönderiliyor...';btn.disabled=true;
-    fetch('/send-weekly-email',{method:'POST'}).then(r=>r.json()).then(data=>{
-        if(data.status==='ok'){
-            btn.textContent='✓ Gönderildi';
-            document.getElementById('emailMsg').textContent='Email adresine gönderildi!';
-            document.getElementById('emailMsg').classList.remove('hidden');
-        } else {
-            btn.textContent='❌ Hata';
-            document.getElementById('emailMsg').textContent=data.message||'Bir hata oluştu.';
-            document.getElementById('emailMsg').classList.remove('hidden');
-        }
-    });
-}
     const data=document.getElementById('reportModal')._data;
     if(!data)return;
     let text=`HAFTALIK RAPOR — ${data.week_start} / ${data.week_end}\nKullanıcı: ${data.username} | Seviye ${data.level}\n\n`;
     data.report.forEach(h=>{text+=`${h.name}: %${h.percent} (${h.completed}/7 gün) | Streak: ${h.streak}g\n`;});
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.download=`rapor-${data.week_end}.txt`;a.click();
+}
+function sendEmailReport(){
+    const btn=document.getElementById('emailBtn');
+    btn.textContent='Gönderiliyor...';btn.disabled=true;
+    fetch('/send-weekly-email',{method:'POST'}).then(r=>r.json()).then(data=>{
+        if(data.status==='ok'){btn.textContent='✓ Gönderildi';document.getElementById('emailMsg').textContent='Email adresine gönderildi!';document.getElementById('emailMsg').classList.remove('hidden');}
+        else{btn.textContent='❌ Hata';document.getElementById('emailMsg').textContent=data.message||'Bir hata oluştu.';document.getElementById('emailMsg').classList.remove('hidden');}
+    });
 }
 
 // AYLIK
