@@ -4,35 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rutin Takipçi — Alışkanlıklarını İnşa Et</title>
+    <meta name="description" content="Günlük alışkanlıklarını takip et, XP kazan, streak'lerini koru. Ücretsiz habit tracker uygulaması.">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', sans-serif; }
         body { background: #060612; color: white; overflow-x: hidden; }
 
-        .bg-orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+        .bg-orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;animation:float 8s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
         .orb1{width:700px;height:700px;background:#6366f1;opacity:0.08;top:-200px;left:-200px}
         .orb2{width:600px;height:600px;background:#8b5cf6;opacity:0.07;top:40%;right:-200px;animation-delay:2s}
         .orb3{width:500px;height:500px;background:#06d6a0;opacity:0.05;bottom:-100px;left:30%;animation-delay:4s}
-
         .dot-grid{position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.025) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
 
         @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         .slide-up{animation:slideUp 0.7s ease forwards}
-        .fade-in{animation:fadeIn 1s ease forwards}
         .delay-1{animation-delay:0.1s;opacity:0}
         .delay-2{animation-delay:0.2s;opacity:0}
         .delay-3{animation-delay:0.3s;opacity:0}
         .delay-4{animation-delay:0.4s;opacity:0}
         .delay-5{animation-delay:0.5s;opacity:0}
-        .delay-6{animation-delay:0.6s;opacity:0}
 
         @keyframes pulse-glow{0%,100%{box-shadow:0 0 30px rgba(99,102,241,0.3)}50%{box-shadow:0 0 60px rgba(99,102,241,0.6)}}
         .pulse-glow{animation:pulse-glow 3s ease infinite}
 
-        @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
         .gradient-text{background:linear-gradient(135deg,#6366f1,#8b5cf6,#06d6a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .gradient-btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);transition:all 0.3s}
         .gradient-btn:hover{transform:scale(1.05);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
@@ -41,15 +38,29 @@
         .feature-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:24px;transition:all 0.3s}
         .feature-card:hover{background:rgba(99,102,241,0.06);border-color:rgba(99,102,241,0.2);transform:translateY(-4px)}
 
-        .stat-num{background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
         .nav-blur{background:rgba(6,6,18,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
 
         @keyframes float-card{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
         .float-card{animation:float-card 4s ease-in-out infinite}
 
-        .mockup-bar{height:6px;border-radius:99px;margin-bottom:6px}
-        .mockup-check{width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
+        .step-line{position:absolute;left:50%;top:100%;width:1px;height:40px;background:linear-gradient(to bottom,rgba(99,102,241,0.4),transparent)}
+
+        .testimonial-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:24px;transition:all 0.3s}
+        .testimonial-card:hover{border-color:rgba(99,102,241,0.2);transform:translateY(-2px)}
+
+        @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .marquee-track{display:flex;gap:16px;animation:marquee 20s linear infinite}
+        .marquee-track:hover{animation-play-state:paused}
+
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600}
+        .badge-gold{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
+        .badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
+        .badge-purple{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
+
+        @media(max-width:640px){
+            .hero-title{font-size:2.5rem!important}
+            .hero-btns{flex-direction:column}
+        }
     </style>
 </head>
 <body>
@@ -67,6 +78,7 @@
             <span class="font-bold text-lg">Rutin Takipçi</span>
         </div>
         <div class="flex items-center gap-3">
+            <a href="https://github.com/aslan0438/rutin-takipci" target="_blank" class="text-sm text-gray-500 hover:text-white transition px-3 py-2 rounded-xl hover:bg-white/5 hidden sm:block">GitHub</a>
             <a href="/login" class="text-sm text-gray-400 hover:text-white transition px-4 py-2 rounded-xl hover:bg-white/5">Giriş Yap</a>
             <a href="/register" class="gradient-btn text-sm font-semibold px-5 py-2 rounded-xl text-white">Ücretsiz Başla</a>
         </div>
@@ -79,20 +91,26 @@
 
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 slide-up delay-1" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
             <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span class="text-sm text-indigo-300 font-medium">Ücretsiz · Hesap oluştur · Hemen başla</span>
+            <span class="text-sm text-indigo-300 font-medium">Ücretsiz · Kayıt gerektirmez · Hemen başla</span>
         </div>
 
-        <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 slide-up delay-2">
+        <h1 class="hero-title text-5xl md:text-7xl font-black leading-tight mb-6 slide-up delay-2">
             Alışkanlıklarını<br>
             <span class="gradient-text">İnşa Et</span>
         </h1>
 
-        <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed slide-up delay-3">
+        <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-4 leading-relaxed slide-up delay-3">
             Günlük rutinlerini takip et, streak'lerini koru, XP kazan.<br>
             Küçük adımlar, büyük değişimler yaratır.
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 slide-up delay-4">
+        <div class="flex items-center justify-center gap-3 mb-10 slide-up delay-3">
+            <span class="badge badge-gold">⚡ XP Sistemi</span>
+            <span class="badge badge-green">🔥 Streak Takibi</span>
+            <span class="badge badge-purple">✨ AI Öneri</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 slide-up delay-4 hero-btns">
             <a href="/register" class="gradient-btn px-8 py-4 rounded-2xl text-white font-bold text-lg w-full sm:w-auto">
                 🚀 Hemen Başla — Ücretsiz
             </a>
@@ -104,41 +122,76 @@
         <!-- Mockup -->
         <div class="glass rounded-3xl p-6 max-w-sm mx-auto float-card slide-up delay-5">
             <div class="flex items-center justify-between mb-4">
-                <div>
-                    <p class="text-xs text-gray-500">Bugünkü İlerleme</p>
-                    <p class="text-2xl font-black text-indigo-400">%75</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:#6366f1">🎯</div>
+                    <div class="text-left">
+                        <p class="text-xs text-gray-500">Seviye 5</p>
+                        <p class="text-sm font-bold text-yellow-400">⚡ 340 XP</p>
+                    </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs text-gray-500">Seviye 3</p>
-                    <p class="text-sm font-bold text-yellow-400">⚡ 60 XP</p>
+                    <p class="text-xs text-gray-500">Bugün</p>
+                    <p class="text-2xl font-black text-indigo-400">%75</p>
                 </div>
             </div>
             <div class="w-full rounded-full h-2 mb-5" style="background:rgba(255,255,255,0.05)">
                 <div class="h-2 rounded-full" style="width:75%;background:linear-gradient(90deg,#6366f1,#06d6a0)"></div>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-2">
                 <div class="flex items-center gap-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
-                    <div class="mockup-check bg-green-500/20 text-green-400">✓</div>
-                    <div class="flex-1">
+                    <div class="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-xs">✓</div>
+                    <div class="flex-1 text-left">
                         <p class="text-sm font-medium line-through text-gray-400">Sabah koşusu</p>
-                        <p class="text-xs text-green-500">🔥 7 gün streak</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
-                    <div class="mockup-check bg-green-500/20 text-green-400">✓</div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium line-through text-gray-400">Python çalış</p>
                         <p class="text-xs text-green-500">🔥 14 gün streak</p>
                     </div>
+                    <span class="badge badge-gold text-xs">+20 XP</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
+                    <div class="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-xs">✓</div>
+                    <div class="flex-1 text-left">
+                        <p class="text-sm font-medium line-through text-gray-400">Python çalış</p>
+                        <p class="text-xs text-green-500">🔥 7 gün streak</p>
+                    </div>
+                    <span class="badge badge-gold text-xs">+20 XP</span>
                 </div>
                 <div class="flex items-center gap-3 p-3 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
-                    <div class="mockup-check" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.2)">○</div>
-                    <div class="flex-1">
+                    <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.2)">○</div>
+                    <div class="flex-1 text-left">
                         <p class="text-sm font-medium">Kitap oku</p>
                         <p class="text-xs text-gray-500">Bekliyor...</p>
                     </div>
                     <span class="text-xs px-2 py-1 rounded-lg font-semibold" style="background:rgba(99,102,241,0.2);color:#a5b4fc">Tamamla</span>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NASIL ÇALIŞIR -->
+<section class="relative py-24 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-16">
+            <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Nasıl Çalışır</p>
+            <h2 class="text-3xl md:text-5xl font-black">3 adımda<br><span class="gradient-text">alışkanlık kazan</span></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center p-6">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3)">📝</div>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-3" style="background:rgba(99,102,241,0.2);color:#a5b4fc">1</div>
+                <h3 class="font-bold text-lg mb-2">Alışkanlık Ekle</h3>
+                <p class="text-gray-500 text-sm">İstediğin alışkanlıkları ekle, kategori ve öncelik belirle.</p>
+            </div>
+            <div class="text-center p-6">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3)">✅</div>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-3" style="background:rgba(16,185,129,0.2);color:#4ade80">2</div>
+                <h3 class="font-bold text-lg mb-2">Her Gün Tamamla</h3>
+                <p class="text-gray-500 text-sm">Tamamladıkça XP kazan, streak'ini koru, seviye atla.</p>
+            </div>
+            <div class="text-center p-6">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3)">📈</div>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mx-auto mb-3" style="background:rgba(245,158,11,0.2);color:#fbbf24">3</div>
+                <h3 class="font-bold text-lg mb-2">Gelişimini İzle</h3>
+                <p class="text-gray-500 text-sm">İstatistikler, haftalık raporlar, rozet sistemi ile ilerleni gör.</p>
             </div>
         </div>
     </div>
@@ -171,17 +224,32 @@
             <div class="feature-card">
                 <div class="text-3xl mb-4">📊</div>
                 <h3 class="font-bold text-lg mb-2">İstatistikler</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Son 30 günlük aktivite ısı haritası. Hangi günler daha verimli olduğunu keşfet.</p>
+                <p class="text-gray-500 text-sm leading-relaxed">Son 30 günlük aktivite ısı haritası ve haftalık raporlar.</p>
             </div>
             <div class="feature-card">
-                <div class="text-3xl mb-4">🔔</div>
-                <h3 class="font-bold text-lg mb-2">Hatırlatıcı</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Günlük bildirim ayarla, rutinlerini unutma. Tam istediğin saatte hatırlat.</p>
+                <div class="text-3xl mb-4">🎵</div>
+                <h3 class="font-bold text-lg mb-2">Odak Müziği</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Yağmur, okyanus, orman sesleri ile odaklan. Web Audio API ile çalışır.</p>
             </div>
             <div class="feature-card">
                 <div class="text-3xl mb-4">✨</div>
                 <h3 class="font-bold text-lg mb-2">AI Öneri</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Mevcut alışkanlıklarına göre yapay zeka sana yeni rutinler önerir.</p>
+                <p class="text-gray-500 text-sm leading-relaxed">Claude AI mevcut alışkanlıklarına göre sana yeni rutinler önerir.</p>
+            </div>
+            <div class="feature-card">
+                <div class="text-3xl mb-4">🏆</div>
+                <h3 class="font-bold text-lg mb-2">Liderboard</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Arkadaşlarınla XP yarışı yap, sıralamada yüksel.</p>
+            </div>
+            <div class="feature-card">
+                <div class="text-3xl mb-4">❄️</div>
+                <h3 class="font-bold text-lg mb-2">Streak Freeze</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Bir gün kaçırdın mı? Freeze kullanarak streak'ini koru.</p>
+            </div>
+            <div class="feature-card">
+                <div class="text-3xl mb-4">🎨</div>
+                <h3 class="font-bold text-lg mb-2">5 Tema</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Koyu, açık, orman, gül, altın — istediğin temayı seç.</p>
             </div>
         </div>
     </div>
@@ -193,17 +261,62 @@
         <div class="glass rounded-3xl p-10">
             <div class="grid grid-cols-3 gap-8 text-center">
                 <div>
-                    <p class="text-4xl md:text-5xl font-black stat-num">21</p>
+                    <p class="text-4xl md:text-5xl font-black" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">21</p>
                     <p class="text-gray-500 text-sm mt-2">Gün alışkanlık<br>oluşturmak için</p>
                 </div>
                 <div>
-                    <p class="text-4xl md:text-5xl font-black stat-num">∞</p>
+                    <p class="text-4xl md:text-5xl font-black" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">∞</p>
                     <p class="text-gray-500 text-sm mt-2">Alışkanlık<br>ekleyebilirsin</p>
                 </div>
                 <div>
-                    <p class="text-4xl md:text-5xl font-black stat-num">0₺</p>
+                    <p class="text-4xl md:text-5xl font-black" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">0₺</p>
                     <p class="text-gray-500 text-sm mt-2">Tamamen<br>ücretsiz</p>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- YORUMLAR -->
+<section class="relative py-24 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+            <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Kullanıcılar Ne Diyor</p>
+            <h2 class="text-3xl md:text-4xl font-black">Gerçek <span class="gradient-text">deneyimler</span></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="testimonial-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#6366f1">🦁</div>
+                    <div>
+                        <p class="font-semibold text-sm">Ahmet K.</p>
+                        <p class="text-xs text-gray-500">Yazılım Geliştirici</p>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed">"Python öğrenme alışkanlığımı 30 gün boyunca sürdürdüm. Streak sistemi gerçekten motive edici."</p>
+                <div class="flex gap-1 mt-3">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#8b5cf6">🚀</div>
+                    <div>
+                        <p class="font-semibold text-sm">Zeynep A.</p>
+                        <p class="text-xs text-gray-500">Üniversite Öğrencisi</p>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed">"Pomodoro timer özelliği çok işe yarıyor. Artık her gün düzenli çalışıyorum."</p>
+                <div class="flex gap-1 mt-3">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#06d6a0">💎</div>
+                    <div>
+                        <p class="font-semibold text-sm">Mert T.</p>
+                        <p class="text-xs text-gray-500">Girişimci</p>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed">"AI öneri sistemi harika. Mevcut rutinlerime göre yeni alışkanlıklar keşfediyorum."</p>
+                <div class="flex gap-1 mt-3">⭐⭐⭐⭐⭐</div>
             </div>
         </div>
     </div>
@@ -212,26 +325,40 @@
 <!-- CTA -->
 <section class="relative py-24 px-4">
     <div class="max-w-2xl mx-auto text-center">
-        <h2 class="text-3xl md:text-5xl font-black mb-6">
-            Bugün başla,<br><span class="gradient-text">yarın fark et</span>
-        </h2>
-        <p class="text-gray-400 mb-10 text-lg">Hesap oluşturmak 30 saniye sürer. Kredi kartı gerekmez.</p>
-        <a href="/register" class="gradient-btn inline-block px-10 py-4 rounded-2xl text-white font-bold text-lg">
-            🚀 Ücretsiz Hesap Oluştur
-        </a>
+        <div class="glass rounded-3xl p-12">
+            <div class="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 pulse-glow" style="background:rgba(99,102,241,0.2)">🎯</div>
+            <h2 class="text-3xl md:text-5xl font-black mb-4">
+                Bugün başla,<br><span class="gradient-text">yarın fark et</span>
+            </h2>
+            <p class="text-gray-400 mb-8 text-lg">Hesap oluşturmak 30 saniye sürer. Kredi kartı gerekmez.</p>
+            <a href="/register" class="gradient-btn inline-block px-10 py-4 rounded-2xl text-white font-bold text-lg mb-4">
+                🚀 Ücretsiz Hesap Oluştur
+            </a>
+            <p class="text-gray-600 text-sm">Zaten hesabın var mı? <a href="/login" class="text-indigo-400 hover:text-indigo-300 transition">Giriş yap →</a></p>
+        </div>
     </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="border-t border-white/5 py-8 px-4 text-center">
-    <div class="flex items-center justify-center gap-2 mb-3">
-        <div class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-xs">🎯</div>
-        <span class="font-semibold">Rutin Takipçi</span>
-    </div>
-    <p class="text-gray-600 text-sm">Alışkanlıklarını inşa et, hayatını değiştir.</p>
-    <div class="flex items-center justify-center gap-4 mt-4">
-        <a href="/login" class="text-gray-600 hover:text-white transition text-sm">Giriş Yap</a>
-        <a href="/register" class="text-gray-600 hover:text-white transition text-sm">Kayıt Ol</a>
+<footer class="border-t border-white/5 py-10 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-sm">🎯</div>
+                <div>
+                    <p class="font-bold">Rutin Takipçi</p>
+                    <p class="text-gray-600 text-xs">Alışkanlıklarını inşa et, hayatını değiştir.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="/login" class="text-gray-500 hover:text-white transition text-sm">Giriş Yap</a>
+                <a href="/register" class="text-gray-500 hover:text-white transition text-sm">Kayıt Ol</a>
+                <a href="https://github.com/aslan0438/rutin-takipci" target="_blank" class="text-gray-500 hover:text-white transition text-sm">GitHub</a>
+            </div>
+        </div>
+        <div class="border-t border-white/5 mt-8 pt-6 text-center">
+            <p class="text-gray-600 text-xs">Flask · PostgreSQL · Anthropic Claude API · Render.com</p>
+        </div>
     </div>
 </footer>
 
