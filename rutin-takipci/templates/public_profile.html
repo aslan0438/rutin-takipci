@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_user.username }} — Rutin Takipçi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #060612; color: white; min-height: 100vh; }
+        .bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:0.1;pointer-events:none;animation:float 8s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+        .orb1{width:500px;height:500px;background:#6366f1;top:-150px;left:-150px}
+        .orb2{width:400px;height:400px;background:#8b5cf6;bottom:-100px;right:-100px;animation-delay:3s}
+        .dot-grid{position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+        .glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .slide-up{animation:slideUp 0.5s ease forwards}
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600}
+        .badge-gold{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
+        .badge-purple{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
+        .badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
+        @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(99,102,241,0.4)}50%{box-shadow:0 0 40px rgba(99,102,241,0.8)}}
+        .avatar-pulse{animation:avatarPulse 3s ease infinite}
+    </style>
+</head>
+<body>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="dot-grid"></div>
+
+<div class="relative z-10 max-w-lg mx-auto px-4 py-10">
+    <a href="/landing" class="flex items-center gap-2 text-gray-500 hover:text-white transition mb-8 text-sm">
+        ← Rutin Takipçi
+    </a>
+
+    <div class="text-center mb-8 slide-up">
+        <div class="w-24 h-24 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 avatar-pulse" style="background:{{ profile_user.avatar_color }}">
+            {{ profile_user.avatar }}
+        </div>
+        <h1 class="text-2xl font-bold">{{ profile_user.username }}</h1>
+        <div class="flex items-center justify-center gap-2 mt-3 flex-wrap">
+            <span class="badge badge-gold">⚡ Seviye {{ profile_user.level }}</span>
+            <span class="badge badge-purple">{{ profile_user.xp }} XP</span>
+            {% if max_streak >= 7 %}<span class="badge badge-green">🔥 {{ max_streak }} gün streak</span>{% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-6 slide-up">
+        <div class="glass p-4 text-center">
+            <p class="text-2xl font-bold text-indigo-400">{{ habit_count }}</p>
+            <p class="text-xs text-gray-500 mt-1">Alışkanlık</p>
+        </div>
+        <div class="glass p-4 text-center">
+            <p class="text-2xl font-bold text-green-400">{{ total_logs }}</p>
+            <p class="text-xs text-gray-500 mt-1">Toplam Log</p>
+        </div>
+        <div class="glass p-4 text-center">
+            <p class="text-2xl font-bold text-orange-400">{{ max_streak }}🔥</p>
+            <p class="text-xs text-gray-500 mt-1">En Uzun</p>
+        </div>
+    </div>
+
+    {% if habits %}
+    <div class="glass p-5 slide-up">
+        <p class="text-xs uppercase tracking-widest mb-4 font-semibold text-gray-500">Alışkanlıklar</p>
+        {% for h in habits %}
+        <div class="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+            <div class="flex items-center gap-3">
+                <span class="text-xl">{{ h.category_emoji }}</span>
+                <div>
+                    <p class="text-sm font-semibold">{{ h.name }}</p>
+                    <p class="text-xs text-gray-500">{{ h.category }} · {{ h.total }} log</p>
+                </div>
+            </div>
+            {% if h.streak > 0 %}
+            <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if h.streak >= 7 %}bg-purple-500/20 text-purple-300{% else %}bg-orange-500/20 text-orange-300{% endif %}">🔥{{ h.streak }}g</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mt-8 text-center slide-up">
+        <a href="/register" class="inline-block px-6 py-3 rounded-2xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+            Sen de başla — Ücretsiz →
+        </a>
+    </div>
+</div>
+</body>
+</html>

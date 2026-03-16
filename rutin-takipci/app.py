@@ -669,6 +669,106 @@ def send_weekly_email():
 
 @app.route('/ai-suggest', methods=['POST'])
 @login_required
+@app.route('/streak-recovery/<int:habit_id>', methods=['POST'])
+@login_required
+def streak_recovery(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    cost = 50
+    if current_user.xp < cost:
+        return jsonify({'status': 'error', 'message': f'Yetersiz XP. {cost} XP gerekiyor.'})
+    yesterday = str(date.today() - timedelta(days=1))
+    existing = HabitLog.query.filter_by(habit_id=habit_id, date=yesterday).first()
+    if existing:
+        return jsonify({'status': 'error', 'message': 'Dün zaten tamamlanmış.'})
+    log = HabitLog(habit_id=habit_id, date=yesterday)
+    db.session.add(log)
+    current_user.xp -= cost
+    if current_user.xp < 0:
+        current_user.level = max(1, current_user.level - 1)
+        current_user.xp = calc_xp_for_level(current_user.level) + current_user.xp
+    create_notification(current_user.id, f'⚡ "{habit.name}" streak kurtarıldı! -{cost} XP', 'warning')
+    db.session.commit()
+    return jsonify({'status': 'ok', 'message': f'Streak kurtarıldı! -{cost} XP harcandı.'})
+
+@app.route('/motivation-score')
+@login_required
+def motivation_score():
+    habits = Habit.query.filter_by(user_id=current_user.id, archived=False).all()
+    if not habits:
+        return jsonify({'score': 0, 'label': 'Başla!', 'color': '#6b7280'})
+    total_possible = len(habits) * 7
+    total_done = 0
+    for h in habits:
+        log_dates = {l.date for l in h.logs}
+        for i in range(7):
+            d = date.today() - timedelta(days=i)
+            if str(d) in log_dates:
+                total_done += 1
+    base_score = int((total_done / total_possible) * 70) if total_possible > 0 else 0
+    streak_bonus = min(30, sum(get_streak(h) for h in habits) // len(habits) * 3)
+    score = min(100, base_score + streak_bonus)
+    if score >= 80:
+        label, color = 'Efsane! 🔥', '#4ade80'
+    elif score >= 60:
+        label, color = 'Harika! ⚡', '#a5b4fc'
+    elif score >= 40:
+        label, color = 'İyi gidiyorsun', '#fbbf24'
+    elif score >= 20:
+        label, color = 'Daha fazlası için çalış', '#fb923c'
+    else:
+        label, color = 'Başla! 💪', '#f87171'
+    return jsonify({'score': score, 'label': label, 'color': color})
+
+@app.route('/u/<username>')
+def public_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    habits = Habit.query.filter_by(user_id=user.id, archived=False).all()
+    total_logs = sum(len(h.logs) for h in habits)
+    max_streak = max((get_streak(h) for h in habits), default=0)
+    habit_stats = []
+    for h in habits:
+        habit_stats.append({
+            'name': h.name,
+            'category': h.category,
+            'category_emoji': h.category_emoji,
+            'streak': get_streak(h),
+            'total': len(h.logs)
+        })
+    return render_template('public_profile.html',
+        profile_user=user,
+        habits=habit_stats,
+        total_logs=total_logs,
+        max_streak=max_streak,
+        habit_count=len(habits))
+
+@app.route('/habit-detail/<int:habit_id>')
+@login_required
+def habit_detail(habit_id):
+    habit = Habit.query.filter_by(id=habit_id, user_id=current_user.id).first_or_404()
+    log_dates = sorted([l.date for l in habit.logs], reverse=True)
+    total = len(log_dates)
+    streak = get_streak(habit)
+    if total == 0:
+        return jsonify({'name': habit.name, 'total': 0, 'streak': 0, 'best_day': '-', 'avg_per_week': 0, 'completion_rate': 0})
+    from collections import Counter
+    day_counts = Counter(date.fromisoformat(d).strftime('%A') for d in log_dates)
+    day_tr = {'Monday':'Pazartesi','Tuesday':'Salı','Wednesday':'Çarşamba','Thursday':'Perşembe','Friday':'Cuma','Saturday':'Cumartesi','Sunday':'Pazar'}
+    best_day_en = day_counts.most_common(1)[0][0]
+    best_day = day_tr.get(best_day_en, best_day_en)
+    first_date = date.fromisoformat(log_dates[-1])
+    days_since = (date.today() - first_date).days + 1
+    weeks = max(1, days_since / 7)
+    avg_per_week = round(total / weeks, 1)
+    completion_rate = int((total / days_since) * 100) if days_since > 0 else 0
+    return jsonify({
+        'name': habit.name,
+        'total': total,
+        'streak': streak,
+        'best_day': best_day,
+        'avg_per_week': avg_per_week,
+        'completion_rate': completion_rate,
+        'first_date': log_dates[-1]
+    })
 def ai_suggest():
     try:
         import anthropic

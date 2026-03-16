@@ -29,6 +29,7 @@
         input{background:rgba(255,255,255,0.05)!important;border:1px solid rgba(255,255,255,0.08)!important;color:var(--text)!important;transition:all 0.3s;width:100%;padding:12px 16px;border-radius:12px;font-size:14px;outline:none}
         input:focus{background:rgba(99,102,241,0.1)!important;border-color:rgba(99,102,241,0.5)!important}
         input::placeholder{color:rgba(255,255,255,0.25)!important}
+        input[readonly]{cursor:default}
         .btn{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:white;padding:12px;border-radius:12px;font-weight:600;font-size:14px;width:100%;cursor:pointer;transition:all 0.3s;border:none}
         .btn:hover{transform:scale(1.02);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
         .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:20px;text-align:center;transition:all 0.3s}
@@ -39,33 +40,16 @@
         .badge-gold{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
         .badge-purple{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
         .badge-green{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981}
-
+        .badge-silver{background:rgba(156,163,175,0.15);border:1px solid rgba(156,163,175,0.3);color:#9ca3af}
         @keyframes avatarPulse{0%,100%{box-shadow:0 0 20px rgba(99,102,241,0.4)}50%{box-shadow:0 0 40px rgba(99,102,241,0.8)}}
         .avatar-pulse{animation:avatarPulse 3s ease infinite}
-
         .xp-bar-fill{background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 1s ease}
-
-        /* Mobil */
-        @media(max-width:640px){
-            .stat-grid{grid-template-columns:repeat(3,1fr)!important}
-            .btn-group{flex-direction:column}
-        }
     </style>
 </head>
 <body>
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="dot-grid"></div>
-
-<!-- LOADING SCREEN -->
-<div id="loadingScreen" style="position:fixed;inset:0;background:#060612;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s">
-    <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px;animation:avatarPulse 1.5s ease infinite">🎯</div>
-    <p style="color:white;font-weight:700;font-size:18px;margin-bottom:8px">Rutin Takipçi</p>
-    <p style="color:#6b7280;font-size:13px;margin-bottom:24px">Profil yükleniyor...</p>
-    <div style="width:120px;height:3px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden">
-        <div id="loadBar" style="height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:99px;transition:width 0.3s"></div>
-    </div>
-</div>
 
 <div class="relative z-10 max-w-lg mx-auto px-4 py-10">
 
@@ -101,7 +85,7 @@
     </div>
 
     <!-- İstatistikler -->
-    <div class="grid grid-cols-3 gap-3 mb-6 slide-up stat-grid">
+    <div class="grid grid-cols-3 gap-3 mb-6 slide-up">
         <div class="stat-card">
             <p class="text-2xl font-bold text-indigo-400">{{ user.habits|length }}</p>
             <p class="text-xs mt-1" style="color:var(--text-muted)">Alışkanlık</p>
@@ -123,11 +107,21 @@
             {% if max_streak >= 30 %}<span class="badge badge-gold">🥇 30 Gün Efsane</span>{% endif %}
             {% if max_streak >= 14 %}<span class="badge badge-gold">🔥 2 Hafta Ateş</span>{% endif %}
             {% if max_streak >= 7 %}<span class="badge badge-purple">⚡ 7 Gün Streak</span>{% endif %}
-            {% if max_streak >= 3 %}<span class="badge" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#10b981">🌱 3 Gün</span>{% endif %}
+            {% if max_streak >= 3 %}<span class="badge badge-green">🌱 3 Gün</span>{% endif %}
             {% if user.level >= 5 %}<span class="badge badge-purple">🏆 Seviye {{ user.level }}</span>{% endif %}
-            {% if user.habits|length >= 5 %}<span class="badge" style="background:rgba(156,163,175,0.15);border:1px solid rgba(156,163,175,0.3);color:#9ca3af">📋 5 Rutin</span>{% endif %}
+            {% if user.habits|length >= 5 %}<span class="badge badge-silver">📋 5 Rutin</span>{% endif %}
             {% if total_logs >= 100 %}<span class="badge badge-gold">💯 100 Log</span>{% endif %}
             {% if max_streak == 0 and total_logs == 0 %}<span class="text-xs" style="color:var(--text-muted)">Henüz rozet yok — streak başlat!</span>{% endif %}
+        </div>
+    </div>
+
+    <!-- Profil Linki -->
+    <div class="glass rounded-2xl p-5 mb-5 slide-up">
+        <p class="text-xs uppercase tracking-widest mb-3 font-semibold" style="color:var(--text-muted)">🔗 Profil Linki</p>
+        <p class="text-xs mb-3" style="color:var(--text-muted)">Bu linki paylaşarak profilini herkese göster.</p>
+        <div class="flex items-center gap-2">
+            <input type="text" value="https://rutin-takipci.onrender.com/u/{{ user.username }}" readonly class="flex-1 rounded-xl px-3 py-2 text-sm" style="font-size:12px">
+            <button onclick="copyProfileLink()" id="copyLinkBtn" class="px-3 py-2 rounded-xl text-sm font-semibold flex-shrink-0" style="background:rgba(99,102,241,0.2);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3);cursor:pointer">Kopyala</button>
         </div>
     </div>
 
@@ -171,28 +165,32 @@
 </div>
 
 <script>
-// Tema
-const saved = localStorage.getItem('theme');
-if(saved) document.documentElement.setAttribute('data-theme', saved);
+const saved=localStorage.getItem('theme');
+if(saved)document.documentElement.setAttribute('data-theme',saved);
 
-// Loading screen
-let progress = 0;
-const bar = document.getElementById('loadBar');
-const interval = setInterval(() => {
-    progress += Math.random() * 30;
-    if(progress > 90) progress = 90;
-    bar.style.width = progress + '%';
-}, 200);
-
-window.addEventListener('load', () => {
-    clearInterval(interval);
-    bar.style.width = '100%';
-    setTimeout(() => {
-        const screen = document.getElementById('loadingScreen');
-        screen.style.opacity = '0';
-        setTimeout(() => screen.style.display = 'none', 500);
-    }, 300);
+// Loading
+let progress=0;
+const bar=document.getElementById && document.createElement('div');
+window.addEventListener('load',()=>{
+    const screen=document.getElementById('loadingScreen');
+    if(screen){screen.style.opacity='0';setTimeout(()=>screen.style.display='none',500);}
 });
+
+function copyProfileLink(){
+    navigator.clipboard.writeText('https://rutin-takipci.onrender.com/u/{{ user.username }}').then(()=>{
+        const btn=document.getElementById('copyLinkBtn');
+        btn.textContent='✓ Kopyalandı!';
+        btn.style.background='rgba(16,185,129,0.2)';
+        btn.style.color='#4ade80';
+        btn.style.borderColor='rgba(16,185,129,0.3)';
+        setTimeout(()=>{
+            btn.textContent='Kopyala';
+            btn.style.background='rgba(99,102,241,0.2)';
+            btn.style.color='#a5b4fc';
+            btn.style.borderColor='rgba(99,102,241,0.3)';
+        },2000);
+    });
+}
 </script>
 </body>
 </html>
