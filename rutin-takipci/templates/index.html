@@ -845,25 +845,32 @@
                             </div>
                         {% endif %}
                     </div>
-                    <div class="flex items-center gap-1 flex-shrink-0 ml-2 habit-btns">
+                    <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
                         {% if streak > 0 %}
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
-                        <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)" title="Haftalık hedef">🎯</button>
-                        <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)" title="Detay">📈</button>
-                        <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">✏️</button>
-                        <button onclick="openPomodoro('{{ habit.name }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">🍅</button>
-                        <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)" title="Takvim">📅</button>
                         {% if not done %}
                         <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
-                        <a href="/freeze/{{ habit.id }}" title="Dünü freeze ile koru" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)">❄️</a>
-                        <button onclick="recoverStreak({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2)" title="Streak Kurtar (50 XP)">⚡</button>
                         {% endif %}
-                        <a href="/archive/{{ habit.id }}" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Arşivle" onmouseover="this.style.background='rgba(245,158,11,0.15)';this.style.color='#fbbf24'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">📦</a>
-                        <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\\'") }}')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" onmouseover="this.style.background='rgba(239,68,68,0.15)';this.style.color='#f87171'" onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-muted)'">🗑</button>
+                        <div class="relative">
+                            <button onclick="toggleMenu({{ habit.id }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-base font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">⋯</button>
+                            <div id="menu-{{ habit.id }}" class="hidden absolute right-0 top-9 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px">
+                                <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }});toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎯 Haftalık Hedef</button>
+                                <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📈 İstatistik</button>
+                                <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
+                                <button onclick="openPomodoro('{{ habit.name }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🍅 Pomodoro</button>
+                                <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Takvim</button>
+                                {% if not done %}
+                                <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
+                                <button onclick="location.href='/freeze/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#60a5fa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">❄️ Freeze</button>
+                                <button onclick="recoverStreak({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#a78bfa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">⚡ Streak Kurtar</button>
+                                {% endif %}
+                                <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
+                                <button onclick="location.href='/archive/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#fbbf24" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📦 Arşivle</button>
+                                <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#f87171" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🗑 Sil</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
                 <div class="flex gap-1.5 mb-1">
                     {% for day in weekly[habit.id|string] %}
                     <div class="flex-1 text-center">
@@ -1324,6 +1331,18 @@ function playMusic(type,e){
 }
 function stopMusic(){musicNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch(e){}});musicNodes=[];if(musicCtx){musicCtx.close();musicCtx=null;}document.getElementById('nowPlaying').textContent='Hazır';document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));}
 function setVolume(v){document.getElementById('volumeLabel').textContent=Math.round(v*100)+'%';if(musicNodes[0])musicNodes[0].gain.value=parseFloat(v);}
+
+// MENÜ
+function toggleMenu(id){
+    const menu=document.getElementById('menu-'+id);
+    document.querySelectorAll('[id^="menu-"]').forEach(m=>{if(m.id!=='menu-'+id)m.classList.add('hidden');});
+    menu.classList.toggle('hidden');
+}
+document.addEventListener('click',function(e){
+    if(!e.target.closest('[id^="menu-"]')&&!e.target.closest('button[onclick*="toggleMenu"]')){
+        document.querySelectorAll('[id^="menu-"]').forEach(function(m){m.classList.add('hidden');});
+    }
+});
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/static/sw.js').catch(()=>{});}
 </script>
