@@ -770,7 +770,6 @@ def habit_detail(habit_id):
 @app.route('/ai-suggest', methods=['POST'])
 @login_required
 def ai_suggest():
-def ai_suggest():
     try:
         import anthropic
         habits = [h.name for h in current_user.habits]
