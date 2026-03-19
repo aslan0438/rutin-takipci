@@ -667,8 +667,6 @@ def send_weekly_email():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/ai-suggest', methods=['POST'])
-@login_required
 @app.route('/streak-recovery/<int:habit_id>', methods=['POST'])
 @login_required
 def streak_recovery(habit_id):
@@ -769,6 +767,9 @@ def habit_detail(habit_id):
         'completion_rate': completion_rate,
         'first_date': log_dates[-1]
     })
+@app.route('/ai-suggest', methods=['POST'])
+@login_required
+def ai_suggest():
 def ai_suggest():
     try:
         import anthropic
