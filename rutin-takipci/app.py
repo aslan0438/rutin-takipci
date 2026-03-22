@@ -771,18 +771,24 @@ def habit_detail(habit_id):
 @login_required
 def ai_suggest():
     try:
-        import anthropic
+        import requests
         habits = [h.name for h in current_user.habits]
-        client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
-        message = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=300,
-            messages=[{
-                "role": "user",
-                "content": f"Kullanıcının mevcut alışkanlıkları: {', '.join(habits) if habits else 'henüz yok'}. Türkçe olarak 3 yeni alışkanlık öner. Her öneriyi tek satırda, emoji ile başlat. Sadece liste ver, açıklama yazma."
-            }]
+        response = requests.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            headers={
+                'Authorization': f'Bearer {os.environ.get("GROQ_API_KEY")}',
+                'Content-Type': 'application/json'
+            },
+            json={
+                'model': 'llama3-8b-8192',
+                'max_tokens': 300,
+                'messages': [{
+                    'role': 'user',
+                    'content': f"Kullanıcının mevcut alışkanlıkları: {', '.join(habits) if habits else 'henüz yok'}. Türkçe olarak 3 yeni alışkanlık öner. Her öneriyi tek satırda, emoji ile başlat. Sadece liste ver, açıklama yazma."
+                }]
+            }
         )
-        suggestions = message.content[0].text
+        suggestions = response.json()['choices'][0]['message']['content']
         return jsonify({'suggestions': suggestions})
     except Exception as e:
         return jsonify({'suggestions': '❌ AI şu an kullanılamıyor.'}), 500
