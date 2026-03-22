@@ -625,23 +625,29 @@
                     <p class="text-xs" style="color:var(--text-muted)">Merhaba, <a href="/profile" class="text-indigo-400 font-semibold">{{ user.username }}</a> 👋</p>
                 </div>
             </div>
-            <p class="text-xs pl-16 mt-1" style="color:var(--text-muted)">{{ today }}</p>
+            <p class="text-xs pl-16 mt-1" id="turkishDate" style="color:var(--text-muted)">{{ today }}</p>
         </div>
         <div class="flex flex-col items-end gap-1.5">
-            <div class="flex items-center gap-1 flex-wrap justify-end btn-row">
-                <button onclick="openStats()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="İstatistik">📊</button>
-                <button onclick="openReport()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Rapor">📋</button>
-                <button onclick="openMonthly()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Aylık">📅</button>
-                <button onclick="openLeaderboard()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Liderboard">🏆</button>
-                <button onclick="document.getElementById('musicModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Müzik">🎵</button>
-                <button onclick="document.getElementById('reminderModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Hatırlatıcı">🔔</button>
-                <button onclick="openNotifications()" class="text-xs px-2 py-1 rounded-lg relative" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Bildirimler">
+            <div class="flex items-center gap-1.5 justify-end">
+                <button onclick="openNotifications()" class="w-8 h-8 rounded-xl flex items-center justify-center relative text-sm" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">
                     📨{% if unread_notifs > 0 %}<span id="notifBadge" style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#ef4444;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:bold">{{ unread_notifs }}</span>{% endif %}
                 </button>
-                <button onclick="openFriends()" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Arkadaşlar">👥</button>
-                <button onclick="document.getElementById('themeModal').classList.remove('hidden')" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Tema">🎨</button>
-                <button onclick="toggleDarkMode()" id="darkModeBtn" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)" title="Mod">🌙</button>
-                <a href="/logout" class="text-xs px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">Çıkış</a>
+                <button onclick="toggleDarkMode()" id="darkModeBtn" class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🌙</button>
+                <div class="relative">
+                    <button onclick="toggleTopMenu()" class="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">⋯</button>
+                    <div id="topMenu" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:180px;top:calc(100% + 8px)">
+                        <button onclick="openStats();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📊 İstatistikler</button>
+                        <button onclick="openReport();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📋 Haftalık Rapor</button>
+                        <button onclick="openMonthly();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Aylık Özet</button>
+                        <button onclick="openLeaderboard();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🏆 Liderboard</button>
+                        <button onclick="document.getElementById('musicModal').classList.remove('hidden');toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎵 Odak Müziği</button>
+                        <button onclick="document.getElementById('reminderModal').classList.remove('hidden');toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🔔 Hatırlatıcı</button>
+                        <button onclick="openFriends();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">👥 Arkadaşlar</button>
+                        <button onclick="document.getElementById('themeModal').classList.remove('hidden');toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎨 Tema</button>
+                        <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
+                        <a href="/logout" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#f87171" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🚪 Çıkış</a>
+                    </div>
+                </div>
             </div>
             <p id="clock" class="text-xl font-bold text-indigo-400 tabular-nums"></p>
             <p id="greeting" class="text-xs" style="color:var(--text-muted)"></p>
@@ -820,7 +826,7 @@
 
             <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2 min-w-0">
+                    <div class="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                         <span class="drag-handle">⠿</span>
                         {% if done %}
                             <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3)">
@@ -945,6 +951,14 @@ window.addEventListener('load',()=>{
 });
 
 // SAAT
+// TÜRKÇe TARİH
+(function(){
+    const months=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    const d=new Date();
+    const el=document.getElementById('turkishDate');
+    if(el) el.textContent=d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+})();
+
 function updateClock(){
     const n=new Date();
     document.getElementById('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
@@ -1331,6 +1345,18 @@ function playMusic(type,e){
 }
 function stopMusic(){musicNodes.forEach(n=>{try{n.stop?.();n.disconnect?.();}catch(e){}});musicNodes=[];if(musicCtx){musicCtx.close();musicCtx=null;}document.getElementById('nowPlaying').textContent='Hazır';document.querySelectorAll('.music-btn').forEach(b=>b.classList.remove('playing'));}
 function setVolume(v){document.getElementById('volumeLabel').textContent=Math.round(v*100)+'%';if(musicNodes[0])musicNodes[0].gain.value=parseFloat(v);}
+
+// ÜST MENÜ
+function toggleTopMenu(){
+    const menu=document.getElementById('topMenu');
+    menu.classList.toggle('hidden');
+}
+document.addEventListener('click',function(e){
+    const topMenu=document.getElementById('topMenu');
+    if(topMenu&&!e.target.closest('#topMenu')&&!e.target.closest('button[onclick*="toggleTopMenu"]')){
+        topMenu.classList.add('hidden');
+    }
+});
 
 // MENÜ
 function toggleMenu(id){
