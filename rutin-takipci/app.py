@@ -780,7 +780,7 @@ def ai_suggest():
                 'Content-Type': 'application/json'
             },
             json={
-                'model': 'llama3-8b-8192',
+                'model': 'llama-3.3-70b-versatile',
                 'max_tokens': 300,
                 'messages': [{
                     'role': 'user',
