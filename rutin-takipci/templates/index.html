@@ -135,7 +135,7 @@
     .habit-btns{gap:1px}
     .habit-btns .w-8{width:26px;height:26px;font-size:11px}
     .habit-btns .btn-primary{padding:4px 6px;font-size:10px}
-    .habit-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .habit-name{max-width:120px}
 }
 @media(max-width:400px){
     .habit-btns .w-8{width:22px;height:22px;font-size:10px}
@@ -635,7 +635,7 @@
                 <button onclick="toggleDarkMode()" id="darkModeBtn" class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">🌙</button>
                 <div class="relative">
                     <button onclick="toggleTopMenu()" class="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">⋯</button>
-                    <div id="topMenu" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:200px;top:calc(100% + 8px);z-index:200">
+                    <div id="topMenu" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:180px;top:calc(100% + 8px)">
                         <button onclick="openStats();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📊 İstatistikler</button>
                         <button onclick="openReport();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📋 Haftalık Rapor</button>
                         <button onclick="openMonthly();toggleTopMenu()" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Aylık Özet</button>
@@ -825,33 +825,35 @@
             {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
 
             <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}">
-                <div class="flex items-center gap-2 mb-3">
-                    <div class="flex items-center gap-2 min-w-0" style="flex:1;overflow:hidden">
-                        <span class="drag-handle">⠿</span>
-                        {% if done %}
-                            <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3)">
-                                <span class="check-anim text-green-400 text-sm font-bold">✓</span>
+                <!-- İsim Satırı -->
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="drag-handle flex-shrink-0">⠿</span>
+                    {% if done %}
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3)">
+                            <span class="check-anim text-green-400 text-xs font-bold">✓</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="line-through font-medium text-sm" style="color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}</p>
+                            {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
+                            <p class="text-xs text-green-500">Tamamlandı ✓</p>
+                        </div>
+                    {% else %}
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style="border:1px solid rgba(255,255,255,0.1)">
+                            <span style="color:rgba(255,255,255,0.2);font-size:11px">○</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1">
+                                <p class="font-semibold text-sm flex-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}</p>
+                                {% if habit.priority == 'high' %}<span class="text-xs flex-shrink-0">🔴</span>{% elif habit.priority == 'low' %}<span class="text-xs flex-shrink-0 opacity-50">⚪</span>{% endif %}
                             </div>
-                            <div class="min-w-0">
-                                <p class="line-through font-medium text-sm truncate habit-name" style="color:var(--text-muted)">{{ habit.name }}</p>
-                                {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
-                                <p class="text-xs text-green-500 mt-0.5">Tamamlandı ✓</p>
-                            </div>
-                        {% else %}
-                            <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="border:1px solid rgba(255,255,255,0.1)">
-                                <span style="color:rgba(255,255,255,0.2);font-size:12px">○</span>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-1.5">
-                                    <p class="font-medium text-sm truncate habit-name">{{ habit.name }}</p>
-                                    {% if habit.priority == 'high' %}<span class="text-xs">🔴</span>{% elif habit.priority == 'low' %}<span class="text-xs opacity-50">⚪</span>{% endif %}
-                                </div>
-                                {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
-                                <p class="text-xs mt-0.5" style="color:var(--text-muted)">Bekliyor...</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="flex items-center gap-1.5 flex-shrink-0" style="max-width:140px">
+                            {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
+                            <p class="text-xs" style="color:var(--text-muted)">Bekliyor...</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- Buton Satırı -->
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-1.5">
                         {% if streak > 0 %}
                         <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
                         {% endif %}
