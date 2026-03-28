@@ -419,6 +419,21 @@
                 </div>
                 <input type="hidden" name="priority" id="editPriority" value="normal">
             </div>
+            <div class="mb-4">
+                <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kart Rengi</label>
+                <div class="flex gap-2 flex-wrap">
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#6366f1" onclick="selectHabitColor(this,'#6366f1')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#8b5cf6" onclick="selectHabitColor(this,'#8b5cf6')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#06d6a0" onclick="selectHabitColor(this,'#06d6a0')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#f59e0b" onclick="selectHabitColor(this,'#f59e0b')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#ef4444" onclick="selectHabitColor(this,'#ef4444')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#ec4899" onclick="selectHabitColor(this,'#ec4899')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#14b8a6" onclick="selectHabitColor(this,'#14b8a6')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#f97316" onclick="selectHabitColor(this,'#f97316')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#64748b" onclick="selectHabitColor(this,'#64748b')"></button>
+                </div>
+                <input type="hidden" name="habit_color" id="editHabitColor" value="#6366f1">
+            </div>
             <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-semibold">Kaydet</button>
         </form>
     </div>
@@ -801,6 +816,21 @@
                 </div>
                 <input type="hidden" name="priority" id="addPriority" value="normal">
             </div>
+            <div class="mb-3">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">Kart Rengi</p>
+                <div class="flex gap-2 flex-wrap">
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-white hover:scale-110 transition" style="background:#6366f1" onclick="selectAddColor(this,'#6366f1')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#8b5cf6" onclick="selectAddColor(this,'#8b5cf6')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#06d6a0" onclick="selectAddColor(this,'#06d6a0')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#f59e0b" onclick="selectAddColor(this,'#f59e0b')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#ef4444" onclick="selectAddColor(this,'#ef4444')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#ec4899" onclick="selectAddColor(this,'#ec4899')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#14b8a6" onclick="selectAddColor(this,'#14b8a6')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#f97316" onclick="selectAddColor(this,'#f97316')"></button>
+                    <button type="button" class="add-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#64748b" onclick="selectAddColor(this,'#64748b')"></button>
+                </div>
+                <input type="hidden" name="habit_color" id="addHabitColor" value="#6366f1">
+            </div>
             <div class="flex gap-2">
                 <input type="text" name="category" placeholder="Kategori adı..." class="flex-1 rounded-xl px-4 py-3 text-sm">
                 <button type="submit" class="btn-primary px-6 py-3 rounded-xl text-sm font-semibold">Ekle</button>
@@ -824,7 +854,7 @@
             {% set wcount = weekly_counts[habit.id|string] %}
             {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
 
-            <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}">
+            <div class="glass-card rounded-2xl px-5 py-4 mb-3 {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}" style="border-left:3px solid {{ habit.color or '#6366f1' }}">
                 <!-- İsim Satırı -->
                 <div class="flex items-center gap-2 mb-2">
                     <span class="drag-handle flex-shrink-0">⠿</span>
@@ -865,7 +895,7 @@
                             <div id="menu-{{ habit.id }}" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px;bottom:calc(100% + 8px)" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px">
                                 <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }});toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎯 Haftalık Hedef</button>
                                 <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📈 İstatistik</button>
-                                <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
+                                <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}','{{ habit.color or "#6366f1" }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
                                 <button onclick="openPomodoro('{{ habit.name }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🍅 Pomodoro</button>
                                 <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Takvim</button>
                                 {% if not done %}
@@ -980,11 +1010,19 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
     if(!localStorage.getItem('theme'))document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');
 });
 function setTheme(t){
-    document.documentElement.classList.add('theme-switching');
-    setTimeout(()=>document.documentElement.classList.remove('theme-switching'),400);
-    document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);
+    // Ripple animasyonu
+    const ripple=document.createElement('div');
+    ripple.style.cssText='position:fixed;top:50%;left:50%;width:0;height:0;border-radius:50%;transform:translate(-50%,-50%);z-index:9998;pointer-events:none;transition:all 0.6s ease;background:'+(t==='light'?'rgba(238,242,255,0.95)':'rgba(6,6,18,0.95)');
+    document.body.appendChild(ripple);
+    requestAnimationFrame(()=>{ripple.style.width='300vmax';ripple.style.height='300vmax';});
+    setTimeout(()=>{
+        document.documentElement.setAttribute('data-theme',t);
+        localStorage.setItem('theme',t);
+        document.getElementById('darkModeBtn').textContent=t==='light'?'☀️':'🌙';
+        ripple.style.opacity='0';
+        setTimeout(()=>ripple.remove(),300);
+    },300);
     document.getElementById('themeModal').classList.add('hidden');
-    document.getElementById('darkModeBtn').textContent=t==='light'?'☀️':'🌙';
 }
 function toggleDarkMode(){const c=document.documentElement.getAttribute('data-theme');setTheme(c==='light'?'dark':'light');}
 const _ct=localStorage.getItem('theme')||'dark';
@@ -1177,10 +1215,23 @@ document.querySelectorAll('.sortable-list').forEach(list=>{
 });
 
 // DÜZENLE
-function openEdit(id,name,category,note,emoji,priority){
+function openEdit(id,name,category,note,emoji,priority,color){
     document.getElementById('editForm').action=`/edit/${id}`;document.getElementById('editName').value=name;document.getElementById('editCategory').value=category;document.getElementById('editNote').value=note;document.getElementById('editCategoryEmoji').value=emoji||'📌';
     document.querySelectorAll('#editModal .emoji-btn').forEach(b=>b.classList.toggle('selected',b.textContent===(emoji||'📌')));
-    selectPriority(priority||'normal');document.getElementById('editModal').classList.remove('hidden');
+    selectPriority(priority||'normal');
+    const c=color||'#6366f1';document.getElementById('editHabitColor').value=c;
+    document.querySelectorAll('.habit-color-btn').forEach(b=>{b.style.borderColor=b.style.background===c?'white':'transparent';});
+    document.getElementById('editModal').classList.remove('hidden');
+}
+function selectHabitColor(btn,color){
+    document.querySelectorAll('.habit-color-btn').forEach(b=>b.style.borderColor='transparent');
+    btn.style.borderColor='white';
+    document.getElementById('editHabitColor').value=color;
+}
+function selectAddColor(btn,color){
+    document.querySelectorAll('.add-color-btn').forEach(b=>b.style.borderColor='transparent');
+    btn.style.borderColor='white';
+    document.getElementById('addHabitColor').value=color;
 }
 
 // TAKVİM

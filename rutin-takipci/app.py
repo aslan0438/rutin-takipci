@@ -52,6 +52,7 @@ class Habit(db.Model):
     weekly_goal = db.Column(db.Integer, default=7)
     priority = db.Column(db.String(10), default='normal')
     archived = db.Column(db.Boolean, default=False)
+    color = db.Column(db.String(20), default='#6366f1')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     logs = db.relationship('HabitLog', backref='habit', lazy=True, cascade='all, delete-orphan')
 
@@ -258,7 +259,8 @@ def add_habit():
     if name and not Habit.query.filter_by(name=name, user_id=current_user.id).first():
         max_order = db.session.query(db.func.max(Habit.order)).filter_by(user_id=current_user.id).scalar() or 0
         habit = Habit(name=name, category=category, category_emoji=category_emoji,
-                     note=note, priority=priority, user_id=current_user.id, order=max_order+1)
+                     note=note, priority=priority, color=request.form.get('habit_color','#6366f1'),
+                     user_id=current_user.id, order=max_order+1)
         db.session.add(habit)
         create_notification(current_user.id, f'📌 "{name}" alışkanlığı eklendi!', 'info')
         db.session.commit()
@@ -273,6 +275,7 @@ def edit_habit(habit_id):
     habit.category_emoji = request.form.get('category_emoji', habit.category_emoji)
     habit.note = request.form.get('note', habit.note)
     habit.priority = request.form.get('priority', habit.priority)
+    habit.color = request.form.get('habit_color', habit.color)
     db.session.commit()
     return redirect(url_for('index'))
 
@@ -296,8 +299,8 @@ def complete(habit_id):
         add_xp(current_user, 20)
         streak = get_streak(habit) + 1
         create_notification(current_user.id, f'✅ "{habit.name}" tamamlandı! +20 XP', 'success')
-        if streak in [3, 7, 14, 30]:
-            create_notification(current_user.id, f'🔥 {streak} gün streak! "{habit.name}" için tebrikler!', 'achievement')
+        if streak in [3, 7, 14, 30, 60, 100]:
+            create_notification(current_user.id, f'🏆 {streak} gün streak rekoru! "{habit.name}" — Efsane!', 'achievement')
         db.session.commit()
     return redirect(url_for('index'))
 
@@ -792,6 +795,45 @@ def ai_suggest():
         return jsonify({'suggestions': suggestions})
     except Exception as e:
         return jsonify({'suggestions': '❌ AI şu an kullanılamıyor.'}), 500
+
+def send_weekly_email_for_user(u):
+    import resend as resend_lib
+    from datetime import timedelta
+    resend_lib.api_key = os.environ.get('RESEND_API_KEY')
+    habits = Habit.query.filter_by(user_id=u.id, archived=False).all()
+    if not habits or not u.email:
+        return
+    today = date.today()
+    week_start = today - timedelta(days=today.weekday())
+    report = []
+    for h in habits:
+        log_dates = {l.date for l in h.logs}
+        completed = sum(1 for i in range(7) if str(week_start + timedelta(days=i)) in log_dates)
+        percent = int((completed / 7) * 100)
+        report.append({'name': h.name, 'completed': completed, 'percent': percent, 'streak': get_streak(h)})
+    rows = ''.join([f'<tr><td style="padding:10px;color:white">{r["name"]}</td><td style="padding:10px;text-align:center;color:#a5b4fc">{r["completed"]}/7</td><td style="padding:10px;text-align:center;color:{"#4ade80" if r["percent"]>=70 else "#fbbf24" if r["percent"]>=40 else "#f87171"}">%{r["percent"]}</td><td style="padding:10px;text-align:center;color:#fb923c">🔥{r["streak"]}</td></tr>' for r in report])
+    html = f'<div style="background:#0d0d1f;padding:24px;font-family:Inter,sans-serif;color:white"><h2>📊 Haftalık Rapor</h2><p style="color:#9ca3af">{u.username} · Seviye {u.level} · {u.xp} XP</p><table style="width:100%;border-collapse:collapse;margin-top:16px"><tr style="background:rgba(255,255,255,0.05)"><th style="padding:10px;text-align:left;color:#9ca3af">Alışkanlık</th><th style="padding:10px;color:#9ca3af">Tamamlama</th><th style="padding:10px;color:#9ca3af">Oran</th><th style="padding:10px;color:#9ca3af">Streak</th></tr>{rows}</table><p style="margin-top:16px;color:#6b7280;font-size:12px">rutin-takipci.onrender.com</p></div>'
+    resend_lib.Emails.send({"from":"Rutin Takipçi <onboarding@resend.dev>","to":[u.email],"subject":f"📊 Haftalık Rapor — {week_start}","html":html})
+
+import threading
+
+def auto_weekly_email_job():
+    from datetime import datetime
+    while True:
+        now = datetime.now()
+        if now.weekday() == 0 and now.hour == 9 and now.minute == 0:
+            with app.app_context():
+                users = User.query.all()
+                for u in users:
+                    try:
+                        send_weekly_email_for_user(u)
+                    except Exception as e:
+                        print(f'Email error for {u.username}: {e}')
+        import time
+        time.sleep(60)
+
+email_thread = threading.Thread(target=auto_weekly_email_job, daemon=True)
+email_thread.start()
 
 with app.app_context():
     db.create_all()
