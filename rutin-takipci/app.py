@@ -837,6 +837,12 @@ email_thread.start()
 
 with app.app_context():
     db.create_all()
+    try:
+        with db.engine.connect() as conn:
+            conn.execute(db.text("ALTER TABLE habit ADD COLUMN IF NOT EXISTS color VARCHAR(20) DEFAULT '#6366f1'"))
+            conn.commit()
+    except:
+        pass
 
 if __name__ == '__main__':
     app.run(debug=True)
