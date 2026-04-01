@@ -442,7 +442,7 @@
             <div class="mb-4">
                 <label class="text-xs text-gray-400 uppercase tracking-widest mb-2 block font-semibold">Kart Rengi</label>
                 <div class="flex gap-2 flex-wrap">
-                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#6366f1" onclick="selectHabitColor(this,'#6366f1')"></button>
+                    <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-white hover:scale-110 transition" style="background:#6366f1" onclick="selectHabitColor(this,'#6366f1')"></button>
                     <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#8b5cf6" onclick="selectHabitColor(this,'#8b5cf6')"></button>
                     <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#06d6a0" onclick="selectHabitColor(this,'#06d6a0')"></button>
                     <button type="button" class="habit-color-btn w-7 h-7 rounded-lg border-2 border-transparent hover:scale-110 transition" style="background:#f59e0b" onclick="selectHabitColor(this,'#f59e0b')"></button>
@@ -922,7 +922,7 @@
                         {% endif %}
                         <div class="relative">
                             <button onclick="toggleMenu({{ habit.id }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-base font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">⋯</button>
-                            <div id="menu-{{ habit.id }}" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px;bottom:calc(100% + 8px)" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px">
+                            <div id="menu-{{ habit.id }}" class="hidden absolute right-0 z-50 rounded-2xl p-2" style="background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.5);min-width:160px;bottom:calc(100% + 8px)">
                                 <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }});toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎯 Haftalık Hedef</button>
                                 <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📈 İstatistik</button>
                                 <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}','{{ habit.color or "#6366f1" }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
@@ -1454,6 +1454,7 @@ document.addEventListener('click',function(e){
 });
 
 function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+function setBottomActive(btn){document.querySelectorAll('.bottom-nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/static/sw.js').catch(()=>{});}
 
 // ARAMA
@@ -1475,16 +1476,16 @@ function filterHabits(q){
 </script>
 
 <!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-    <button class="bottom-nav-btn active" onclick="scrollToTop()">
+<nav class="bottom-nav" id="bottomNav">
+    <button class="bottom-nav-btn active" onclick="scrollToTop();setBottomActive(this)">
         <span>🏠</span>
         <p>Ana Sayfa</p>
     </button>
-    <button class="bottom-nav-btn" onclick="openStats()">
+    <button class="bottom-nav-btn" onclick="openStats();setBottomActive(this)">
         <span>📊</span>
         <p>İstatistik</p>
     </button>
-    <button class="bottom-nav-btn" onclick="document.getElementById('addForm').querySelector('input[name=habit]').focus();document.getElementById('addForm').scrollIntoView({behavior:'smooth'})">
+    <button class="bottom-nav-btn" onclick="document.getElementById('addForm').querySelector('input[name=habit]').focus();document.getElementById('addForm').scrollIntoView({behavior:'smooth'});setBottomActive(this)">
         <span>➕</span>
         <p>Ekle</p>
     </button>
