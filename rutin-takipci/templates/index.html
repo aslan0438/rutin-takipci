@@ -882,79 +882,72 @@
             {% set streak = streaks[habit.id|string] %}
             {% set wcount = weekly_counts[habit.id|string] %}
             {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
-
-            <div class="glass-card rounded-2xl px-5 py-4 mb-3 relative overflow-hidden {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}" style="border-left:3px solid {{ habit.color or '#6366f1' }}">
+            <div class="glass-card rounded-2xl px-4 py-4 mb-3 relative overflow-hidden {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}" style="border-left:3px solid {{ habit.color or '#6366f1' }}">
                 <div class="habit-card-glow" style="background:radial-gradient(ellipse at 0% 50%, {{ habit.color or '#6366f1' }}, transparent 70%)"></div>
-                <!-- İsim Satırı -->
+                <!-- İsim -->
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="drag-handle flex-shrink-0">⠿</span>
+                    <span class="drag-handle flex-shrink-0" style="font-size:14px;color:rgba(255,255,255,0.15)">⠿</span>
                     {% if done %}
-                        <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center complete-pulse" style="background:rgba(16,185,129,0.25);border:2px solid rgba(16,185,129,0.5);box-shadow:0 0 12px rgba(16,185,129,0.3)">
-                            <span class="check-anim font-black" style="color:#4ade80;font-size:14px">✓</span>
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center complete-pulse" style="background:rgba(16,185,129,0.25);border:2px solid rgba(16,185,129,0.5)">
+                            <span class="check-anim font-black" style="color:#4ade80;font-size:13px">✓</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="line-through font-medium text-sm" style="color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}</p>
-                            {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
+                            <p class="line-through text-sm font-medium" style="color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}</p>
                             <p class="text-xs text-green-500">Tamamlandı ✓</p>
                         </div>
                     {% else %}
-                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style="border:1px solid rgba(255,255,255,0.1)">
-                            <span style="color:rgba(255,255,255,0.2);font-size:11px">○</span>
+                        <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style="border:1px solid rgba(255,255,255,0.12)">
+                            <span style="color:rgba(255,255,255,0.2);font-size:10px">○</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1">
-                                <p class="font-semibold text-sm flex-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}</p>
-                                {% if habit.priority == 'high' %}<span class="text-xs flex-shrink-0">🔴</span>{% elif habit.priority == 'low' %}<span class="text-xs flex-shrink-0 opacity-50">⚪</span>{% endif %}
-                            </div>
+                            <p class="font-semibold text-sm" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ habit.name }}{% if habit.priority == 'high' %} <span class="text-xs">🔴</span>{% elif habit.priority == 'low' %} <span class="text-xs opacity-40">⚪</span>{% endif %}</p>
                             {% if habit.note %}<p class="note-text">{{ habit.note }}</p>{% endif %}
                             <p class="text-xs" style="color:var(--text-muted)">Bekliyor...</p>
                         </div>
                     {% endif %}
                 </div>
-                <!-- Buton Satırı -->
-                <div class="flex items-center gap-2 mb-3 flex-wrap">
-                    <div class="flex items-center gap-1.5">
-                        {% if streak > 0 %}
-                        <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
-                        {% endif %}
-                        {% if not done %}
-                        <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
-                        {% endif %}
-                        <div class="relative">
-                            <button onclick="toggleMenu({{ habit.id }})" class="w-8 h-8 rounded-lg flex items-center justify-center text-base font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">⋯</button>
-                            <div id="menu-{{ habit.id }}" class="hidden absolute right-0 rounded-2xl p-2" style="z-index:9999;background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.8);min-width:180px;bottom:calc(100% + 8px)">
-                                <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}',{{ habit.weekly_goal }});toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎯 Haftalık Hedef</button>
-                                <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📈 İstatistik</button>
-                                <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}','{{ habit.color or "#6366f1" }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
-                                <button onclick="openPomodoro('{{ habit.name }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🍅 Pomodoro</button>
-                                <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Takvim</button>
-                                {% if not done %}
-                                <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
-                                <button onclick="location.href='/freeze/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#60a5fa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">❄️ Freeze</button>
-                                <button onclick="recoverStreak({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#a78bfa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">⚡ Streak Kurtar</button>
-                                {% endif %}
-                                <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
-                                <button onclick="location.href='/archive/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#fbbf24" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📦 Arşivle</button>
-                                <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#f87171" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🗑 Sil</button>
-                            </div>
+                <!-- Butonlar -->
+                <div class="flex items-center gap-1.5 mb-2">
+                    {% if streak > 0 %}
+                    <span class="text-xs px-2 py-1 rounded-lg font-semibold {% if streak >= 7 %}bg-purple-500/20 text-purple-300{% elif streak >= 3 %}bg-orange-500/20 text-orange-300{% else %}bg-white/5 text-gray-400{% endif %}">🔥{{ streak }}g</span>
+                    {% endif %}
+                    {% if not done %}
+                    <a href="/complete/{{ habit.id }}" onclick="showXP(event,'+20 XP')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold">Tamamla</a>
+                    {% endif %}
+                    <div class="relative ml-auto">
+                        <button onclick="toggleMenu({{ habit.id }})" class="w-7 h-7 rounded-lg flex items-center justify-center font-bold" style="background:rgba(255,255,255,0.05);color:var(--text-muted);font-size:16px">⋯</button>
+                        <div id="menu-{{ habit.id }}" class="hidden absolute left-0 rounded-2xl p-2" style="z-index:9999;background:#0d0d1f;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 40px rgba(0,0,0,0.9);min-width:180px;bottom:calc(100% + 8px)">
+                            <button onclick="openGoal({{ habit.id }},'{{ habit.name|replace("'","\'") }}',{{ habit.weekly_goal }});toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🎯 Haftalık Hedef</button>
+                            <button onclick="openHabitDetail({{ habit.id }},'{{ habit.name|replace("'","\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📈 İstatistik</button>
+                            <button onclick="openEdit({{ habit.id }},'{{ habit.name|replace("'","\'") }}','{{ habit.category }}','{{ habit.note|replace("'","\'") }}','{{ habit.category_emoji }}','{{ habit.priority }}','{{ habit.color or "#6366f1" }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">✏️ Düzenle</button>
+                            <button onclick="openPomodoro('{{ habit.name }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🍅 Pomodoro</button>
+                            <button onclick="openCalendarModal({{ habit.id }},'{{ habit.name|replace("'","\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:var(--text)" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📅 Takvim</button>
+                            {% if not done %}
+                            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
+                            <button onclick="location.href='/freeze/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#60a5fa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">❄️ Freeze</button>
+                            <button onclick="recoverStreak({{ habit.id }},'{{ habit.name|replace("'","\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#a78bfa" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">⚡ Streak Kurtar</button>
+                            {% endif %}
+                            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0"></div>
+                            <button onclick="location.href='/archive/{{ habit.id }}'" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#fbbf24" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">📦 Arşivle</button>
+                            <button onclick="confirmDelete({{ habit.id }},'{{ habit.name|replace("'","\'") }}');toggleMenu({{ habit.id }})" class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-left" style="color:#f87171" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">🗑 Sil</button>
                         </div>
                     </div>
-                <div class="flex gap-1.5 mb-1">
+                </div>
+                <!-- Haftalık Bar -->
+                <div class="flex gap-1 mb-1">
                     {% for day in weekly[habit.id|string] %}
                     <div class="flex-1 text-center">
-                        <div class="w-full h-1.5 rounded-full mb-1" style="background:{% if day.done %}rgba(99,102,241,0.6){% else %}rgba(255,255,255,0.06){% endif %}"></div>
-                        <p class="text-xs" style="color:var(--text-muted);opacity:0.5;font-size:9px">{{ day.day }}</p>
+                        <div class="w-full h-1.5 rounded-full mb-0.5" style="background:{% if day.done %}{{ habit.color or 'rgba(99,102,241,0.7)' }}{% else %}rgba(255,255,255,0.06){% endif %}"></div>
+                        <p style="color:var(--text-muted);opacity:0.4;font-size:8px">{{ day.day }}</p>
                     </div>
                     {% endfor %}
                 </div>
-
-                <div class="flex items-center gap-2 mt-2">
-                    <div style="height:4px;border-radius:99px;background:rgba(255,255,255,0.06);flex:1;overflow:hidden">
-                        <div style="width:{{ wpct }}%;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent1),var(--accent3));transition:width 0.5s ease"></div>
+                <div class="flex items-center gap-2">
+                    <div style="height:3px;border-radius:99px;background:rgba(255,255,255,0.05);flex:1;overflow:hidden">
+                        <div style="width:{{ wpct }}%;height:100%;border-radius:99px;background:{{ habit.color or 'rgba(99,102,241,0.8)' }};transition:width 0.5s ease"></div>
                     </div>
                     <span class="text-xs font-semibold {% if wpct >= 100 %}text-green-400{% elif wpct >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">{{ wcount }}/{{ habit.weekly_goal }}</span>
                 </div>
-            </div>
             {% endfor %}
             </div>
         </div>
