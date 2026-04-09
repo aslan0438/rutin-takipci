@@ -138,7 +138,7 @@
     .habit-btns{gap:1px}
     .habit-btns .w-8{width:26px;height:26px;font-size:11px}
     .habit-btns .btn-primary{padding:4px 6px;font-size:10px}
-    .habit-name{max-width:120px}
+    .habit-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 @media(max-width:400px){
     .habit-btns .w-8{width:22px;height:22px;font-size:10px}
@@ -882,7 +882,7 @@
             {% set streak = streaks[habit.id|string] %}
             {% set wcount = weekly_counts[habit.id|string] %}
             {% set wpct = [(wcount / habit.weekly_goal * 100), 100] | min | int %}
-            <div class="glass-card rounded-2xl px-4 py-4 mb-3 relative overflow-hidden {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}" style="border-left:3px solid {{ habit.color or '#6366f1' }}">
+            <div class="glass-card rounded-2xl px-4 py-4 mb-3 relative {% if habit.priority == 'high' %}priority-high{% elif habit.priority == 'low' %}priority-low{% endif %}" data-id="{{ habit.id }}" style="border-left:3px solid {{ habit.color or '#6366f1' }}">
                 <div class="habit-card-glow" style="background:radial-gradient(ellipse at 0% 50%, {{ habit.color or '#6366f1' }}, transparent 70%)"></div>
                 <!-- İsim -->
                 <div class="flex items-center gap-2 mb-2">
@@ -948,6 +948,7 @@
                     </div>
                     <span class="text-xs font-semibold {% if wpct >= 100 %}text-green-400{% elif wpct >= 50 %}text-indigo-400{% else %}text-gray-500{% endif %}">{{ wcount }}/{{ habit.weekly_goal }}</span>
                 </div>
+            </div>
             {% endfor %}
             </div>
         </div>
